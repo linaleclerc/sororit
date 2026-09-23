@@ -31,7 +31,7 @@
   }
   .brand { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 600; color: #211a2c; text-decoration: none; white-space: nowrap; letter-spacing: -0.01em; }
   .brand .it { color: #c96b93; }
-  .back-to-site { font-size: 0.82rem; font-weight: 600; color: #6b6178; text-decoration: none; white-space: nowrap; padding: 8px 4px; }
+  .back-to-site { order: -1; flex: 1 1 100%; text-align: center; font-size: 0.82rem; font-weight: 600; color: #6b6178; text-decoration: none; padding: 4px 4px 8px; }
   .back-to-site:hover { color: #35215e; }
   .nav-icons { display: flex; gap: 6px; overflow-x: auto; flex: 1; scrollbar-width: none; }
   .nav-icons::-webkit-scrollbar { display: none; }
@@ -42,11 +42,6 @@
   }
   .nav-item:hover, .nav-item.active { background-color: #e4d9f5; color: #35215e; }
   .nav-item svg { width: 20px; height: 20px; stroke-width: 2; pointer-events: none; }
-  .btn-share-header {
-    background: #35215e; color: #fff; border: none; padding: 10px 16px; border-radius: 100px;
-    font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: background .2s;
-  }
-  .btn-share-header:hover { background: #4b2e83; }
   .lang-toggle { display: flex; border: 1.5px solid #d6c8ec; border-radius: 100px; overflow: hidden; flex-shrink: 0; }
   .lang-btn { font-family: inherit; font-size: 0.78rem; font-weight: 700; padding: 7px 12px; border: none; background: transparent; color: #6b6178; cursor: pointer; }
   .lang-btn.active { background: #35215e; color: #fffdfb; }
@@ -297,6 +292,35 @@
     .event-date { width: 100%; display: flex; justify-content: center; gap: 8px; align-items: center; }
     .btn-register { width: 100%; text-align: center; }
   }
+
+  /* ---------- Mobile pass ---------- */
+  @media (max-width: 680px) {
+    .preview-banner { font-size: 0.76rem; padding: 8px 14px; }
+    header.site-header { padding: 10px 14px; gap: 10px 12px; }
+    .brand { order: 1; font-size: 1.1rem; }
+    .back-to-site { font-size: 0.72rem; }
+    .lang-toggle { order: 3; }
+    .nav-icons { order: 4; flex: 1 1 100%; justify-content: flex-start; padding-bottom: 2px; }
+
+    .screen { padding: 26px 16px; }
+    .page-title h1 { font-size: 1.5rem; }
+    #screen-accueil h1.home-h1 { font-size: clamp(1.7rem, 8vw, 2.1rem); }
+    .home-hero-text { font-size: 1rem; }
+    .info-banner { padding: 18px 20px; font-size: 0.92rem; margin-bottom: 28px; }
+    .button-group { gap: 10px; }
+    .btn-primary, .btn-secondary { width: 100%; text-align: center; padding: 13px 20px; }
+
+    .home-post-card, .pub-post-card, .job-card, .event-card, .profile-card, .editor-card { padding: 18px; }
+    .about-card { padding: 22px; }
+    .profile-card { flex-direction: column; text-align: center; }
+    .home-post-header, .pub-post-header { flex-wrap: wrap; }
+    .home-author-details, .pub-author-details { min-width: 0; }
+    .filters-bar { flex-direction: column; align-items: stretch; }
+    .filter-input { min-width: 0; }
+
+    .profile-modal { padding: 22px; max-width: 320px; }
+    .reply-panel .reply-visibility { gap: 6px; }
+  }
 </style>
 </head>
 <body>
@@ -307,7 +331,7 @@
 
   <!-- ============ Navigation universelle ============ -->
   <header class="site-header">
-    <a class="back-to-site" href="index.html" data-i18n="back_to_site">&larr; Retour au site</a>
+    <a class="back-to-site" href="index.html" data-i18n="back_to_site">← Retour au site</a>
     <a class="brand" href="index.html">Soror<span class="it">IT</span></a>
     <nav class="nav-icons" id="mainNav">
       <button type="button" class="nav-item active" data-screen="accueil" title="Accueil" data-i18n-title="nav_home">
@@ -339,7 +363,6 @@
       <button type="button" class="lang-btn active" id="appLangFr" onclick="setAppLang('fr')">FR</button>
       <button type="button" class="lang-btn" id="appLangEn" onclick="setAppLang('en')">EN</button>
     </div>
-    <button type="button" class="btn-share-header" data-screen="publier" data-i18n="share_something">Partager quelque chose</button>
   </header>
 
   <main class="app-main">
@@ -825,7 +848,7 @@
   window.currentAppLang = (function(){ try { return localStorage.getItem('sororit_app_lang') || 'fr'; } catch(e) { return 'fr'; } })();
   const APP_I18N = {
     fr: {
-      back_to_site: "&larr; Retour au site",
+      back_to_site: "← Retour au site",
       share_something: "Partager quelque chose",
       badge_community: "Communauté",
       home_hero_text: "Une communauté pour les femmes dans la tech : partager des expériences, des projets, des ressources, des avis tech, des événements et des opportunités — sans commentaires publics, sans classement, sans pression.",
@@ -994,7 +1017,7 @@
       nav_about: "À Propos",
     },
     en: {
-      back_to_site: "&larr; Back to site",
+      back_to_site: "← Back to site",
       share_something: "Share something",
       badge_community: "Community",
       home_hero_text: "A community for women in tech: sharing experiences, projects, resources, tech opinions, events and opportunities — no public comments, no ranking, no pressure.",
