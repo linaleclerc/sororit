@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SororIT — Aperçu de l'application</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  html, body { height: 100%; }
+  body { background-color: #f6f2fb; color: #211a2c; min-height: 100vh; display: flex; flex-direction: column; align-items: center; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, .home-h1, .feed-title, .page-title h1 { font-family: 'Fraunces', serif; letter-spacing: -0.01em; }
+  img, svg { max-width: 100%; display: block; }
+  button, input, select, textarea { font: inherit; }
+  a { color: inherit; }
+
+  /* ---------- Demo banner ---------- */
+  .preview-banner {
+    width: 100%; background: #35215e; color: #fff; text-align: center;
+    font-size: 0.82rem; padding: 9px 20px; line-height: 1.4;
+  }
+  .preview-banner strong { font-weight: 700; }
+
+  /* ---------- Universal nav header ---------- */
+  header.site-header {
+    width: 100%; background-color: #fffdfb; padding: 12px 24px;
+    display: flex; align-items: center; gap: 18px; border-bottom: 1px solid #d6c8ec;
+    position: sticky; top: 0; z-index: 30; flex-wrap: wrap; row-gap: 10px;
+  }
+  .brand { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 600; color: #211a2c; text-decoration: none; white-space: nowrap; letter-spacing: -0.01em; }
+  .brand .it { color: #c96b93; }
+  .back-to-site { font-size: 0.82rem; font-weight: 600; color: #6b6178; text-decoration: none; white-space: nowrap; padding: 8px 4px; }
+  .back-to-site:hover { color: #35215e; }
+  .nav-icons { display: flex; gap: 6px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+  .nav-icons::-webkit-scrollbar { display: none; }
+  .nav-item {
+    width: 40px; height: 40px; min-width: 40px; display: flex; align-items: center; justify-content: center;
+    border-radius: 12px; color: #6b6178; text-decoration: none; border: none; background: transparent; cursor: pointer;
+    transition: all 0.15s ease-in-out;
+  }
+  .nav-item:hover, .nav-item.active { background-color: #e4d9f5; color: #35215e; }
+  .nav-item svg { width: 20px; height: 20px; stroke-width: 2; pointer-events: none; }
+  .btn-share-header {
+    background: #35215e; color: #fff; border: none; padding: 10px 16px; border-radius: 100px;
+    font-weight: 700; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: background .2s;
+  }
+  .btn-share-header:hover { background: #4b2e83; }
+  .lang-toggle { display: flex; border: 1.5px solid #d6c8ec; border-radius: 100px; overflow: hidden; flex-shrink: 0; }
+  .lang-btn { font-family: inherit; font-size: 0.78rem; font-weight: 700; padding: 7px 12px; border: none; background: transparent; color: #6b6178; cursor: pointer; }
+  .lang-btn.active { background: #35215e; color: #fffdfb; }
+
+  /* ---------- Toast ---------- */
+  .toast { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%) translateY(20px); background: #211a2c; color: #fff; padding: 12px 22px; border-radius: 100px; font-size: 0.88rem; opacity: 0; pointer-events: none; transition: all .25s ease; z-index: 210; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- Support (like) & report buttons ---------- */
+  .pub-btn-action.pub-support-btn svg { transition: fill .15s, stroke .15s; }
+  .pub-btn-action.pub-support-btn.active { color: #c96b93; }
+  .pub-btn-action.pub-support-btn.active svg { fill: #c96b93; stroke: #c96b93; }
+  .pub-btn-action.pub-report-btn { margin-left: auto; }
+
+  /* ---------- Shared layout ---------- */
+  main.app-main { width: 100%; display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .screen { width: 100%; max-width: 900px; padding: 40px 24px; display: flex; flex-direction: column; }
+  .screen[hidden] { display: none; }
+  .page-title { margin-bottom: 24px; }
+  .page-title h1 { font-size: 1.9rem; font-weight: 800; color: #211a2c; }
+  .page-title p { color: #6b6178; font-size: 0.95rem; margin-top: 4px; }
+
+  .filters-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .filter-select, .filter-input {
+    padding: 10px 14px; border: 1px solid #d6c8ec; border-radius: 12px; background-color: #fffdfb;
+    color: #211a2c; font-size: 0.9rem; outline: none; transition: border-color .2s;
+  }
+  .filter-select:focus, .filter-input:focus { border-color: #35215e; }
+  .filter-input { flex: 1; min-width: 180px; }
+
+  .no-results {
+    display: none; text-align: center; padding: 40px; color: #6b6178; background: #fffdfb;
+    border-radius: 16px; border: 1px dashed #d6c8ec; grid-column: 1 / -1;
+  }
+
+  /* ===================== Accueil ===================== */
+  .badge-community {
+    background-color: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.06em; padding: 6px 14px; border-radius: 16px; text-transform: uppercase; margin-bottom: 20px;
+    width: fit-content;
+  }
+  #screen-accueil h1.home-h1 { font-size: 2.6rem; font-weight: 600; color: #211a2c; letter-spacing: -0.015em; margin-bottom: 20px; }
+  #screen-accueil h1.home-h1 span { color: #c96b93; }
+  .home-hero-text { font-size: 1.1rem; line-height: 1.6; color: #6b6178; max-width: 720px; margin-bottom: 32px; }
+  .button-group { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+  .btn-primary {
+    background-color: #35215e; color: #fffdfb; font-size: 0.95rem; font-weight: 700; padding: 14px 24px;
+    border-radius: 100px; border: none; cursor: pointer; box-shadow: 0 1px 2px rgba(16,24,40,.05); transition: background-color .2s;
+  }
+  .btn-primary:hover { background-color: #4b2e83; }
+  .btn-secondary {
+    background-color: #fffdfb; color: #211a2c; font-size: 0.95rem; font-weight: 700; padding: 14px 24px;
+    border-radius: 100px; border: 1px solid #d6c8ec; cursor: pointer; box-shadow: 0 1px 2px rgba(16,24,40,.05); transition: background-color .2s;
+  }
+  .btn-secondary:hover { background-color: #fffdfb; }
+  .info-banner {
+    width: 100%; background-color: #e4d9f5; border-radius: 16px; padding: 24px 28px; color: #4b2e83;
+    font-size: 1.02rem; font-weight: 700; line-height: 1.5; margin-bottom: 40px;
+  }
+  .feed-title { font-size: 1.2rem; font-weight: 800; color: #211a2c; margin-bottom: 20px; }
+
+  .home-post-card {
+    width: 100%; background-color: #fffdfb; border-radius: 16px; padding: 24px; margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(16,24,40,.05); border: 1px solid #d6c8ec;
+  }
+  .home-post-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; gap: 10px; }
+  .home-author-info { display: flex; align-items: center; gap: 12px; }
+  .home-avatar { width: 40px; height: 40px; border-radius: 50%; background: #35215e; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+  .home-author-details .name { font-weight: 700; color: #211a2c; font-size: 0.92rem; }
+  .home-author-details .subtext { font-size: 0.78rem; color: #6b6178; }
+  .home-badge-post { background-color: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700; padding: 5px 12px; border-radius: 10px; white-space: nowrap; }
+  .home-post-title { font-size: 1.05rem; font-weight: 700; color: #211a2c; margin-bottom: 8px; }
+  .home-post-content { font-size: 0.92rem; line-height: 1.5; color: #211a2c; margin-bottom: 14px; }
+  .home-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .home-tag { background: #e4d9f5; color: #6b6178; font-size: 0.75rem; padding: 3px 10px; border-radius: 8px; }
+  .home-reactions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .home-reaction-btn { background: #f6f2fb; border: 1px solid #d6c8ec; color: #6b6178; font-size: 0.78rem; padding: 5px 10px; border-radius: 10px; cursor: pointer; }
+  .home-reaction-btn:hover { background: #e4d9f5; border-color: #d6c8ec; }
+  .home-post-actions { display: flex; justify-content: flex-start; align-items: center; padding-top: 12px; border-top: 1px solid #d6c8ec; }
+
+  /* ===================== Publications ===================== */
+  .feed-grid { display: flex; flex-direction: column; gap: 20px; }
+  .pub-post-card { background: #fffdfb; border-radius: 20px; padding: 24px; border: 1px solid #d6c8ec; box-shadow: 0 4px 20px rgba(105,65,198,.03); }
+  .pub-post-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; }
+  .pub-author-info { display: flex; align-items: center; gap: 12px; }
+  .pub-author-avatar { width: 42px; height: 42px; border-radius: 50%; background: #35215e; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .95rem; }
+  .pub-author-details .name { font-weight: 700; font-size: 0.95rem; color: #211a2c; }
+  .pub-author-details .meta { font-size: 0.8rem; color: #6b6178; }
+  .pub-badge-post { background: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
+  .pub-badge-post.entraide { background: #fef0c7; color: #dc6803; }
+  .pub-badge-post.projet { background: #e0f2fe; color: #0369a1; }
+  .pub-post-content { font-size: 0.95rem; color: #211a2c; line-height: 1.5; margin-bottom: 16px; }
+  .pub-post-footer { display: flex; align-items: center; gap: 16px; border-top: 1px solid #d6c8ec; padding-top: 14px; flex-wrap: wrap; }
+  .pub-btn-action { background: transparent; border: none; color: #6b6178; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: color .2s; }
+  .pub-btn-action svg { width: 17px; height: 17px; stroke-width: 2; flex-shrink: 0; }
+  .pub-btn-action:hover, .pub-btn-action.active { color: #35215e; }
+
+  /* ---------- Profile preview modal ---------- */
+  .home-author-info, .pub-author-info { cursor: pointer; }
+  .home-author-info:hover .name, .pub-author-info:hover .name { text-decoration: underline; text-underline-offset: 2px; }
+  .profile-modal-backdrop { position: fixed; inset: 0; background: rgba(33,26,44,.45); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
+  .profile-modal-backdrop.open { display: flex; }
+  .profile-modal { background: #fffdfb; border-radius: 20px; padding: 28px; max-width: 360px; width: 100%; text-align: center; position: relative; box-shadow: 0 20px 60px rgba(33,26,44,.25); }
+  .profile-modal-close { position: absolute; top: 12px; right: 14px; background: transparent; border: none; font-size: 1.4rem; line-height: 1; color: #6b6178; cursor: pointer; }
+  .profile-modal-close:hover { color: #35215e; }
+  .profile-modal-avatar { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1.8rem; background: #35215e; }
+  .profile-modal h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.3rem; color: #211a2c; margin-bottom: 4px; }
+  .profile-modal-meta { color: #6b6178; font-size: 0.85rem; margin-bottom: 16px; }
+  .profile-modal-bio { color: #211a2c; font-size: 0.9rem; line-height: 1.55; margin-bottom: 24px; }
+  .profile-modal-msg { width: 100%; justify-content: center; }
+
+  /* ---------- Reply panel ---------- */
+  .reply-panel { width: 100%; margin-top: 14px; padding-top: 14px; border-top: 1px solid #d6c8ec; display: none; }
+  .reply-panel.open { display: block; }
+  .reply-visibility { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .reply-vis-btn { font-size: 0.78rem; padding: 6px 14px; border-radius: 100px; border: 1px solid #d6c8ec; background: transparent; color: #6b6178; cursor: pointer; font-family: inherit; }
+  .reply-vis-btn.active { background: #e4d9f5; color: #35215e; border-color: #e4d9f5; }
+  .reply-textarea { width: 100%; min-height: 70px; padding: 10px 14px; border: 1px solid #d6c8ec; border-radius: 12px; font-size: 0.88rem; resize: vertical; outline: none; font-family: inherit; background: #fffdfb; color: #211a2c; }
+  .reply-textarea:focus { border-color: #35215e; }
+  .reply-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .reply-send-btn { background: #35215e; color: #fff; border: none; padding: 8px 18px; border-radius: 100px; font-weight: 700; font-size: 0.82rem; cursor: pointer; }
+  .reply-send-btn:hover { background: #4b2e83; }
+  .reply-list { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .reply-item { background: #f6f2fb; border-radius: 12px; padding: 10px 14px; font-size: 0.85rem; color: #211a2c; line-height: 1.45; }
+  .reply-item .reply-vis-tag { display: block; font-size: 0.72rem; color: #6b6178; margin-top: 4px; }
+
+  /* ===================== Opportunités ===================== */
+  .jobs-grid { display: flex; flex-direction: column; gap: 16px; }
+  .job-card { background: #fff; border-radius: 16px; padding: 20px 24px; border: 1px solid #d6c8ec; box-shadow: 0 2px 10px rgba(105,65,198,.02); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .job-details { display: flex; flex-direction: column; gap: 6px; }
+  .job-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .job-title { font-size: 1.05rem; font-weight: 700; color: #211a2c; }
+  .badge-job { background: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
+  .badge-job.cdi { background: #e0f2fe; color: #0369a1; }
+  .company-info { font-size: 0.85rem; color: #6b6178; }
+  .job-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .job-tag { background: #e4d9f5; color: #6b6178; font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; }
+  .btn-apply { background: #fffdfb; color: #35215e; border: 1px solid #35215e; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; text-decoration: none; transition: all .2s; }
+  .btn-apply:hover { background: #e4d9f5; }
+
+  /* ===================== Événements ===================== */
+  .events-grid { display: flex; flex-direction: column; gap: 20px; }
+  .event-card { background: #fffdfb; border-radius: 20px; padding: 24px; border: 1px solid #d6c8ec; box-shadow: 0 4px 20px rgba(105,65,198,.03); display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+  .event-date { background: #e4d9f5; border: 1px solid #e4d9f5; border-radius: 16px; padding: 16px; text-align: center; min-width: 90px; }
+  .event-date .day { font-size: 1.5rem; font-weight: 800; color: #35215e; display: block; }
+  .event-date .month { font-size: 0.8rem; font-weight: 700; color: #4b2e83; text-transform: uppercase; }
+  .event-info { flex: 1; min-width: 200px; }
+  .event-type { background: #efeae6; color: #7a4614; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; width: fit-content; margin-bottom: 8px; }
+  .event-type.online { background: #e8f5e9; color: #2e7d32; }
+  .event-title { font-size: 1.1rem; font-weight: 700; color: #211a2c; margin-bottom: 6px; }
+  .event-desc { font-size: 0.9rem; color: #6b6178; margin-bottom: 12px; line-height: 1.4; }
+  .event-meta { font-size: 0.85rem; color: #6b6178; display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-register { background: #35215e; color: #fff; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background .2s; text-decoration: none; }
+  .btn-register:hover { background: #4b2e83; }
+
+  /* ===================== Ressources ===================== */
+  .resources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+  .resource-card { background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #d6c8ec; box-shadow: 0 2px 10px rgba(105,65,198,.02); display: flex; flex-direction: column; justify-content: space-between; }
+  .resource-tag { background: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; width: fit-content; margin-bottom: 12px; }
+  .resource-title { font-size: 1.02rem; font-weight: 700; color: #211a2c; margin-bottom: 8px; }
+  .resource-desc { font-size: 0.85rem; color: #6b6178; margin-bottom: 16px; line-height: 1.4; flex-grow: 1; }
+  .btn-download { background: #fff; color: #35215e; border: 1px solid #35215e; padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; text-decoration: none; text-align: center; transition: all .2s; }
+  .btn-download:hover { background: #e4d9f5; }
+
+  /* ===================== Échanges ===================== */
+  .chat-container { display: grid; grid-template-columns: 260px 1fr; background: #fff; border-radius: 20px; border: 1px solid #d6c8ec; box-shadow: 0 4px 20px rgba(105,65,198,.03); min-height: 460px; overflow: hidden; }
+  .chat-sidebar { border-right: 1px solid #d6c8ec; background: #f6f2fb; }
+  .sidebar-header { padding: 16px; font-weight: 700; border-bottom: 1px solid #d6c8ec; color: #211a2c; font-size: 0.95rem; }
+  .contact-item { padding: 14px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border-bottom: 1px solid #d6c8ec; transition: background .2s; }
+  .contact-item:hover, .contact-item.active { background-color: #e4d9f5; }
+  .chat-avatar { width: 36px; height: 36px; border-radius: 50%; background: #35215e; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+  .contact-info .name { font-weight: 700; font-size: 0.85rem; color: #211a2c; }
+  .contact-info .preview { font-size: 0.75rem; color: #6b6178; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+  .chat-main { display: flex; flex-direction: column; justify-content: space-between; }
+  .chat-header { padding: 16px 20px; border-bottom: 1px solid #d6c8ec; font-weight: 700; color: #211a2c; font-size: 0.95rem; }
+  .messages-list { padding: 20px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; max-height: 320px; flex: 1; }
+  .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; line-height: 1.4; }
+  .msg.received { background: #e4d9f5; color: #211a2c; align-self: flex-start; border-bottom-left-radius: 2px; }
+  .msg.sent { background: #35215e; color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+  .chat-input-box { padding: 16px; border-top: 1px solid #d6c8ec; background: #fffdfb; }
+  .chat-textarea { width: 100%; border: 1px solid #d6c8ec; border-radius: 10px; padding: 10px; font-size: 0.85rem; outline: none; resize: none; height: 56px; }
+  .chat-textarea:focus { border-color: #35215e; }
+  .input-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .word-counter { font-size: 0.75rem; color: #6b6178; }
+  .word-counter.warning { color: #d92d20; font-weight: 700; }
+  .btn-send { background: #35215e; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+  .btn-send:disabled { background: #ccc; cursor: not-allowed; }
+  @media (max-width: 600px) { .chat-container { grid-template-columns: 1fr; } .chat-sidebar { display: none; } }
+
+  /* ===================== Mon Espace ===================== */
+  .profile-card { background: #fff; border-radius: 20px; padding: 24px; border: 1px solid #d6c8ec; display: flex; gap: 20px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
+  .profile-avatar { width: 68px; height: 68px; border-radius: 50%; background: #35215e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; font-weight: 800; flex-shrink: 0; }
+  .profile-info h2 { font-size: 1.25rem; font-weight: 800; color: #211a2c; }
+  .profile-info p { color: #6b6178; font-size: 0.9rem; margin-top: 2px; }
+  .badge-status { display: inline-block; background: #e0f2fe; color: #0369a1; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; margin-top: 6px; }
+  .section-box { background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #d6c8ec; margin-bottom: 20px; }
+  .section-title { font-size: 1.05rem; font-weight: 700; color: #211a2c; margin-bottom: 12px; }
+  .list-item { padding: 10px 0; border-bottom: 1px solid #d6c8ec; display: flex; justify-content: space-between; gap: 12px; font-size: 0.9rem; flex-wrap: wrap; }
+  .list-item:last-child { border-bottom: none; }
+
+  /* ===================== Publier ===================== */
+  .editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+  @media (max-width: 820px) { .editor-layout { grid-template-columns: 1fr; } }
+  .editor-card { background: #fff; border-radius: 20px; padding: 26px; border: 1px solid #d6c8ec; box-shadow: 0 4px 20px rgba(105,65,198,.03); display: flex; flex-direction: column; gap: 18px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label { font-weight: 700; font-size: 0.82rem; color: #211a2c; text-transform: uppercase; letter-spacing: 0.04em; }
+  .chips-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip-btn { background-color: #f6f2fb; color: #6b6178; border: 1px solid #e4d9f5; padding: 8px 14px; border-radius: 100px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+  .chip-btn.active { background-color: #35215e; color: #fff; border-color: #35215e; box-shadow: 0 2px 8px rgba(105,65,198,.25); }
+  .input-field, .textarea-field { width: 100%; padding: 12px 16px; font-size: 0.95rem; border: 1px solid #d6c8ec; border-radius: 12px; outline: none; transition: all .2s; background: #f6f2fb; }
+  .input-field:focus, .textarea-field:focus { border-color: #35215e; background: #fff; box-shadow: 0 0 0 4px rgba(105,65,198,.1); }
+  .textarea-field { min-height: 110px; resize: vertical; }
+  .identity-switch { display: flex; background: #e4d9f5; padding: 4px; border-radius: 12px; gap: 4px; }
+  .switch-btn { flex: 1; border: none; background: transparent; padding: 8px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: #6b6178; cursor: pointer; transition: all .2s; }
+  .switch-btn.active { background: #fff; color: #35215e; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+  .btn-publish { background: #35215e; color: #fff; border: none; padding: 14px; border-radius: 100px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all .2s; box-shadow: 0 4px 12px rgba(105,65,198,.2); }
+  .btn-publish:hover { background: #4b2e83; transform: translateY(-1px); }
+  .preview-section { display: flex; flex-direction: column; gap: 16px; }
+  .preview-header-title { font-size: 0.82rem; font-weight: 700; color: #6b6178; text-transform: uppercase; letter-spacing: 0.05em; }
+  .pv-post-card { background: #fff; border-radius: 20px; padding: 24px; border: 1px solid #d6c8ec; box-shadow: 0 10px 30px rgba(105,65,198,.05); }
+  .pv-post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 10px; }
+  .prev-avatar { width: 42px; height: 42px; border-radius: 50%; background: #35215e; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+  .prev-author-info { display: flex; align-items: center; gap: 12px; }
+  .prev-name { font-weight: 700; color: #211a2c; font-size: 0.95rem; }
+  .prev-sub { font-size: 0.8rem; color: #6b6178; }
+  .pv-badge-post { background-color: #e4d9f5; color: #35215e; padding: 6px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+  .preview-title { font-size: 1.12rem; font-weight: 700; color: #211a2c; margin-bottom: 8px; word-break: break-word; }
+  .preview-text { color: #6b6178; font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px; white-space: pre-wrap; word-break: break-word; }
+  .tags-container { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .tag-chip { background: #e4d9f5; color: #6b6178; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; }
+  .reactions-demo { display: flex; gap: 6px; flex-wrap: wrap; opacity: .75; }
+  .mini-reaction { background-color: #fff9db; border: 1px solid #ffe066; border-radius: 16px; padding: 4px 10px; font-size: 0.75rem; color: #5c3c00; }
+  .tip-box { background-color: #e4d9f5; border: 1px solid #e4d9f5; border-radius: 16px; padding: 16px; font-size: 0.85rem; color: #4b2e83; line-height: 1.4; }
+
+  /* ===================== À propos ===================== */
+  .about-card { background: #fff; border-radius: 20px; padding: 32px; border: 1px solid #d6c8ec; margin-top: 4px; line-height: 1.6; }
+  .about-card h2 { font-size: 1.2rem; font-weight: 700; color: #35215e; margin-top: 20px; margin-bottom: 10px; }
+  .about-card h2:first-child { margin-top: 0; }
+  .about-card p { color: #6b6178; font-size: 0.95rem; margin-bottom: 12px; }
+  .values-list { list-style: none; margin-top: 10px; }
+  .values-list li { padding: 8px 0; border-bottom: 1px solid #d6c8ec; color: #211a2c; font-size: 0.95rem; }
+  .values-list li strong { color: #211a2c; }
+
+  @media (max-width: 600px) {
+    .job-card { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .btn-apply { width: 100%; text-align: center; }
+    .event-card { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .event-date { width: 100%; display: flex; justify-content: center; gap: 8px; align-items: center; }
+    .btn-register { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="preview-banner" data-i18n-html="banner_text">
+    <strong>Aperçu / maquette</strong> — présentée à womENcourage 2026. Tout le contenu ci-dessous est un exemple fictif, sans compte ni donnée réelle.
+  </div>
+
+  <!-- ============ Navigation universelle ============ -->
+  <header class="site-header">
+    <a class="back-to-site" href="index.html" data-i18n="back_to_site">&larr; Retour au site</a>
+    <a class="brand" href="index.html">Soror<span class="it">IT</span></a>
+    <nav class="nav-icons" id="mainNav">
+      <button type="button" class="nav-item active" data-screen="accueil" title="Accueil" data-i18n-title="nav_home">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+      </button>
+      <button type="button" class="nav-item" data-screen="publications" title="Publications" data-i18n-title="nav_publications">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+      </button>
+      <button type="button" class="nav-item" data-screen="opportunites" title="Opportunités" data-i18n-title="nav_jobs">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.25 14.15v4.25c0 .621-.504 1.125-1.125 1.125H4.875A1.125 1.125 0 0 1 3.75 18.4v-4.25m16.5 0a2.25 2.25 0 0 0-2.25-2.25H6a2.25 2.25 0 0 0-2.25 2.25m16.5 0v-4.25a2.25 2.25 0 0 0-2.25-2.25H6a2.25 2.25 0 0 0-2.25 2.25v4.25m16.5 0H3.75"/></svg>
+      </button>
+      <button type="button" class="nav-item" data-screen="evenements" title="Événements" data-i18n-title="nav_events">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+      </button>
+      <button type="button" class="nav-item" data-screen="ressources" title="Ressources" data-i18n-title="nav_resources">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18c-2.305 0-4.408.867-6 2.292m0-14.25v14.25"/></svg>
+      </button>
+      <button type="button" class="nav-item" data-screen="echanges" title="Échanges" data-i18n-title="nav_exchanges">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg>
+      </button>
+      <button type="button" class="nav-item" data-screen="mon-espace" title="Mon Espace" data-i18n-title="nav_myspace">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
+      </button>
+      <button type="button" class="nav-item" data-screen="a-propos" title="À Propos" data-i18n-title="nav_about">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+      </button>
+    </nav>
+    <div class="lang-toggle">
+      <button type="button" class="lang-btn active" id="appLangFr" onclick="setAppLang('fr')">FR</button>
+      <button type="button" class="lang-btn" id="appLangEn" onclick="setAppLang('en')">EN</button>
+    </div>
+    <button type="button" class="btn-share-header" data-screen="publier" data-i18n="share_something">Partager quelque chose</button>
+  </header>
+
+  <main class="app-main">
+
+    <!-- ============ Accueil ============ -->
+    <section class="screen" id="screen-accueil">
+      <div class="badge-community" data-i18n="badge_community">Communauté</div>
+      <h1 class="home-h1">Soror<span>IT</span></h1>
+      <p class="home-hero-text" data-i18n="home_hero_text">Une communauté pour les femmes dans la tech : partager des expériences, des projets, des ressources, des avis tech, des événements et des opportunités — sans commentaires publics, sans classement, sans pression.</p>
+      <div class="button-group">
+        <button type="button" class="btn-primary" data-screen="publications" data-i18n="home_see_publications">Voir les publications</button>
+        <button type="button" class="btn-secondary" data-screen="publier" data-i18n="share_something">Partager quelque chose</button>
+      </div>
+      <div class="info-banner" data-i18n="home_info_banner">Chaque femme peut partager quelque chose d'utile : une expérience, une ressource, un parcours, une idée ou un encouragement.</div>
+
+      <h2 class="feed-title" data-i18n="home_recent_posts">Quelques publications récentes</h2>
+
+      <article class="home-post-card">
+        <div class="home-post-header">
+          <div class="home-author-info">
+            <div class="home-avatar" data-bio="Alternante cloud, elle partage ses retours d'expérience pour aider les prochaines promos." data-bio-en="Cloud apprentice, she shares her feedback to help the next cohorts.">M</div>
+            <div class="home-author-details">
+              <div class="name">Maya</div>
+              <div class="subtext" data-i18n="bio_maya">Alternante cloud · France</div>
+            </div>
+          </div>
+          <span class="home-badge-post" data-i18n="tag_experience">Expérience</span>
+        </div>
+        <h3 class="home-post-title" data-i18n="post_maya_title">Ce que j'ai appris pendant ma première alternance</h3>
+        <p class="home-post-content" data-i18n="post_maya_body">Au début, j'avais peur de poser trop de questions. Avec le temps, j'ai compris qu'une bonne question peut aussi montrer qu'on veut comprendre sérieusement.</p>
+        <div class="home-tags">
+          <span class="home-tag" data-i18n="tag_apprenticeship">alternance</span><span class="home-tag">cloud</span><span class="home-tag" data-i18n="tag_company">entreprise</span>
+        </div>
+        <div class="home-reactions">
+          <button type="button" class="home-reaction-btn" data-i18n="reaction_thanks">Merci</button>
+          <button type="button" class="home-reaction-btn" data-i18n="reaction_bravo">Bravo</button>
+          <button type="button" class="home-reaction-btn" data-i18n="reaction_inspiring">Inspirant</button>
+          <button type="button" class="home-reaction-btn" data-i18n="reaction_encourage">Je t'encourage</button>
+          <button type="button" class="home-reaction-btn" data-i18n="reaction_metoo">Moi aussi</button>
+        </div>
+        <div class="home-post-actions">
+          <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg><span data-i18n="action_support">Soutenir</span></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button>
+        </div>
+      </article>
+
+      <article class="home-post-card">
+        <div class="home-post-header">
+          <div class="home-author-info">
+            <div class="home-avatar" style="background-color:#845ef7;" data-bio="Étudiante en réseaux, elle documente ses révisions pour aider d'autres débutantes." data-bio-en="Networking student, she documents her revision notes to help other beginners.">L</div>
+            <div class="home-author-details">
+              <div class="name">Lina</div>
+              <div class="subtext" data-i18n="bio_lina">Étudiante réseau · Belgique</div>
+            </div>
+          </div>
+          <span class="home-badge-post" data-i18n="tag_project">Projet</span>
+        </div>
+        <h3 class="home-post-title" data-i18n="post_lina_title">Je crée un outil pour réviser les commandes réseau</h3>
+        <p class="home-post-content" data-i18n="post_lina_body">C'est un petit projet, mais il m'aide à apprendre. Je partage l'idée parce que commencer petit reste une vraie avancée.</p>
+        <div class="home-tags">
+          <span class="home-tag" data-i18n="tag_networking">réseau</span><span class="home-tag">CCNA</span><span class="home-tag">Python</span>
+        </div>
+        <div class="home-reactions">
+          <button type="button" class="home-reaction-btn" data-i18n="reaction_thanks">Merci</button>
+          <button type="button" class="home-reaction-btn" data-i18n="reaction_bravo">Bravo</button>
+          <button type="button" class="home-reaction-btn" data-i18n="reaction_inspiring">Inspirant</button>
+          <button type="button" class="home-reaction-btn" data-i18n="reaction_encourage">Je t'encourage</button>
+          <button type="button" class="home-reaction-btn" data-i18n="reaction_metoo">Moi aussi</button>
+        </div>
+        <div class="home-post-actions">
+          <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg><span data-i18n="action_support">Soutenir</span></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ Publications ============ -->
+    <section class="screen" id="screen-publications" hidden>
+      <div class="page-title">
+        <h1 data-i18n="pub_title">Publications</h1>
+        <p data-i18n="pub_subtitle">Consulte les échanges, questions et projets partagés par la communauté.</p>
+      </div>
+      <div class="filters-bar">
+        <input type="text" id="pubSearch" class="filter-input" data-i18n-placeholder="pub_search_ph" placeholder="Rechercher dans les publications...">
+        <select id="pubCategory" class="filter-select">
+          <option value="" data-i18n="pub_cat_all">Toutes les thématiques</option>
+          <option value="entraide" data-i18n="pub_cat_help">Demandes d'entraide</option>
+          <option value="discussion" data-i18n="pub_cat_discussion">Discussions</option>
+          <option value="projet" data-i18n="pub_cat_project">Projets / Collaborations</option>
+          <option value="conseil" data-i18n="pub_cat_advice">Conseils & REX</option>
+        </select>
+      </div>
+      <div class="feed-grid" id="pubFeed">
+        <article class="pub-post-card" data-category="entraide" data-keywords="devops docker kubernetes erreur paris">
+          <div class="pub-post-header">
+            <div class="pub-author-info">
+              <div class="pub-author-avatar" data-bio="En déploiement Cloud & DevOps, elle aime autant apprendre que dépanner les autres." data-bio-en="In Cloud & DevOps deployment, she enjoys learning as much as helping others troubleshoot.">S</div>
+              <div class="pub-author-details"><div class="name">Sofia B.</div><div class="meta" data-i18n="meta_sofia">Paris · Il y a 2 heures</div></div>
+            </div>
+            <span class="pub-badge-post entraide" data-i18n="pub_cat_help_singular">Demande d'entraide</span>
+          </div>
+          <p class="pub-post-content" data-i18n="post_sofia_body">Hello la communauté ! Est-ce que quelqu'un aurait 15 min pour m'aider sur un blocage de volume Docker dans mon projet DevOps ? Je bloque dessus depuis ce matin 😅 Merci d'avance !</p>
+          <div class="home-reactions">
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_thanks">Merci</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_bravo">Bravo</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_inspiring">Inspirant</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_encourage">Je t'encourage</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_metoo">Moi aussi</button>
+          </div>
+          <div class="pub-post-footer">
+            <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg><span data-i18n="action_support">Soutenir</span></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button>
+          </div>
+        </article>
+        <article class="pub-post-card" data-category="projet" data-keywords="react python hackathon projet lyon">
+          <div class="pub-post-header">
+            <div class="pub-author-info">
+              <div class="pub-author-avatar" style="background:#0369a1;" data-bio="Développeuse React, elle monte des projets collectifs autour des hackathons." data-bio-en="React developer, she puts together group projects around hackathons.">C</div>
+              <div class="pub-author-details"><div class="name">Clara M.</div><div class="meta" data-i18n="meta_clara">Lyon · Il y a 5 heures</div></div>
+            </div>
+            <span class="pub-badge-post projet" data-i18n="pub_cat_project_label">Projet / Collaboration</span>
+          </div>
+          <p class="pub-post-content" data-i18n="post_clara_body">On cherche une développeuse React pour rejoindre notre équipe lors du Hackathon Tech4Good le mois prochain. Ambiance très sympa et débutantes bienvenues ! N'hésitez pas à me contacter en MP.</p>
+          <div class="home-reactions">
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_thanks">Merci</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_bravo">Bravo</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_inspiring">Inspirant</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_encourage">Je t'encourage</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_metoo">Moi aussi</button>
+          </div>
+          <div class="pub-post-footer">
+            <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg><span data-i18n="action_support">Soutenir</span></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button>
+          </div>
+        </article>
+        <article class="pub-post-card" data-category="conseil" data-keywords="entretien salaire negociation cdi remote">
+          <div class="pub-post-header">
+            <div class="pub-author-info">
+              <div class="pub-author-avatar" style="background:#7a4614;" data-bio="En full remote depuis 6 mois, elle partage ce qu'elle apprend sur l'équilibre pro/perso." data-bio-en="Fully remote for 6 months, she shares what she's learning about work-life balance.">A</div>
+              <div class="pub-author-details"><div class="name">Amina L.</div><div class="meta" data-i18n="meta_amina">Full Remote · Il y a 1 jour</div></div>
+            </div>
+            <span class="pub-badge-post" data-i18n="pub_cat_advice_singular">Conseil & REX</span>
+          </div>
+          <p class="pub-post-content" data-i18n="post_amina_body">Petit retour après 6 mois en full remote : fixez-vous des horaires stricts et prévoyez des vraies pauses ! La santé mentale passe avant tout quand on travaille chez soi. 💜</p>
+          <div class="home-reactions">
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_thanks">Merci</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_bravo">Bravo</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_inspiring">Inspirant</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_encourage">Je t'encourage</button>
+            <button type="button" class="home-reaction-btn" data-i18n="reaction_metoo">Moi aussi</button>
+          </div>
+          <div class="pub-post-footer">
+            <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg><span data-i18n="action_support">Soutenir</span></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button>
+          </div>
+        </article>
+        <div class="no-results" id="pubNoResults" data-i18n="pub_no_results">Aucune publication ne correspond à ta recherche.</div>
+      </div>
+    </section>
+
+    <!-- ============ Opportunités ============ -->
+    <section class="screen" id="screen-opportunites" hidden>
+      <div class="page-title">
+        <h1 data-i18n="jobs_title">Opportunités</h1>
+        <p data-i18n="jobs_subtitle">Offres de stages, alternances et emplois partagées par la communauté.</p>
+      </div>
+      <div class="filters-bar">
+        <input type="text" id="jobCity" class="filter-input" data-i18n-placeholder="filter_by_city" placeholder="Filtrer par ville" list="jobCitiesList">
+        <datalist id="jobCitiesList">
+          <option value="Paris"><option value="Lyon"><option value="Marseille"><option value="Toulouse">
+          <option value="Bordeaux"><option value="Nantes"><option value="Lille"><option value="Full Remote">
+        </datalist>
+        <select id="jobContract" class="filter-select">
+          <option value="" data-i18n="jobs_all_contracts">Tous les contrats</option>
+          <option value="cdi" data-i18n="jobs_cdi">CDI / CDD</option>
+          <option value="alternance" data-i18n="jobs_apprenticeship">Alternance</option>
+          <option value="stage" data-i18n="jobs_internship">Stage</option>
+        </select>
+        <select id="jobWorkMode" class="filter-select">
+          <option value="" data-i18n="jobs_all_modes">Tous les modes</option>
+          <option value="remote">Full Remote</option>
+          <option value="hybride" data-i18n="jobs_hybrid">Hybride</option>
+          <option value="sur-site" data-i18n="jobs_onsite">Sur site</option>
+        </select>
+      </div>
+      <div class="jobs-grid" id="jobsGrid">
+        <article class="job-card" data-contract="cdi" data-location="lyon" data-workmode="hybride" data-keywords="fullstack react node junior">
+          <div class="job-details">
+            <div class="job-header"><h3 class="job-title" data-i18n="job1_title">Développeuse Fullstack Junior</h3><span class="badge-job cdi" data-i18n="jobs_cdi_short">CDI</span></div>
+            <div class="company-info" data-i18n="job1_company">TechCorp · Lyon (Télétravail hybride)</div>
+            <div class="job-tags"><span class="job-tag">React</span><span class="job-tag">Node.js</span><span class="job-tag" data-i18n="job1_tag3">Junior accepté</span></div>
+          </div>
+          <a href="#" class="btn-apply" onclick="return false;" data-i18n="jobs_view_offer">Voir l'offre</a>
+        </article>
+        <article class="job-card" data-contract="alternance" data-location="paris full remote" data-workmode="remote" data-keywords="cloud devops aws docker">
+          <div class="job-details">
+            <div class="job-header"><h3 class="job-title" data-i18n="job2_title">Alternance - Ingénieure Cloud & DevOps</h3><span class="badge-job" data-i18n="jobs_apprenticeship">Alternance</span></div>
+            <div class="company-info" data-i18n="job2_company">CloudScale · Paris / Full Remote</div>
+            <div class="job-tags"><span class="job-tag">AWS</span><span class="job-tag">Docker</span><span class="job-tag" data-i18n="job2_tag3">12-24 mois</span></div>
+          </div>
+          <a href="#" class="btn-apply" onclick="return false;" data-i18n="jobs_view_offer">Voir l'offre</a>
+        </article>
+        <article class="job-card" data-contract="stage" data-location="bordeaux" data-workmode="sur-site" data-keywords="cybersécurité reseau python">
+          <div class="job-details">
+            <div class="job-header"><h3 class="job-title" data-i18n="job3_title">Stage - Analyste Cybersécurité</h3><span class="badge-job" data-i18n="jobs_internship">Stage</span></div>
+            <div class="company-info" data-i18n="job3_company">SecureLab · Bordeaux</div>
+            <div class="job-tags"><span class="job-tag">Python</span><span class="job-tag" data-i18n="job3_tag2">Réseau</span><span class="job-tag" data-i18n="job3_tag3">6 mois</span></div>
+          </div>
+          <a href="#" class="btn-apply" onclick="return false;" data-i18n="jobs_view_offer">Voir l'offre</a>
+        </article>
+        <div class="no-results" id="jobsNoResults" data-i18n="jobs_no_results">Aucune offre ne correspond à ta recherche.</div>
+      </div>
+    </section>
+
+    <!-- ============ Événements ============ -->
+    <section class="screen" id="screen-evenements" hidden>
+      <div class="page-title">
+        <h1 data-i18n="events_title">Événements</h1>
+        <p data-i18n="events_subtitle">Webinaires, ateliers pratiques et rencontres réseau bienveillants.</p>
+      </div>
+      <div class="filters-bar">
+        <input type="text" id="evCity" class="filter-input" data-i18n-placeholder="filter_by_city" placeholder="Filtrer par ville" list="evCitiesList">
+        <datalist id="evCitiesList">
+          <option value="Paris"><option value="Lyon"><option value="Marseille"><option value="Toulouse">
+          <option value="Bordeaux"><option value="Nantes"><option value="Lille"><option value="En ligne">
+        </datalist>
+        <select id="evFormat" class="filter-select">
+          <option value="" data-i18n="events_all_formats">Tous les formats</option>
+          <option value="online" data-i18n="events_online">En ligne</option>
+          <option value="presentiel" data-i18n="events_inperson">Présentiel</option>
+        </select>
+        <select id="evTopic" class="filter-select">
+          <option value="" data-i18n="events_all_topics">Toutes les thématiques</option>
+          <option value="atelier" data-i18n="events_workshop">Atelier pratique</option>
+          <option value="table-ronde" data-i18n="events_roundtable">Table ronde</option>
+          <option value="networking">Networking</option>
+        </select>
+      </div>
+      <div class="events-grid" id="eventsGrid">
+        <article class="event-card" data-format="online" data-topic="atelier" data-location="en ligne online google meet" data-keywords="docker devops conteneurisaton">
+          <div class="event-date"><span class="day">12</span><span class="month">Oct</span></div>
+          <div class="event-info">
+            <span class="event-type online" data-i18n="events_online">En ligne</span>
+            <h3 class="event-title" data-i18n="event1_title">Atelier : Débuter avec Docker et la conteneurisation</h3>
+            <p class="event-desc" data-i18n="event1_desc">Un atelier pratique de 1h30 pour comprendre les bases de Docker sans prise de tête.</p>
+            <div class="event-meta"><span>18h30 - 20h00</span><span>Google Meet</span></div>
+          </div>
+          <a href="#" class="btn-register" onclick="return false;" data-i18n="events_register">S'inscrire</a>
+        </article>
+        <article class="event-card" data-format="presentiel" data-topic="table-ronde" data-location="paris" data-keywords="salaire negociation carriere">
+          <div class="event-date"><span class="day">28</span><span class="month">Oct</span></div>
+          <div class="event-info">
+            <span class="event-type" data-i18n="events_inperson">Présentiel</span>
+            <h3 class="event-title" data-i18n="event2_title">Table ronde : Négocier son premier salaire dans la tech</h3>
+            <p class="event-desc" data-i18n="event2_desc">Conseils et retours d'expérience pour aborder l'entretien de rémunération avec assurance.</p>
+            <div class="event-meta"><span>19h00 - 21h00</span><span>Paris (11e)</span></div>
+          </div>
+          <a href="#" class="btn-register" onclick="return false;" data-i18n="events_register">S'inscrire</a>
+        </article>
+        <article class="event-card" data-format="presentiel" data-topic="networking" data-location="lyon" data-keywords="apéro rencontre reseau sororite">
+          <div class="event-date"><span class="day">05</span><span class="month">Nov</span></div>
+          <div class="event-info">
+            <span class="event-type" data-i18n="events_inperson">Présentiel</span>
+            <h3 class="event-title" data-i18n="event3_title">Apéro réseau sororIT Lyon</h3>
+            <p class="event-desc" data-i18n="event3_desc">Moment convivial pour échanger entre développeuses, ingénieures et étudiantes de la région.</p>
+            <div class="event-meta"><span>18h30 - 21h00</span><span>Lyon (Part-Dieu)</span></div>
+          </div>
+          <a href="#" class="btn-register" onclick="return false;" data-i18n="events_register">S'inscrire</a>
+        </article>
+        <div class="no-results" id="evNoResults" data-i18n="events_no_results">Aucun événement ne correspond à ta recherche.</div>
+      </div>
+    </section>
+
+    <!-- ============ Ressources ============ -->
+    <section class="screen" id="screen-ressources" hidden>
+      <div class="page-title">
+        <h1 data-i18n="res_title">Ressources</h1>
+        <p data-i18n="res_subtitle">Guides, cheatsheets et modèles partagés pour progresser dans la tech.</p>
+      </div>
+      <div class="filters-bar">
+        <input type="text" id="resSearch" class="filter-input" data-i18n-placeholder="res_search_ph" placeholder="Rechercher une ressource...">
+        <select id="resCategory" class="filter-select">
+          <option value="" data-i18n="res_all_categories">Toutes les catégories</option>
+          <option value="technique" data-i18n="res_technical">Fiches techniques</option>
+          <option value="carriere" data-i18n="res_career">Carrière & Emploi</option>
+          <option value="modele" data-i18n="res_templates">Modèles & Templates</option>
+        </select>
+      </div>
+      <div class="resources-grid" id="resourcesGrid">
+        <article class="resource-card" data-category="carriere" data-keywords="cv entretien négociation salaire">
+          <div>
+            <span class="resource-tag" data-i18n="res_career">Carrière & Emploi</span>
+            <h3 class="resource-title" data-i18n="res1_title">Guide : Préparer ses entretiens techniques</h3>
+            <p class="resource-desc" data-i18n="res1_desc">Une liste de questions fréquentes et une méthode pour structurer ses réponses lors des entretiens.</p>
+          </div>
+          <a href="#" class="btn-download" onclick="return false;" data-i18n="res_view_pdf">Consulter / PDF</a>
+        </article>
+        <article class="resource-card" data-category="technique" data-keywords="git commande cheatsheet terminal">
+          <div>
+            <span class="resource-tag" data-i18n="res2_tag">Fiche technique</span>
+            <h3 class="resource-title" data-i18n="res2_title">Cheatsheet Git : Les commandes essentielles</h3>
+            <p class="resource-desc" data-i18n="res2_desc">Aide-mémoire visuel regroupant les commandes Git indispensables au quotidien.</p>
+          </div>
+          <a href="#" class="btn-download" onclick="return false;" data-i18n="res_view_pdf">Consulter / PDF</a>
+        </article>
+        <article class="resource-card" data-category="modele" data-keywords="portfolio notion dev template">
+          <div>
+            <span class="resource-tag" data-i18n="res_templates">Modèles & Templates</span>
+            <h3 class="resource-title" data-i18n="res3_title">Template Notion : Suivi de candidatures</h3>
+            <p class="resource-desc" data-i18n="res3_desc">Un tableau clé en main pour organiser ses recherches de stage, d'alternance ou de premier emploi.</p>
+          </div>
+          <a href="#" class="btn-download" onclick="return false;" data-i18n="res_view_pdf">Consulter / PDF</a>
+        </article>
+        <div class="no-results" id="resNoResults" data-i18n="res_no_results">Aucune ressource ne correspond à ta recherche.</div>
+      </div>
+    </section>
+
+    <!-- ============ Échanges ============ -->
+    <section class="screen" id="screen-echanges" hidden>
+      <div class="page-title">
+        <h1 data-i18n="chat_title">Vos échanges</h1>
+        <p data-i18n="chat_subtitle">Messages directs entre membres (limités à 100 mots par message).</p>
+      </div>
+      <div class="chat-container">
+        <aside class="chat-sidebar">
+          <div class="sidebar-header" data-i18n="chat_discussions">Discussions</div>
+          <div class="contact-item active">
+            <div class="chat-avatar">AL</div>
+            <div class="contact-info"><div class="name">Amina L.</div><div class="preview" data-i18n="chat_preview_amina">Merci pour ton retour sur mon CV !</div></div>
+          </div>
+          <div class="contact-item">
+            <div class="chat-avatar" style="background:#0369a1;">CM</div>
+            <div class="contact-info"><div class="name">Clara M.</div><div class="preview" data-i18n="chat_preview_clara">On se croise à l'événement ?</div></div>
+          </div>
+        </aside>
+        <section class="chat-main">
+          <div class="chat-header" id="chatHeaderTitle" data-i18n="chat_with_amina">Discussion avec Amina L.</div>
+          <div class="messages-list" id="messagesList">
+            <div class="msg received" data-i18n="chat_msg1">Coucou ! Tu penses que mon profil correspond à l'offre chez TechCorp ?</div>
+            <div class="msg sent" data-i18n="chat_msg2">Salut Amina, oui totalement ! Tes projets en React feront la différence. N'hésite pas à postuler directement.</div>
+            <div class="msg received" data-i18n="chat_msg3">Merci pour ton retour sur mon CV ! Je tente le coup.</div>
+          </div>
+          <div class="chat-input-box">
+            <textarea id="messageInput" class="chat-textarea" data-i18n-placeholder="chat_input_ph" placeholder="Rédige ton message..."></textarea>
+            <div class="input-footer">
+              <span id="wordCounter" class="word-counter" data-i18n="chat_word_counter">0 / 100 mots</span>
+              <button type="button" id="sendBtn" class="btn-send" data-i18n="chat_send">Envoyer</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ============ Mon Espace ============ -->
+    <section class="screen" id="screen-mon-espace" hidden>
+      <div class="page-title">
+        <h1 data-i18n="myspace_title">Mon espace</h1>
+        <p data-i18n="myspace_subtitle">Ton profil, tes activités et tes préférences.</p>
+      </div>
+      <div class="profile-card">
+        <div class="profile-avatar">S</div>
+        <div class="profile-info">
+          <h2>Sofia B.</h2>
+          <p data-i18n="myspace_role">Étudiante en Déploiement Cloud & DevOps</p>
+          <span class="badge-status" data-i18n="myspace_status">En recherche d'alternance</span>
+        </div>
+      </div>
+      <div class="section-box">
+        <div class="section-title" data-i18n="myspace_info_title">Mes informations</div>
+        <div class="list-item"><span data-i18n="myspace_city_label">Ville</span> <strong>Paris</strong></div>
+        <div class="list-item"><span data-i18n="myspace_school_label">Écoles / Formation</span> <strong>EFREI Paris</strong></div>
+        <div class="list-item"><span data-i18n="myspace_contact_label">Contact public</span> <strong data-i18n="myspace_contact_value">Activé (100 mots max)</strong></div>
+      </div>
+      <div class="section-box">
+        <div class="section-title" data-i18n="myspace_activity_title">Activités récentes</div>
+        <div class="list-item"><span data-i18n="myspace_activity_post_label">Publication postée</span> <strong data-i18n="myspace_activity_post_value">Recherche retour d'expérience DevOps</strong></div>
+        <div class="list-item"><span data-i18n="myspace_activity_event_label">Événement inscrit</span> <strong data-i18n="myspace_activity_event_value">Atelier Docker (12 Oct)</strong></div>
+      </div>
+    </section>
+
+    <!-- ============ Publier ============ -->
+    <section class="screen" id="screen-publier" hidden>
+      <div class="page-title">
+        <h1>Exprimer sa voix</h1>
+        <p data-i18n="publish_subtitle">Partage un morceau d'expérience, un conseil ou un projet avec la communauté.</p>
+      </div>
+      <div class="editor-layout">
+        <form class="editor-card" id="postForm" onsubmit="return false;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="publish_format_label">Format du partage</label>
+            <div class="chips-grid" id="chipsGrid">
+              <button type="button" class="chip-btn active" data-cat="Expérience" data-cat-en="Experience" data-i18n="tag_experience">Expérience</button>
+              <button type="button" class="chip-btn" data-cat="Avis tech" data-cat-en="Tech opinion" data-i18n="publish_cat_opinion">Avis tech</button>
+              <button type="button" class="chip-btn" data-cat="Projet" data-cat-en="Project" data-i18n="tag_project">Projet</button>
+              <button type="button" class="chip-btn" data-cat="Ressource" data-cat-en="Resource" data-i18n="publish_cat_resource">Ressource</button>
+              <button type="button" class="chip-btn" data-cat="Conseil" data-cat-en="Advice" data-i18n="publish_cat_advice">Conseil</button>
+              <button type="button" class="chip-btn" data-cat="Encouragement" data-cat-en="Encouragement" data-i18n="publish_cat_encourage">Encouragement</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="publish_title_label">Titre</label>
+            <input type="text" id="inputTitle" class="input-field" data-i18n-placeholder="publish_title_ph" placeholder="Ex: Ce que j'aurais aimé savoir avant de débuter Python...">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="publish_message_label">Message</label>
+            <textarea id="inputContent" class="textarea-field" data-i18n-placeholder="publish_message_ph" placeholder="Raconte ton histoire, tes réflexions ou tes ressources..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="publish_tags_label">Mots-clés (séparés par des virgules)</label>
+            <input type="text" id="inputTags" class="input-field" data-i18n-placeholder="publish_tags_ph" placeholder="python, apprentissage, conseil">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="publish_identity_label">Identité</label>
+            <div class="identity-switch">
+              <button type="button" class="switch-btn active" id="btnPseudo" data-i18n="publish_with_pseudo">Avec mon pseudo</button>
+              <button type="button" class="switch-btn" id="btnAnon" data-i18n="publish_anon">Anonymement</button>
+            </div>
+          </div>
+          <button type="submit" class="btn-publish" data-i18n="publish_submit">Publier dans la communauté</button>
+        </form>
+
+        <div class="preview-section">
+          <span class="preview-header-title" data-i18n="publish_preview_label">Aperçu direct</span>
+          <article class="pv-post-card">
+            <div class="pv-post-header">
+              <div class="prev-author-info">
+                <div class="prev-avatar" id="prevAvatar">M</div>
+                <div><div class="prev-name" id="prevName">Maya</div><div class="prev-sub" id="prevSub">Membre sororIT</div></div>
+              </div>
+              <span class="pv-badge-post" id="prevCategory" data-i18n="tag_experience">Expérience</span>
+            </div>
+            <h3 class="preview-title" id="prevTitle" data-i18n="publish_preview_title_ph">Ton titre apparaîtra ici...</h3>
+            <p class="preview-text" id="prevContent" data-i18n="publish_preview_content_ph">Le contenu de ton message s'affichera au fur et à mesure que tu l'écris à gauche.</p>
+            <div class="tags-container" id="prevTags"><span class="tag-chip" data-i18n="publish_preview_tag_ph">exemple</span></div>
+            <div class="reactions-demo">
+              <span class="mini-reaction" data-i18n="reaction_thanks">Merci</span><span class="mini-reaction" data-i18n="reaction_bravo">Bravo</span><span class="mini-reaction" data-i18n="reaction_inspiring">Inspirant</span>
+            </div>
+          </article>
+          <div class="tip-box" data-i18n-html="publish_tip"><strong>Espace sécurisé :</strong> Les réponses publiques sont désactivées. Les membres intéressées pourront uniquement t'envoyer un message privé structuré.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ À propos ============ -->
+    <section class="screen" id="screen-a-propos" hidden>
+      <div class="page-title"><h1 data-i18n="about_title">À propos de sororIT</h1></div>
+      <article class="about-card">
+        <h2 data-i18n="about_mission_title">Notre mission</h2>
+        <p data-i18n-html="about_mission_text"><strong>sororIT</strong> est un réseau d'entraide dédié aux femmes dans l'informatique et la tech. L'objectif est de briser l'isolement, de faciliter la recherche d'opportunités et de favoriser les échanges d'expérience.</p>
+        <h2 data-i18n="about_pillars_title">Nos piliers</h2>
+        <ul class="values-list">
+          <li data-i18n-html="about_pillar1"><strong>Bienveillance :</strong> Un espace sécurisé sans jugement pour poser des questions.</li>
+          <li data-i18n-html="about_pillar2"><strong>Entraide :</strong> Des opportunités d'emploi, de stage et des ressources partagées librement.</li>
+          <li data-i18n-html="about_pillar3"><strong>Concision :</strong> Des échanges directs et sans spam pour aller à l'essentiel.</li>
+        </ul>
+        <h2 data-i18n="about_charter_title">Charte de la communauté</h2>
+        <p data-i18n="about_charter_text">Les messages privés sont limités à 100 mots afin d'encourager des prises de contact ciblées, respectueuses du temps de chacune.</p>
+      </article>
+    </section>
+
+  </main>
+
+  <!-- ============ Aperçu de profil ============ -->
+  <div class="profile-modal-backdrop" id="profileModalBackdrop">
+    <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalName">
+      <button type="button" class="profile-modal-close" id="profileModalClose" data-i18n-aria="modal_close" aria-label="Fermer">&times;</button>
+      <div class="profile-modal-avatar" id="profileModalAvatar"></div>
+      <h2 id="profileModalName"></h2>
+      <p class="profile-modal-meta" id="profileModalMeta"></p>
+      <p class="profile-modal-bio" id="profileModalBio"></p>
+      <button type="button" class="btn-primary profile-modal-msg" id="profileModalMsgBtn" data-i18n="modal_send_message">Envoyer un message privé</button>
+    </div>
+  </div>
+  <div class="toast" id="appToast"></div>
+
+<script>
+  // ---------- Screen switching ----------
+  const navButtons = document.querySelectorAll('[data-screen]');
+  const screens = document.querySelectorAll('.screen');
+  function showScreen(name) {
+    screens.forEach(s => { s.hidden = (s.id !== 'screen-' + name); });
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.screen === name));
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  }
+  navButtons.forEach(btn => btn.addEventListener('click', () => showScreen(btn.dataset.screen)));
+
+  // ---------- i18n (FR/EN) ----------
+  window.currentAppLang = (function(){ try { return localStorage.getItem('sororit_app_lang') || 'fr'; } catch(e) { return 'fr'; } })();
+  const APP_I18N = {
+    fr: {
+      back_to_site: "&larr; Retour au site",
+      share_something: "Partager quelque chose",
+      badge_community: "Communauté",
+      home_hero_text: "Une communauté pour les femmes dans la tech : partager des expériences, des projets, des ressources, des avis tech, des événements et des opportunités — sans commentaires publics, sans classement, sans pression.",
+      home_see_publications: "Voir les publications",
+      home_info_banner: "Chaque femme peut partager quelque chose d'utile : une expérience, une ressource, un parcours, une idée ou un encouragement.",
+      home_recent_posts: "Quelques publications récentes",
+      bio_maya: "Alternante cloud · France",
+      tag_experience: "Expérience",
+      post_maya_title: "Ce que j'ai appris pendant ma première alternance",
+      post_maya_body: "Au début, j'avais peur de poser trop de questions. Avec le temps, j'ai compris qu'une bonne question peut aussi montrer qu'on veut comprendre sérieusement.",
+      tag_apprenticeship: "alternance",
+      tag_company: "entreprise",
+      reaction_thanks: "Merci",
+      reaction_bravo: "Bravo",
+      reaction_inspiring: "Inspirant",
+      reaction_encourage: "Je t'encourage",
+      reaction_metoo: "Moi aussi",
+      action_reply: "Répondre",
+      action_support: "Soutenir",
+      action_report: "Signaler",
+      bio_lina: "Étudiante réseau · Belgique",
+      tag_project: "Projet",
+      post_lina_title: "Je crée un outil pour réviser les commandes réseau",
+      post_lina_body: "C'est un petit projet, mais il m'aide à apprendre. Je partage l'idée parce que commencer petit reste une vraie avancée.",
+      tag_networking: "réseau",
+      pub_title: "Publications",
+      pub_subtitle: "Consulte les échanges, questions et projets partagés par la communauté.",
+      pub_cat_all: "Toutes les thématiques",
+      pub_cat_help: "Demandes d'entraide",
+      pub_cat_discussion: "Discussions",
+      pub_cat_project: "Projets / Collaborations",
+      pub_cat_advice: "Conseils & REX",
+      meta_sofia: "Paris · Il y a 2 heures",
+      pub_cat_help_singular: "Demande d'entraide",
+      post_sofia_body: "Hello la communauté ! Est-ce que quelqu'un aurait 15 min pour m'aider sur un blocage de volume Docker dans mon projet DevOps ? Je bloque dessus depuis ce matin 😅 Merci d'avance !",
+      meta_clara: "Lyon · Il y a 5 heures",
+      pub_cat_project_label: "Projet / Collaboration",
+      post_clara_body: "On cherche une développeuse React pour rejoindre notre équipe lors du Hackathon Tech4Good le mois prochain. Ambiance très sympa et débutantes bienvenues ! N'hésitez pas à me contacter en MP.",
+      meta_amina: "Full Remote · Il y a 1 jour",
+      pub_cat_advice_singular: "Conseil & REX",
+      post_amina_body: "Petit retour après 6 mois en full remote : fixez-vous des horaires stricts et prévoyez des vraies pauses ! La santé mentale passe avant tout quand on travaille chez soi. 💜",
+      pub_no_results: "Aucune publication ne correspond à ta recherche.",
+      jobs_title: "Opportunités",
+      jobs_subtitle: "Offres de stages, alternances et emplois partagées par la communauté.",
+      jobs_all_contracts: "Tous les contrats",
+      jobs_cdi: "CDI / CDD",
+      jobs_apprenticeship: "Alternance",
+      jobs_internship: "Stage",
+      jobs_all_modes: "Tous les modes",
+      jobs_hybrid: "Hybride",
+      jobs_onsite: "Sur site",
+      job1_title: "Développeuse Fullstack Junior",
+      jobs_cdi_short: "CDI",
+      job1_company: "TechCorp · Lyon (Télétravail hybride)",
+      job1_tag3: "Junior accepté",
+      jobs_view_offer: "Voir l'offre",
+      job2_title: "Alternance - Ingénieure Cloud & DevOps",
+      job2_company: "CloudScale · Paris / Full Remote",
+      job2_tag3: "12-24 mois",
+      job3_title: "Stage - Analyste Cybersécurité",
+      job3_company: "SecureLab · Bordeaux",
+      job3_tag2: "Réseau",
+      job3_tag3: "6 mois",
+      jobs_no_results: "Aucune offre ne correspond à ta recherche.",
+      events_title: "Événements",
+      events_subtitle: "Webinaires, ateliers pratiques et rencontres réseau bienveillants.",
+      events_all_formats: "Tous les formats",
+      events_online: "En ligne",
+      events_inperson: "Présentiel",
+      events_all_topics: "Toutes les thématiques",
+      events_workshop: "Atelier pratique",
+      events_roundtable: "Table ronde",
+      event1_title: "Atelier : Débuter avec Docker et la conteneurisation",
+      event1_desc: "Un atelier pratique de 1h30 pour comprendre les bases de Docker sans prise de tête.",
+      events_register: "S'inscrire",
+      event2_title: "Table ronde : Négocier son premier salaire dans la tech",
+      event2_desc: "Conseils et retours d'expérience pour aborder l'entretien de rémunération avec assurance.",
+      event3_title: "Apéro réseau sororIT Lyon",
+      event3_desc: "Moment convivial pour échanger entre développeuses, ingénieures et étudiantes de la région.",
+      events_no_results: "Aucun événement ne correspond à ta recherche.",
+      res_title: "Ressources",
+      res_subtitle: "Guides, cheatsheets et modèles partagés pour progresser dans la tech.",
+      res_all_categories: "Toutes les catégories",
+      res_technical: "Fiches techniques",
+      res_career: "Carrière & Emploi",
+      res_templates: "Modèles & Templates",
+      res1_title: "Guide : Préparer ses entretiens techniques",
+      res1_desc: "Une liste de questions fréquentes et une méthode pour structurer ses réponses lors des entretiens.",
+      res_view_pdf: "Consulter / PDF",
+      res2_tag: "Fiche technique",
+      res2_title: "Cheatsheet Git : Les commandes essentielles",
+      res2_desc: "Aide-mémoire visuel regroupant les commandes Git indispensables au quotidien.",
+      res3_title: "Template Notion : Suivi de candidatures",
+      res3_desc: "Un tableau clé en main pour organiser ses recherches de stage, d'alternance ou de premier emploi.",
+      res_no_results: "Aucune ressource ne correspond à ta recherche.",
+      chat_title: "Vos échanges",
+      chat_subtitle: "Messages directs entre membres (limités à 100 mots par message).",
+      chat_discussions: "Discussions",
+      chat_preview_amina: "Merci pour ton retour sur mon CV !",
+      chat_preview_clara: "On se croise à l'événement ?",
+      chat_with_amina: "Discussion avec Amina L.",
+      chat_msg1: "Coucou ! Tu penses que mon profil correspond à l'offre chez TechCorp ?",
+      chat_msg2: "Salut Amina, oui totalement ! Tes projets en React feront la différence. N'hésite pas à postuler directement.",
+      chat_msg3: "Merci pour ton retour sur mon CV ! Je tente le coup.",
+      chat_send: "Envoyer",
+      chat_word_counter: "0 / 100 mots",
+      chat_word_suffix: " / 100 mots",
+      myspace_title: "Mon espace",
+      myspace_subtitle: "Ton profil, tes activités et tes préférences.",
+      myspace_role: "Étudiante en Déploiement Cloud & DevOps",
+      myspace_status: "En recherche d'alternance",
+      myspace_info_title: "Mes informations",
+      myspace_city_label: "Ville",
+      myspace_school_label: "Écoles / Formation",
+      myspace_contact_label: "Contact public",
+      myspace_contact_value: "Activé (100 mots max)",
+      myspace_activity_title: "Activités récentes",
+      myspace_activity_post_label: "Publication postée",
+      myspace_activity_post_value: "Recherche retour d'expérience DevOps",
+      myspace_activity_event_label: "Événement inscrit",
+      myspace_activity_event_value: "Atelier Docker (12 Oct)",
+      publish_subtitle: "Partage un morceau d'expérience, un conseil ou un projet avec la communauté.",
+      publish_format_label: "Format du partage",
+      publish_cat_opinion: "Avis tech",
+      publish_cat_resource: "Ressource",
+      publish_cat_advice: "Conseil",
+      publish_cat_encourage: "Encouragement",
+      publish_title_label: "Titre",
+      publish_message_label: "Message",
+      publish_tags_label: "Mots-clés (séparés par des virgules)",
+      publish_identity_label: "Identité",
+      publish_with_pseudo: "Avec mon pseudo",
+      publish_anon: "Anonymement",
+      publish_submit: "Publier dans la communauté",
+      publish_preview_label: "Aperçu direct",
+      publish_preview_title_ph: "Ton titre apparaîtra ici...",
+      publish_preview_content_ph: "Le contenu de ton message s'affichera au fur et à mesure que tu l'écris à gauche.",
+      publish_preview_tag_ph: "exemple",
+      about_title: "À propos de sororIT",
+      about_mission_title: "Notre mission",
+      about_pillars_title: "Nos piliers",
+      about_charter_title: "Charte de la communauté",
+      about_charter_text: "Les messages privés sont limités à 100 mots afin d'encourager des prises de contact ciblées, respectueuses du temps de chacune.",
+      modal_send_message: "Envoyer un message privé",
+      modal_close: "Fermer",
+      banner_text: "<strong>Aperçu / maquette</strong> — présentée à womENcourage 2026. Tout le contenu ci-dessous est un exemple fictif, sans compte ni donnée réelle.",
+      publish_tip: "<strong>Espace sécurisé :</strong> Les réponses publiques sont désactivées. Les membres intéressées pourront uniquement t'envoyer un message privé structuré.",
+      about_mission_text: "<strong>sororIT</strong> est un réseau d'entraide dédié aux femmes dans l'informatique et la tech. L'objectif est de briser l'isolement, de faciliter la recherche d'opportunités et de favoriser les échanges d'expérience.",
+      about_pillar1: "<strong>Bienveillance :</strong> Un espace sécurisé sans jugement pour poser des questions.",
+      about_pillar2: "<strong>Entraide :</strong> Des opportunités d'emploi, de stage et des ressources partagées librement.",
+      about_pillar3: "<strong>Concision :</strong> Des échanges directs et sans spam pour aller à l'essentiel.",
+      pub_search_ph: "Rechercher dans les publications...",
+      filter_by_city: "Filtrer par ville",
+      res_search_ph: "Rechercher une ressource...",
+      chat_input_ph: "Rédige ton message...",
+      publish_title_ph: "Ex: Ce que j'aurais aimé savoir avant de débuter Python...",
+      publish_message_ph: "Raconte ton histoire, tes réflexions ou tes ressources...",
+      publish_tags_ph: "python, apprentissage, conseil",
+      nav_home: "Accueil",
+      nav_publications: "Publications",
+      nav_jobs: "Opportunités",
+      nav_events: "Événements",
+      nav_resources: "Ressources",
+      nav_exchanges: "Échanges",
+      nav_myspace: "Mon Espace",
+      nav_about: "À Propos",
+    },
+    en: {
+      back_to_site: "&larr; Back to site",
+      share_something: "Share something",
+      badge_community: "Community",
+      home_hero_text: "A community for women in tech: sharing experiences, projects, resources, tech opinions, events and opportunities — no public comments, no ranking, no pressure.",
+      home_see_publications: "See the publications",
+      home_info_banner: "Every woman can share something useful: an experience, a resource, a journey, an idea or a word of encouragement.",
+      home_recent_posts: "Some recent publications",
+      bio_maya: "Cloud apprentice · France",
+      tag_experience: "Experience",
+      post_maya_title: "What I learned during my first work-study placement",
+      post_maya_body: "At first I was afraid of asking too many questions. Over time I realized a good question can also show you're serious about understanding.",
+      tag_apprenticeship: "apprenticeship",
+      tag_company: "company",
+      reaction_thanks: "Thanks",
+      reaction_bravo: "Bravo",
+      reaction_inspiring: "Inspiring",
+      reaction_encourage: "We're with you",
+      reaction_metoo: "Me too",
+      action_reply: "Reply",
+      action_support: "Support",
+      action_report: "Report",
+      bio_lina: "Networking student · Belgium",
+      tag_project: "Project",
+      post_lina_title: "I'm building a tool to practice network commands",
+      post_lina_body: "It's a small project, but it's helping me learn. I'm sharing it because starting small is still real progress.",
+      tag_networking: "networking",
+      pub_title: "Publications",
+      pub_subtitle: "Browse the discussions, questions and projects shared by the community.",
+      pub_cat_all: "All topics",
+      pub_cat_help: "Requests for help",
+      pub_cat_discussion: "Discussions",
+      pub_cat_project: "Projects / Collaborations",
+      pub_cat_advice: "Advice & experience",
+      meta_sofia: "Paris · 2 hours ago",
+      pub_cat_help_singular: "Request for help",
+      post_sofia_body: "Hi everyone! Would anyone have 15 min to help me with a Docker volume issue in my DevOps project? I've been stuck since this morning 😅 Thanks in advance!",
+      meta_clara: "Lyon · 5 hours ago",
+      pub_cat_project_label: "Project / Collaboration",
+      post_clara_body: "We're looking for a React developer to join our team for the Tech4Good Hackathon next month. Really friendly vibe, beginners welcome! Feel free to DM me.",
+      meta_amina: "Full Remote · 1 day ago",
+      pub_cat_advice_singular: "Advice & experience",
+      post_amina_body: "A quick takeaway after 6 months fully remote: set yourself strict hours and take real breaks! Mental health comes first when you work from home. 💜",
+      pub_no_results: "No publication matches your search.",
+      jobs_title: "Opportunities",
+      jobs_subtitle: "Internship, apprenticeship and job offers shared by the community.",
+      jobs_all_contracts: "All contract types",
+      jobs_cdi: "Permanent / fixed-term",
+      jobs_apprenticeship: "Apprenticeship",
+      jobs_internship: "Internship",
+      jobs_all_modes: "All work modes",
+      jobs_hybrid: "Hybrid",
+      jobs_onsite: "On-site",
+      job1_title: "Junior Fullstack Developer",
+      jobs_cdi_short: "Permanent",
+      job1_company: "TechCorp · Lyon (Hybrid remote)",
+      job1_tag3: "Juniors welcome",
+      jobs_view_offer: "View offer",
+      job2_title: "Apprenticeship - Cloud & DevOps Engineer",
+      job2_company: "CloudScale · Paris / Full Remote",
+      job2_tag3: "12-24 months",
+      job3_title: "Internship - Cybersecurity Analyst",
+      job3_company: "SecureLab · Bordeaux",
+      job3_tag2: "Networking",
+      job3_tag3: "6 months",
+      jobs_no_results: "No offer matches your search.",
+      events_title: "Events",
+      events_subtitle: "Webinars, hands-on workshops and friendly networking meetups.",
+      events_all_formats: "All formats",
+      events_online: "Online",
+      events_inperson: "In person",
+      events_all_topics: "All topics",
+      events_workshop: "Hands-on workshop",
+      events_roundtable: "Panel discussion",
+      event1_title: "Workshop: Getting started with Docker and containerization",
+      event1_desc: "A 1h30 hands-on workshop to understand the basics of Docker without the headache.",
+      events_register: "Register",
+      event2_title: "Panel: Negotiating your first tech salary",
+      event2_desc: "Tips and first-hand experience for tackling the compensation talk with confidence.",
+      event3_title: "sororIT Lyon networking meetup",
+      event3_desc: "A friendly get-together for developers, engineers and students in the region.",
+      events_no_results: "No event matches your search.",
+      res_title: "Resources",
+      res_subtitle: "Guides, cheat sheets and templates shared to help you grow in tech.",
+      res_all_categories: "All categories",
+      res_technical: "Technical sheets",
+      res_career: "Career & Jobs",
+      res_templates: "Templates",
+      res1_title: "Guide: Preparing for technical interviews",
+      res1_desc: "A list of common questions and a method to structure your answers during interviews.",
+      res_view_pdf: "View / PDF",
+      res2_tag: "Technical sheet",
+      res2_title: "Git cheat sheet: the essential commands",
+      res2_desc: "A visual quick-reference gathering the Git commands you need day to day.",
+      res3_title: "Notion template: Application tracker",
+      res3_desc: "A ready-to-use board to organize your search for an internship, apprenticeship or first job.",
+      res_no_results: "No resource matches your search.",
+      chat_title: "Your conversations",
+      chat_subtitle: "Direct messages between members (limited to 100 words per message).",
+      chat_discussions: "Conversations",
+      chat_preview_amina: "Thanks for your feedback on my resume!",
+      chat_preview_clara: "Shall we meet up at the event?",
+      chat_with_amina: "Conversation with Amina L.",
+      chat_msg1: "Hey! Do you think my profile matches the TechCorp role?",
+      chat_msg2: "Hi Amina, yes absolutely! Your React projects will make the difference. Don't hesitate to apply directly.",
+      chat_msg3: "Thanks for your feedback on my resume! I'll go for it.",
+      chat_send: "Send",
+      chat_word_counter: "0 / 100 words",
+      chat_word_suffix: " / 100 words",
+      myspace_title: "My space",
+      myspace_subtitle: "Your profile, your activity and your preferences.",
+      myspace_role: "Student in Cloud & DevOps Deployment",
+      myspace_status: "Looking for an apprenticeship",
+      myspace_info_title: "My information",
+      myspace_city_label: "City",
+      myspace_school_label: "Schools / Training",
+      myspace_contact_label: "Public contact",
+      myspace_contact_value: "Enabled (100 words max)",
+      myspace_activity_title: "Recent activity",
+      myspace_activity_post_label: "Posted a publication",
+      myspace_activity_post_value: "Looking for DevOps feedback",
+      myspace_activity_event_label: "Registered for an event",
+      myspace_activity_event_value: "Docker workshop (Oct 12)",
+      publish_subtitle: "Share a piece of experience, some advice or a project with the community.",
+      publish_format_label: "Type of post",
+      publish_cat_opinion: "Tech opinion",
+      publish_cat_resource: "Resource",
+      publish_cat_advice: "Advice",
+      publish_cat_encourage: "Encouragement",
+      publish_title_label: "Title",
+      publish_message_label: "Message",
+      publish_tags_label: "Keywords (comma-separated)",
+      publish_identity_label: "Identity",
+      publish_with_pseudo: "With my name",
+      publish_anon: "Anonymously",
+      publish_submit: "Publish to the community",
+      publish_preview_label: "Live preview",
+      publish_preview_title_ph: "Your title will appear here...",
+      publish_preview_content_ph: "The content of your message will appear as you write it on the left.",
+      publish_preview_tag_ph: "keyword",
+      about_title: "About sororIT",
+      about_mission_title: "Our mission",
+      about_pillars_title: "Our pillars",
+      about_charter_title: "Community charter",
+      about_charter_text: "Private messages are limited to 100 words to encourage focused outreach that respects everyone's time.",
+      modal_send_message: "Send a private message",
+      modal_close: "Close",
+      banner_text: "<strong>Preview / mockup</strong> — presented at womENcourage 2026. All content below is fictional sample content, with no account or real data.",
+      publish_tip: "<strong>Safe space:</strong> Public replies are disabled. Interested members can only send you a structured private message.",
+      about_mission_text: "<strong>sororIT</strong> is a mutual-support network dedicated to women in computer science and tech. The goal is to break isolation, make it easier to find opportunities, and encourage the sharing of experience.",
+      about_pillar1: "<strong>Kindness:</strong> A safe, judgment-free space to ask questions.",
+      about_pillar2: "<strong>Mutual support:</strong> Job and internship opportunities and resources shared freely.",
+      about_pillar3: "<strong>Concision:</strong> Direct, spam-free exchanges that get straight to the point.",
+      pub_search_ph: "Search publications...",
+      filter_by_city: "Filter by city",
+      res_search_ph: "Search a resource...",
+      chat_input_ph: "Write your message...",
+      publish_title_ph: "E.g.: What I wish I'd known before starting Python...",
+      publish_message_ph: "Tell your story, your thoughts, or share resources...",
+      publish_tags_ph: "python, learning, advice",
+      nav_home: "Home",
+      nav_publications: "Publications",
+      nav_jobs: "Opportunities",
+      nav_events: "Events",
+      nav_resources: "Resources",
+      nav_exchanges: "Messages",
+      nav_myspace: "My Space",
+      nav_about: "About",
+    }
+  };
+
+  window.APP_STRINGS = {
+    fr: {
+      everyone: 'Tout le monde',
+      onlyPrefix: 'Seulement ',
+      replyPh: 'Écris ta réponse...',
+      send: 'Envoyer',
+      visibleBy: 'Visible par : ',
+      anonymous: 'Anonyme',
+      memberSororit: 'Membre sororIT',
+      discretPost: 'Publication discrète',
+      previewTitlePh: 'Ton titre apparaîtra ici...',
+      previewContentPh: "Le contenu de ton message s'affichera au fur et à mesure que tu l'écris à gauche.",
+      previewTagPh: 'mot-clé',
+      published: 'Publié !',
+      publishSubmit: 'Publier dans la communauté',
+      msgRequestSent: 'Demande envoyée à {name}. La discussion s\'ouvrira si elle accepte.',
+      reportSent: 'Publication signalée. Notre équipe va l\'examiner.',
+      supportAdded: 'Tu soutiens cette publication 💜',
+      supportRemoved: 'Soutien retiré.'
+    },
+    en: {
+      everyone: 'Everyone',
+      onlyPrefix: 'Only ',
+      replyPh: 'Write your reply...',
+      send: 'Send',
+      visibleBy: 'Visible to: ',
+      anonymous: 'Anonymous',
+      memberSororit: 'sororIT member',
+      discretPost: 'Discreet post',
+      previewTitlePh: 'Your title will appear here...',
+      previewContentPh: 'The content of your message will appear as you write it on the left.',
+      previewTagPh: 'keyword',
+      published: 'Published!',
+      publishSubmit: 'Publish to the community',
+      msgRequestSent: 'Request sent to {name}. The conversation will open if she accepts.',
+      reportSent: 'Publication reported. Our team will review it.',
+      supportAdded: "You're supporting this post 💜",
+      supportRemoved: 'Support removed.'
+    }
+  };
+
+  function showAppToast(message) {
+    const toast = document.getElementById('appToast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(window._appToastTimer);
+    window._appToastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+  }
+
+  function applyAppLang(lang) {
+    const dict = APP_I18N[lang] || APP_I18N.fr;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.textContent = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.getAttribute('data-i18n-title');
+      if (dict[key] !== undefined) el.setAttribute('title', dict[key]);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+      const key = el.getAttribute('data-i18n-aria');
+      if (dict[key] !== undefined) el.setAttribute('aria-label', dict[key]);
+    });
+    document.getElementById('appLangFr').classList.toggle('active', lang === 'fr');
+    document.getElementById('appLangEn').classList.toggle('active', lang === 'en');
+    document.documentElement.setAttribute('lang', lang);
+  }
+
+  function setAppLang(lang) {
+    window.currentAppLang = lang;
+    applyAppLang(lang);
+    try { localStorage.setItem('sororit_app_lang', lang); } catch (e) {}
+    window.dispatchEvent(new Event('app-lang-changed'));
+  }
+
+  applyAppLang(window.currentAppLang);
+
+  // ---------- Soutenir & Signaler ----------
+  document.addEventListener('click', function (e) {
+    const supportBtn = e.target.closest('.pub-support-btn');
+    if (supportBtn) {
+      const nowActive = supportBtn.classList.toggle('active');
+      const t = APP_STRINGS[window.currentAppLang || 'fr'];
+      showAppToast(nowActive ? t.supportAdded : t.supportRemoved);
+      return;
+    }
+    const reportBtn = e.target.closest('.pub-report-btn');
+    if (reportBtn) {
+      const t = APP_STRINGS[window.currentAppLang || 'fr'];
+      showAppToast(t.reportSent);
+      reportBtn.disabled = true;
+      reportBtn.style.opacity = '0.5';
+    }
+  });
+
+
+  // ---------- Publications: filter ----------
+  (function () {
+    const search = document.getElementById('pubSearch');
+    const category = document.getElementById('pubCategory');
+    const noResults = document.getElementById('pubNoResults');
+    function filterPosts() {
+      const q = search.value.toLowerCase().trim();
+      const cat = category.value.toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('#pubFeed .pub-post-card').forEach(post => {
+        const postCat = post.getAttribute('data-category') || '';
+        const kw = post.getAttribute('data-keywords') || '';
+        const text = post.innerText.toLowerCase();
+        const match = (!cat || postCat === cat) && (!q || kw.includes(q) || text.includes(q));
+        post.style.display = match ? 'block' : 'none';
+        if (match) visible++;
+      });
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+    search.addEventListener('input', filterPosts);
+    category.addEventListener('change', filterPosts);
+  })();
+
+  // ---------- Reply panel (Accueil + Publications) ----------
+  (function () {
+    function buildReplyPanel(card) {
+      const nameEl = card.querySelector('.pub-author-details .name, .home-author-details .name');
+      const authorName = nameEl ? nameEl.textContent.trim() : (window.currentAppLang === 'en' ? 'the author' : 'l\'autrice');
+      const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+      const panel = document.createElement('div');
+      panel.className = 'reply-panel';
+      panel.innerHTML =
+        '<div class="reply-visibility">' +
+          '<button type="button" class="reply-vis-btn active" data-vis="public">' + t.everyone + '</button>' +
+          '<button type="button" class="reply-vis-btn" data-vis="author">' + t.onlyPrefix + authorName + '</button>' +
+        '</div>' +
+        '<textarea class="reply-textarea" placeholder="' + t.replyPh + '"></textarea>' +
+        '<div class="reply-actions"><button type="button" class="reply-send-btn">' + t.send + '</button></div>' +
+        '<div class="reply-list"></div>';
+
+      const visBtns = panel.querySelectorAll('.reply-vis-btn');
+      visBtns.forEach(vb => vb.addEventListener('click', () => {
+        visBtns.forEach(b => b.classList.remove('active'));
+        vb.classList.add('active');
+      }));
+
+      const textarea = panel.querySelector('.reply-textarea');
+      const list = panel.querySelector('.reply-list');
+      panel.querySelector('.reply-send-btn').addEventListener('click', () => {
+        const text = textarea.value.trim();
+        if (!text) return;
+        const activeVis = panel.querySelector('.reply-vis-btn.active');
+        const visLabel = activeVis.textContent;
+        const item = document.createElement('div');
+        item.className = 'reply-item';
+        const p = document.createElement('span');
+        p.textContent = text;
+        const tag = document.createElement('span');
+        tag.className = 'reply-vis-tag';
+        const tt = window.APP_STRINGS[window.currentAppLang || 'fr'];
+        tag.textContent = tt.visibleBy + visLabel;
+        item.appendChild(p);
+        item.appendChild(tag);
+        list.appendChild(item);
+        textarea.value = '';
+      });
+
+      return panel;
+    }
+
+    document.querySelectorAll('.pub-reply-btn').forEach(btn => btn.addEventListener('click', () => {
+      const card = btn.closest('.pub-post-card, .home-post-card');
+      let panel = card.querySelector('.reply-panel');
+      if (!panel) {
+        panel = buildReplyPanel(card);
+        card.appendChild(panel);
+      }
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) {
+        panel.querySelector('.reply-textarea').focus();
+      }
+    }));
+  })();
+
+  // ---------- Profile preview modal ----------
+  (function () {
+    const backdrop = document.getElementById('profileModalBackdrop');
+    const avatarEl = document.getElementById('profileModalAvatar');
+    const nameEl = document.getElementById('profileModalName');
+    const metaEl = document.getElementById('profileModalMeta');
+    const bioEl = document.getElementById('profileModalBio');
+    const msgBtn = document.getElementById('profileModalMsgBtn');
+    let currentName = '';
+
+    function openProfile(authorInfoEl) {
+      const avatar = authorInfoEl.querySelector('.home-avatar, .pub-author-avatar');
+      const name = authorInfoEl.querySelector('.name');
+      const meta = authorInfoEl.querySelector('.subtext, .meta');
+      currentName = name ? name.textContent.trim() : '';
+      avatarEl.textContent = avatar ? avatar.textContent.trim() : '?';
+      avatarEl.style.background = (avatar && avatar.style.backgroundColor) ? avatar.style.backgroundColor : '#35215e';
+      nameEl.textContent = currentName;
+      metaEl.textContent = meta ? meta.textContent.trim() : '';
+      const lang = window.currentAppLang || 'fr';
+      const bioFr = avatar ? avatar.dataset.bio : null;
+      const bioEn = avatar ? avatar.dataset.bioEn : null;
+      const fallback = lang === 'en' ? 'Member of the sororIT community.' : 'Membre de la communauté sororIT.';
+      bioEl.textContent = (lang === 'en' ? (bioEn || bioFr) : bioFr) || fallback;
+      backdrop.classList.add('open');
+    }
+    function closeProfile() {
+      backdrop.classList.remove('open');
+    }
+
+    document.querySelectorAll('.home-author-info, .pub-author-info').forEach(el => {
+      el.addEventListener('click', () => openProfile(el));
+    });
+    document.getElementById('profileModalClose').addEventListener('click', closeProfile);
+    backdrop.addEventListener('click', e => { if (e.target === backdrop) closeProfile(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProfile(); });
+
+    msgBtn.addEventListener('click', () => {
+      closeProfile();
+      const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+      showAppToast(t.msgRequestSent.replace('{name}', currentName));
+    });
+  })();
+
+  // ---------- Opportunités: filter ----------
+  (function () {
+    const city = document.getElementById('jobCity');
+    const contract = document.getElementById('jobContract');
+    const workMode = document.getElementById('jobWorkMode');
+    const noResults = document.getElementById('jobsNoResults');
+    function filterJobs() {
+      const q = city.value.toLowerCase().trim();
+      const c = contract.value.toLowerCase();
+      const w = workMode.value.toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('#jobsGrid .job-card').forEach(card => {
+        const cc = card.getAttribute('data-contract') || '';
+        const loc = card.getAttribute('data-location') || '';
+        const wm = card.getAttribute('data-workmode') || '';
+        const kw = card.getAttribute('data-keywords') || '';
+        const text = card.innerText.toLowerCase();
+        const match = (!c || cc === c) && (!w || wm === w) && (!q || loc.includes(q) || kw.includes(q) || text.includes(q));
+        card.style.display = match ? 'flex' : 'none';
+        if (match) visible++;
+      });
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+    city.addEventListener('input', filterJobs);
+    contract.addEventListener('change', filterJobs);
+    workMode.addEventListener('change', filterJobs);
+  })();
+
+  // ---------- Événements: filter ----------
+  (function () {
+    const city = document.getElementById('evCity');
+    const format = document.getElementById('evFormat');
+    const topic = document.getElementById('evTopic');
+    const noResults = document.getElementById('evNoResults');
+    function filterEvents() {
+      const q = city.value.toLowerCase().trim();
+      const f = format.value.toLowerCase();
+      const t = topic.value.toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('#eventsGrid .event-card').forEach(card => {
+        const cf = card.getAttribute('data-format') || '';
+        const ct = card.getAttribute('data-topic') || '';
+        const loc = card.getAttribute('data-location') || '';
+        const kw = card.getAttribute('data-keywords') || '';
+        const text = card.innerText.toLowerCase();
+        const match = (!f || cf === f) && (!t || ct === t) && (!q || loc.includes(q) || kw.includes(q) || text.includes(q));
+        card.style.display = match ? 'flex' : 'none';
+        if (match) visible++;
+      });
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+    city.addEventListener('input', filterEvents);
+    format.addEventListener('change', filterEvents);
+    topic.addEventListener('change', filterEvents);
+  })();
+
+  // ---------- Ressources: filter ----------
+  (function () {
+    const search = document.getElementById('resSearch');
+    const category = document.getElementById('resCategory');
+    const noResults = document.getElementById('resNoResults');
+    function filterResources() {
+      const q = search.value.toLowerCase().trim();
+      const cat = category.value.toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('#resourcesGrid .resource-card').forEach(card => {
+        const cc = card.getAttribute('data-category') || '';
+        const kw = card.getAttribute('data-keywords') || '';
+        const text = card.innerText.toLowerCase();
+        const match = (!cat || cc === cat) && (!q || kw.includes(q) || text.includes(q));
+        card.style.display = match ? 'flex' : 'none';
+        if (match) visible++;
+      });
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+    search.addEventListener('input', filterResources);
+    category.addEventListener('change', filterResources);
+  })();
+
+  // ---------- Échanges: chat demo ----------
+  (function () {
+    const input = document.getElementById('messageInput');
+    const counter = document.getElementById('wordCounter');
+    const sendBtn = document.getElementById('sendBtn');
+    const list = document.getElementById('messagesList');
+    function wordSuffix() {
+      const dict = APP_I18N[window.currentAppLang || 'fr'];
+      return dict.chat_word_suffix || ' / 100 mots';
+    }
+    input.addEventListener('input', () => {
+      const text = input.value.trim();
+      const words = text ? text.split(/\s+/).length : 0;
+      counter.textContent = words + wordSuffix();
+      const over = words > 100;
+      counter.classList.toggle('warning', over);
+      sendBtn.disabled = over;
+    });
+    sendBtn.addEventListener('click', () => {
+      const text = input.value.trim();
+      if (!text) return;
+      const msg = document.createElement('div');
+      msg.className = 'msg sent';
+      msg.textContent = text;
+      list.appendChild(msg);
+      input.value = '';
+      counter.textContent = '0' + wordSuffix();
+      list.scrollTop = list.scrollHeight;
+    });
+    document.querySelectorAll('.contact-item').forEach(item => item.addEventListener('click', () => {
+      document.querySelectorAll('.contact-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    }));
+  })();
+
+  // ---------- Publier: live preview ----------
+  (function () {
+    let isPseudo = true;
+    const chips = document.querySelectorAll('#chipsGrid .chip-btn');
+    chips.forEach(btn => btn.addEventListener('click', () => {
+      chips.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const lang = window.currentAppLang || 'fr';
+      document.getElementById('prevCategory').textContent = (lang === 'en' && btn.dataset.catEn) ? btn.dataset.catEn : btn.dataset.cat;
+    }));
+
+    const btnPseudo = document.getElementById('btnPseudo');
+    const btnAnon = document.getElementById('btnAnon');
+    function toggleIdentity(usePseudo) {
+      isPseudo = usePseudo;
+      btnPseudo.classList.toggle('active', usePseudo);
+      btnAnon.classList.toggle('active', !usePseudo);
+      const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+      document.getElementById('prevName').textContent = usePseudo ? 'Maya' : t.anonymous;
+      document.getElementById('prevAvatar').textContent = usePseudo ? 'M' : '?';
+      document.getElementById('prevSub').textContent = usePseudo ? t.memberSororit : t.discretPost;
+    }
+    btnPseudo.addEventListener('click', () => toggleIdentity(true));
+    btnAnon.addEventListener('click', () => toggleIdentity(false));
+
+    const inputTitle = document.getElementById('inputTitle');
+    const inputContent = document.getElementById('inputContent');
+    const inputTags = document.getElementById('inputTags');
+    function updatePreview() {
+      const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+      document.getElementById('prevTitle').textContent = inputTitle.value.trim() || t.previewTitlePh;
+      document.getElementById('prevContent').textContent = inputContent.value.trim() || t.previewContentPh;
+      const container = document.getElementById('prevTags');
+      container.innerHTML = '';
+      const raw = inputTags.value.trim();
+      if (raw) {
+        raw.split(',').map(t => t.trim()).filter(Boolean).forEach(t => {
+          const span = document.createElement('span');
+          span.className = 'tag-chip';
+          span.textContent = t.toLowerCase();
+          container.appendChild(span);
+        });
+      } else {
+        container.innerHTML = '<span class="tag-chip">' + t.previewTagPh + '</span>';
+      }
+    }
+    [inputTitle, inputContent, inputTags].forEach(el => el.addEventListener('input', updatePreview));
+    window.addEventListener('app-lang-changed', updatePreview);
+
+    document.getElementById('postForm').addEventListener('submit', () => {
+      const btn = document.querySelector('#postForm .btn-publish');
+      const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+      btn.textContent = t.published;
+      btn.disabled = true;
+      setTimeout(() => { btn.textContent = t.publishSubmit; btn.disabled = false; }, 1800);
+    });
+  })();
+</script>
+
+</body>
+</html>
