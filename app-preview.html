@@ -1,0 +1,2485 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>SororIT, Aperçu de l'application</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  html, body { height: 100%; }
+  body { background-color: #f6f2fb; color: #211a2c; min-height: 100vh; display: flex; flex-direction: column; align-items: center; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, .home-h1, .feed-title, .page-title h1 { font-family: 'Fraunces', serif; letter-spacing: -0.01em; }
+  img, svg { max-width: 100%; display: block; }
+  button, input, select, textarea { font: inherit; }
+  a { color: inherit; }
+
+  /* ---------- Demo banner ---------- */
+  .preview-banner {
+    width: 100%; background: #35215e; color: #fff; text-align: center;
+    font-size: 0.82rem; padding: 9px 20px; line-height: 1.4;
+  }
+  .preview-banner strong { font-weight: 700; }
+
+  /* ---------- Universal nav header ---------- */
+  .app-shell { width: 100%; display: flex; flex-direction: column; flex: 1; }
+  header.site-header {
+    width: 100%; background-color: #fffdfb; padding: 12px 24px;
+    display: flex; align-items: center; gap: 18px; border-bottom: 1px solid #d6c8ec;
+    position: sticky; top: 0; z-index: 30; flex-wrap: wrap; row-gap: 10px;
+  }
+  .brand { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 600; color: #211a2c; text-decoration: none; white-space: nowrap; letter-spacing: -0.01em; }
+  .brand .it { color: #c96b93; }
+  .back-to-site { order: -1; flex: 1 1 100%; text-align: center; font-size: 0.82rem; font-weight: 600; color: #6b6178; text-decoration: none; padding: 4px 4px 8px; }
+  .back-to-site:hover { color: #35215e; }
+  .nav-icons { display: flex; gap: 6px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+  .nav-icons::-webkit-scrollbar { display: none; }
+  .nav-item {
+    width: 40px; height: 40px; min-width: 40px; display: flex; align-items: center; justify-content: center;
+    border-radius: 12px; color: #6b6178; text-decoration: none; border: none; background: transparent; cursor: pointer;
+    transition: all 0.15s ease-in-out;
+  }
+  .nav-item:hover, .nav-item.active { background-color: #e4d9f5; color: #35215e; }
+  .nav-item svg { width: 20px; height: 20px; stroke-width: 2; pointer-events: none; flex-shrink: 0; }
+  .nav-item .nav-label { display: none; }
+  .lang-toggle { display: flex; border: 1.5px solid #d6c8ec; border-radius: 100px; overflow: hidden; flex-shrink: 0; }
+  .lang-btn { font-family: inherit; font-size: 0.78rem; font-weight: 700; padding: 7px 12px; border: none; background: transparent; color: #6b6178; cursor: pointer; }
+  .lang-btn.active { background: #35215e; color: #fffdfb; }
+
+  /* ---------- Desktop pass: sidebar nav on the left ---------- */
+  @media (min-width: 901px) {
+    .app-shell { flex-direction: row; align-items: flex-start; }
+    header.site-header {
+      width: 208px; flex-shrink: 0; flex-direction: column; align-items: stretch;
+      height: 100vh; position: sticky; top: 0; overflow-y: auto;
+      border-bottom: none; border-right: 1px solid #d6c8ec; padding: 24px 16px; gap: 22px;
+    }
+    .back-to-site { order: 0; flex: none; text-align: left; padding: 0; }
+    .brand { order: 0; font-size: 1.5rem; padding: 0 4px; }
+    .nav-icons { order: 0; flex-direction: column; overflow: visible; flex: none; gap: 4px; width: 100%; }
+    .nav-item { width: 100%; height: auto; justify-content: flex-start; gap: 12px; padding: 10px 12px; }
+    .nav-item .nav-label { display: inline; font-size: 0.85rem; font-weight: 600; }
+    .lang-toggle { order: 99; margin-top: auto; align-self: flex-start; }
+    main.app-main { flex: 1; min-width: 0; }
+  }
+
+  /* ---------- Toast ---------- */
+  .toast { position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%) translateY(20px); background: #211a2c; color: #fff; padding: 12px 22px; border-radius: 100px; font-size: 0.88rem; opacity: 0; pointer-events: none; transition: all .25s ease; z-index: 210; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- Support (like) & report buttons ---------- */
+  .pub-btn-action.pub-support-btn svg { transition: fill .15s, stroke .15s; }
+  .pub-btn-action.pub-support-btn.active { color: #c96b93; }
+  .pub-btn-action.pub-support-btn.active svg { fill: #c96b93; stroke: #c96b93; }
+  .pub-btn-action.pub-report-btn { margin-left: auto; }
+
+  /* ---------- Shared layout ---------- */
+  main.app-main { width: 100%; display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .screen { width: 100%; max-width: 900px; padding: 40px 24px; display: flex; flex-direction: column; }
+  .screen[hidden] { display: none; }
+  .page-title { margin-bottom: 24px; }
+  .page-title h1 { font-size: 1.9rem; font-weight: 800; color: #211a2c; }
+  .page-title p { color: #6b6178; font-size: 0.95rem; margin-top: 4px; }
+
+  .filters-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .filter-select, .filter-input {
+    padding: 10px 14px; border: 1px solid #d6c8ec; border-radius: 12px; background-color: #fffdfb;
+    color: #211a2c; font-size: 0.9rem; outline: none; transition: border-color .2s;
+  }
+  .filter-select:focus, .filter-input:focus { border-color: #35215e; }
+  .filter-input { flex: 1; min-width: 180px; }
+
+  .no-results {
+    display: none; text-align: center; padding: 40px; color: #6b6178; background: #fffdfb;
+    border-radius: 16px; border: 1px dashed #d6c8ec; grid-column: 1 / -1;
+  }
+
+  /* ===================== Accueil ===================== */
+  .badge-community {
+    background-color: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.06em; padding: 6px 14px; border-radius: 16px; text-transform: uppercase; margin-bottom: 20px;
+    width: fit-content;
+  }
+  #screen-accueil h1.home-h1 { font-size: 2.6rem; font-weight: 600; color: #211a2c; letter-spacing: -0.015em; margin-bottom: 20px; }
+  #screen-accueil h1.home-h1 span { color: #c96b93; }
+  .home-hero-text { font-size: 1.1rem; line-height: 1.6; color: #6b6178; max-width: 720px; margin-bottom: 32px; }
+  .button-group { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+  .btn-primary {
+    background-color: #35215e; color: #fffdfb; font-size: 0.95rem; font-weight: 700; padding: 14px 24px;
+    border-radius: 100px; border: none; cursor: pointer; box-shadow: 0 1px 2px rgba(16,24,40,.05); transition: background-color .2s;
+  }
+  .btn-primary:hover { background-color: #4b2e83; }
+  .btn-secondary {
+    background-color: #fffdfb; color: #211a2c; font-size: 0.95rem; font-weight: 700; padding: 14px 24px;
+    border-radius: 100px; border: 1px solid #d6c8ec; cursor: pointer; box-shadow: 0 1px 2px rgba(16,24,40,.05); transition: background-color .2s;
+  }
+  .btn-secondary:hover { background-color: #fffdfb; }
+  .info-banner {
+    width: 100%; background-color: #e4d9f5; border-radius: 16px; padding: 24px 28px; color: #4b2e83;
+    font-size: 1.02rem; font-weight: 700; line-height: 1.5; margin-bottom: 40px;
+  }
+  .feed-title { font-size: 1.2rem; font-weight: 800; color: #211a2c; margin-bottom: 20px; }
+
+  .home-post-card {
+    width: 100%; background-color: #fffdfb; border-radius: 16px; padding: 24px; margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(16,24,40,.05); border: 1px solid #d6c8ec;
+  }
+  .home-post-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; gap: 10px; }
+  .home-author-info { display: flex; align-items: center; gap: 12px; }
+  .home-avatar { width: 40px; height: 40px; border-radius: 50%; background: #35215e; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+  .home-author-details .name { font-weight: 700; color: #211a2c; font-size: 0.92rem; }
+  .home-author-details .subtext { font-size: 0.78rem; color: #6b6178; }
+  .home-badge-post { background-color: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700; padding: 5px 12px; border-radius: 10px; white-space: nowrap; }
+  .home-post-title { font-size: 1.05rem; font-weight: 700; color: #211a2c; margin-bottom: 8px; }
+  .home-post-content { font-size: 0.92rem; line-height: 1.5; color: #211a2c; margin-bottom: 14px; }
+  .home-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .home-tag { background: #e4d9f5; color: #6b6178; font-size: 0.75rem; padding: 3px 10px; border-radius: 8px; }
+  .home-post-title { font-size: 1.12rem !important; line-height: 1.3; cursor: pointer; font-family: 'Fraunces', serif; }
+  .home-post-title:hover { color: #4b2e83; text-decoration: underline; }
+  #screen-accueil .home-post-content, #screen-publications .pub-post-content { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  #screen-post-detail .home-post-title { cursor: default; text-decoration: none; font-size: 1.3rem !important; }
+  #screen-post-detail .home-post-content, #screen-post-detail .pub-post-content { display: block; overflow: visible; }
+  .post-more p { font-size: 0.92rem; line-height: 1.55; color: #211a2c; margin-bottom: 14px; }
+  .post-more[hidden] { display: none; }
+  .post-open-btn { margin-left: 8px; background: #35215e; color: #fffdfb; border: none; border-radius: 100px; padding: 7px 14px; font-family: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background .15s; }
+  .post-open-btn:hover { background: #4b2e83; }
+  .post-image { border-radius: 12px; overflow: hidden; margin: 4px 0 14px; height: 150px; }
+  .post-image svg { display: block; width: 100%; height: 100%; }
+  .pub-post-card .home-tags { margin-top: 4px; }
+  .home-post-actions { display: flex; justify-content: flex-start; align-items: center; gap: 22px; padding-top: 12px; border-top: 1px solid #d6c8ec; }
+
+  /* ===================== Publications ===================== */
+  .feed-grid { display: flex; flex-direction: column; gap: 20px; }
+  .pub-post-card { background: #fffdfb; border-radius: 20px; padding: 24px; border: 1px solid #d6c8ec; box-shadow: 0 4px 20px rgba(105,65,198,.03); }
+  .pub-post-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; }
+  .pub-author-info { display: flex; align-items: center; gap: 12px; }
+  .pub-author-avatar { width: 42px; height: 42px; border-radius: 50%; background: #35215e; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .95rem; }
+  .pub-author-details .name { font-weight: 700; font-size: 0.95rem; color: #211a2c; }
+  .pub-author-details .meta { font-size: 0.8rem; color: #6b6178; }
+  .pub-badge-post { background: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
+  .pub-badge-post.entraide { background: #fef0c7; color: #dc6803; }
+  .pub-badge-post.projet { background: #e0f2fe; color: #0369a1; }
+  .pub-post-content { font-size: 0.95rem; color: #211a2c; line-height: 1.5; margin-bottom: 16px; }
+  .pub-post-footer { display: flex; align-items: center; gap: 22px; border-top: 1px solid #d6c8ec; padding-top: 14px; flex-wrap: wrap; }
+  .pub-btn-action { background: transparent; border: none; color: #6b6178; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: color .2s; }
+  .pub-btn-action svg { width: 17px; height: 17px; stroke-width: 2; flex-shrink: 0; }
+  .pub-btn-action:hover, .pub-btn-action.active { color: #35215e; }
+  /* Actions compactes : icônes seules (libellés conservés pour l'accessibilité), sauf « Signaler » */
+  .pub-btn-action:not(.pub-report-btn) { padding: 4px; margin: -4px; }
+  .pub-btn-action:not(.pub-report-btn) svg { width: 21px; height: 21px; }
+  .pub-btn-action:not(.pub-report-btn) span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .home-post-actions, .pub-post-footer { gap: 18px; flex-wrap: wrap; }
+
+  .home-post-card, .pub-post-card { cursor: pointer; transition: box-shadow .15s; }
+  .home-post-card:hover, .pub-post-card:hover { box-shadow: 0 4px 16px rgba(105,65,198,.12); }
+  #screen-post-detail .home-post-card, #screen-post-detail .pub-post-card { cursor: default; }
+  #screen-post-detail .home-post-card:hover, #screen-post-detail .pub-post-card:hover { box-shadow: none; }
+  .back-link { background: transparent; border: none; color: #6b6178; font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 20px; }
+  .back-link:hover { color: #35215e; }
+
+  /* ---------- Profile preview modal ---------- */
+  .home-author-info, .pub-author-info { cursor: pointer; }
+  .home-author-info:hover .name, .pub-author-info:hover .name { text-decoration: underline; text-underline-offset: 2px; }
+  .profile-modal-backdrop { position: fixed; inset: 0; background: rgba(33,26,44,.45); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
+  .profile-modal-backdrop.open { display: flex; }
+  .profile-modal { background: #fffdfb; border-radius: 20px; padding: 28px; max-width: 360px; width: 100%; text-align: center; position: relative; box-shadow: 0 20px 60px rgba(33,26,44,.25); }
+  .profile-modal-close { position: absolute; top: 12px; right: 14px; background: transparent; border: none; font-size: 1.4rem; line-height: 1; color: #6b6178; cursor: pointer; }
+  .profile-modal-close:hover { color: #35215e; }
+  .profile-modal-avatar { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 1.8rem; background: #35215e; }
+  .profile-modal h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.3rem; color: #211a2c; margin-bottom: 4px; }
+  .profile-modal-meta { color: #6b6178; font-size: 0.85rem; margin-bottom: 16px; }
+  .profile-modal-bio { color: #211a2c; font-size: 0.9rem; line-height: 1.55; margin-bottom: 24px; }
+  .profile-modal-msg { width: 100%; justify-content: center; }
+
+  /* ---------- Reply panel ---------- */
+  .reply-panel { width: 100%; margin-top: 14px; padding-top: 14px; border-top: 1px solid #d6c8ec; display: none; }
+  .reply-panel.open { display: block; }
+  .reply-visibility { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .reply-vis-btn { font-size: 0.78rem; padding: 6px 14px; border-radius: 100px; border: 1px solid #d6c8ec; background: transparent; color: #6b6178; cursor: pointer; font-family: inherit; }
+  .reply-vis-btn.active { background: #e4d9f5; color: #35215e; border-color: #e4d9f5; }
+  .reply-textarea { width: 100%; min-height: 70px; padding: 10px 14px; border: 1px solid #d6c8ec; border-radius: 12px; font-size: 0.88rem; resize: vertical; outline: none; font-family: inherit; background: #fffdfb; color: #211a2c; }
+  .reply-textarea:focus { border-color: #35215e; }
+  .reply-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .reply-send-btn { background: #35215e; color: #fff; border: none; padding: 8px 18px; border-radius: 100px; font-weight: 700; font-size: 0.82rem; cursor: pointer; }
+  .reply-send-btn:hover { background: #4b2e83; }
+  .reply-list { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .reply-item { background: #f6f2fb; border-radius: 12px; padding: 10px 14px; font-size: 0.85rem; color: #211a2c; line-height: 1.45; }
+  .reply-item .reply-vis-tag { display: block; font-size: 0.72rem; color: #6b6178; margin-top: 4px; }
+
+  /* ===================== Opportunités ===================== */
+  .jobs-grid { display: flex; flex-direction: column; gap: 16px; }
+  .job-card { background: #fff; border-radius: 16px; padding: 20px 24px; border: 1px solid #d6c8ec; box-shadow: 0 2px 10px rgba(105,65,198,.02); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .job-details { display: flex; flex-direction: column; gap: 6px; }
+  .job-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .job-title { font-size: 1.05rem; font-weight: 700; color: #211a2c; }
+  .badge-job { background: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
+  .badge-job.cdi { background: #e0f2fe; color: #0369a1; }
+  .company-info { font-size: 0.85rem; color: #6b6178; }
+  .job-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .job-tag { background: #e4d9f5; color: #6b6178; font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; }
+  .btn-apply { background: #fffdfb; color: #35215e; border: 1px solid #35215e; padding: 10px 16px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; text-decoration: none; transition: all .2s; }
+  .btn-apply:hover { background: #e4d9f5; }
+
+  /* ===================== Événements ===================== */
+  .events-grid { display: flex; flex-direction: column; gap: 20px; }
+  .event-card { background: #fffdfb; border-radius: 20px; padding: 24px; border: 1px solid #d6c8ec; box-shadow: 0 4px 20px rgba(105,65,198,.03); display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+  .event-date { background: #e4d9f5; border: 1px solid #e4d9f5; border-radius: 16px; padding: 16px; text-align: center; min-width: 90px; }
+  .event-date .day { font-size: 1.5rem; font-weight: 800; color: #35215e; display: block; }
+  .event-date .month { font-size: 0.8rem; font-weight: 700; color: #4b2e83; text-transform: uppercase; }
+  .event-info { flex: 1; min-width: 200px; }
+  .event-type { background: #efeae6; color: #7a4614; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; width: fit-content; margin-bottom: 8px; }
+  .event-type.online { background: #e8f5e9; color: #2e7d32; }
+  .event-title { font-size: 1.1rem; font-weight: 700; color: #211a2c; margin-bottom: 6px; }
+  .event-desc { font-size: 0.9rem; color: #6b6178; margin-bottom: 12px; line-height: 1.4; }
+  .event-meta { font-size: 0.85rem; color: #6b6178; display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-register { background: #35215e; color: #fff; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background .2s; text-decoration: none; }
+  .btn-register:hover { background: #4b2e83; }
+
+  /* ===================== Échanges ===================== */
+  .chat-container { display: grid; grid-template-columns: 260px 1fr; background: #fff; border-radius: 20px; border: 1px solid #d6c8ec; box-shadow: 0 4px 20px rgba(105,65,198,.03); min-height: 460px; overflow: hidden; }
+  .chat-sidebar { border-right: 1px solid #d6c8ec; background: #f6f2fb; }
+  .sidebar-header { padding: 16px; font-weight: 700; border-bottom: 1px solid #d6c8ec; color: #211a2c; font-size: 0.95rem; }
+  .contact-item { padding: 14px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border-bottom: 1px solid #d6c8ec; transition: background .2s; }
+  .contact-item:hover, .contact-item.active { background-color: #e4d9f5; }
+  .chat-avatar { width: 36px; height: 36px; border-radius: 50%; background: #35215e; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+  .contact-info .name { font-weight: 700; font-size: 0.85rem; color: #211a2c; }
+  .contact-info .preview { font-size: 0.75rem; color: #6b6178; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+  .chat-main { display: flex; flex-direction: column; justify-content: space-between; }
+  .chat-header { padding: 16px 20px; border-bottom: 1px solid #d6c8ec; font-weight: 700; color: #211a2c; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; }
+  .chat-back-btn { display: none; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; border: none; background: transparent; color: #35215e; cursor: pointer; flex-shrink: 0; }
+  .chat-back-btn:hover { background: #e4d9f5; }
+  .chat-back-btn svg { width: 18px; height: 18px; stroke-width: 2.4; pointer-events: none; }
+  .messages-list { padding: 20px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; max-height: 320px; flex: 1; }
+  .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.88rem; line-height: 1.4; }
+  .msg.received { background: #e4d9f5; color: #211a2c; align-self: flex-start; border-bottom-left-radius: 2px; }
+  .msg.sent { background: #35215e; color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+  .chat-input-box { padding: 16px; border-top: 1px solid #d6c8ec; background: #fffdfb; }
+  .chat-textarea { width: 100%; border: 1px solid #d6c8ec; border-radius: 10px; padding: 10px; font-size: 0.85rem; outline: none; resize: none; height: 56px; }
+  .chat-textarea:focus { border-color: #35215e; }
+  .input-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  .word-counter { font-size: 0.75rem; color: #6b6178; }
+  .word-counter.warning { color: #d92d20; font-weight: 700; }
+  .btn-send { background: #35215e; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+  .btn-send:disabled { background: #ccc; cursor: not-allowed; }
+  @media (max-width: 600px) {
+    .chat-container { grid-template-columns: 1fr; }
+    .chat-sidebar { display: block; width: 100%; }
+    .chat-main { display: none; }
+    .chat-back-btn { display: inline-flex; }
+    .chat-container.chat-open .chat-sidebar { display: none; }
+    .chat-container.chat-open .chat-main { display: flex; }
+    .messages-list { max-height: none; min-height: 260px; }
+  }
+
+  /* ===================== Mon Espace ===================== */
+  .profile-card { background: #fff; border-radius: 20px; padding: 24px; border: 1px solid #d6c8ec; display: flex; gap: 20px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
+  .profile-avatar { width: 68px; height: 68px; border-radius: 50%; background: #35215e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; font-weight: 800; flex-shrink: 0; }
+  .profile-info h2 { font-size: 1.25rem; font-weight: 800; color: #211a2c; }
+  .profile-info p { color: #6b6178; font-size: 0.9rem; margin-top: 2px; }
+  .badge-status { display: inline-block; background: #e0f2fe; color: #0369a1; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; margin-top: 6px; }
+  .section-box { background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #d6c8ec; margin-bottom: 20px; }
+  .section-title { font-size: 1.05rem; font-weight: 700; color: #211a2c; margin-bottom: 12px; }
+  .list-item { padding: 10px 0; border-bottom: 1px solid #d6c8ec; display: flex; justify-content: space-between; gap: 12px; font-size: 0.9rem; flex-wrap: wrap; }
+  .list-item:last-child { border-bottom: none; }
+  .profile-hero { background: #fff; border: 1px solid #d6c8ec; border-radius: 18px; padding: 22px; display: grid; grid-template-columns: auto 1fr; gap: 20px 28px; align-items: center; margin-bottom: 20px; }
+  .profile-avatar-lg { width: 80px; height: 80px; font-size: 1.8rem; }
+  .profile-hero-main h2 { font-family: 'Fraunces', serif; font-size: 1.5rem; margin-bottom: 2px; }
+  .profile-role { color: #6b6178; font-size: 0.92rem; margin-bottom: 8px; }
+  .profile-bio { margin-top: 10px; font-size: 0.92rem; color: #211a2c; line-height: 1.5; }
+  .profile-stats { grid-column: 1 / -1; display: flex; gap: 32px; padding-top: 18px; border-top: 1px solid #d6c8ec; }
+  .profile-stats div { display: flex; flex-direction: column; align-items: center; }
+  .profile-stats strong { font-size: 1.15rem; color: #35215e; }
+  .profile-stats span { font-size: 0.78rem; color: #6b6178; }
+  .profile-posts { display: flex; flex-direction: column; gap: 12px; }
+  .profile-post { background: #f6f2fb; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .profile-post p { font-size: 0.92rem; }
+  .profile-post-meta { font-size: 0.75rem; color: #6b6178; }
+  #screen-post-detail .post-open-btn { display: none; }
+  @media (max-width: 600px) { .profile-hero { grid-template-columns: 1fr; text-align: center; justify-items: center; } .profile-stats { justify-content: center; } }
+  .profile-meta { color: #6b6178; font-size: 0.85rem; margin-bottom: 8px; }
+  .btn-edit-profile { margin-top: 14px; background: transparent; color: #35215e; border: 1.5px solid #35215e; border-radius: 100px; padding: 8px 18px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .btn-edit-profile:hover { background: #e4d9f5; }
+  .private-hint { font-size: 0.8rem; color: #6b6178; margin: -6px 0 14px; }
+  .section-box .profile-stats { border-top: none; padding-top: 0; grid-column: auto; }
+  .profile-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .profile-actions .btn-edit-profile { margin-top: 0; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
+  .stat-card { background: #f6f2fb; border-radius: 12px; padding: 14px 8px; text-align: center; display: flex; flex-direction: column; gap: 4px; }
+  .stat-card strong { font-size: 1.4rem; color: #35215e; font-family: 'Fraunces', serif; }
+  .stat-card span { font-size: 0.75rem; color: #6b6178; }
+  .activity-list { display: flex; flex-direction: column; gap: 8px; }
+  .activity-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #f6f2fb; border-radius: 12px; padding: 12px 14px; cursor: pointer; }
+  .activity-row:hover, .profile-post:hover { background: #e4d9f5; }
+  .activity-row-title { font-size: 0.9rem; font-weight: 600; color: #211a2c; }
+  .activity-row-nums { display: flex; gap: 14px; font-size: 0.82rem; color: #6b6178; flex-shrink: 0; }
+  .activity-row-nums span { display: inline-flex; align-items: center; gap: 4px; }
+  .activity-row-nums svg { width: 15px; height: 15px; }
+  .profile-post { cursor: pointer; }
+  .profile-post-title { font-size: 0.95rem; font-weight: 600; color: #211a2c; }
+  /* ---- Mon espace : profil relooké ---- */
+  .profile-hero { display: block; padding: 0; overflow: hidden; border-radius: 22px; text-align: left; }
+  .profile-cover { height: 132px; background: #e4d9f5; }
+  .profile-cover svg { width: 100%; height: 100%; }
+  .profile-hero-body { display: flex; gap: 22px; align-items: flex-start; padding: 0 28px 22px; }
+  .profile-hero .profile-avatar-lg { width: 96px; height: 96px; font-size: 2.3rem; margin-top: -48px; border: 5px solid #fff; font-family: 'Fraunces', serif; box-shadow: 0 6px 18px rgba(53,33,94,.18); }
+  .profile-hero-main { padding-top: 14px; min-width: 0; }
+  .profile-hero-main h2 { font-size: 1.75rem; }
+  .profile-topics { margin-top: 12px; }
+  .profile-posts { gap: 14px; }
+  .profile-post { --cat: #35215e; background: #fffdfb; border: 1px solid #d6c8ec; border-left: 5px solid var(--cat); border-radius: 14px; padding: 16px 18px; gap: 8px; align-items: stretch; transition: box-shadow .15s, border-color .15s; }
+  .profile-post[data-cat="entraide"] { --cat: #dc6803; }
+  .profile-post[data-cat="projet"] { --cat: #0369a1; }
+  .profile-post:hover { background: #fffdfb; box-shadow: 0 6px 20px rgba(53,33,94,.12); }
+  .profile-post:focus-visible { outline: 3px solid #c96b93; outline-offset: 2px; }
+  .profile-post-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .profile-post .profile-post-title { font-family: 'Fraunces', serif; font-size: 1.12rem; font-weight: 600; line-height: 1.3; }
+  .profile-post-excerpt { color: #6b6178; font-size: 0.9rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .profile-post-foot { display: flex; align-items: center; gap: 16px; font-size: 0.82rem; color: #6b6178; margin-top: 2px; }
+  .profile-post-foot span { display: inline-flex; align-items: center; gap: 5px; }
+  .profile-post-foot svg { width: 15px; height: 15px; }
+  .profile-post-foot .profile-post-read { margin-left: auto; color: #35215e; font-weight: 600; }
+  @media (max-width: 600px) {
+    .profile-hero-body { flex-direction: column; align-items: center; text-align: center; padding: 0 18px 20px; }
+    .profile-hero-main { padding-top: 6px; }
+    .profile-topics, .profile-actions { justify-content: center; }
+  }
+  .profile-post[hidden], .profile-empty[hidden] { display: none; }
+  .profile-search { width: 100%; flex: none; margin-bottom: 14px; }
+  .profile-empty { color: #6b6178; font-size: 0.9rem; text-align: center; padding: 18px 8px; }
+  .profile-empty .btn-edit-profile { margin: 12px auto 0; display: block; }
+  .profile-post-foot { margin-top: 2px; }
+  .event-row { display: flex; align-items: center; gap: 14px; background: #f6f2fb; border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: box-shadow .15s; }
+  .event-row:hover { box-shadow: 0 6px 20px rgba(53,33,94,.12); }
+  .event-row:focus-visible, .activity-row:focus-visible { outline: 3px solid #c96b93; outline-offset: 2px; }
+  .event-row .event-date { min-width: 64px; padding: 8px 10px; border-radius: 12px; background: #e4d9f5; }
+  .event-row .event-date .day { font-size: 1.25rem; }
+  .event-row-main { flex: 1; min-width: 0; }
+  .event-row-title { font-family: 'Fraunces', serif; font-size: 1.02rem; font-weight: 600; line-height: 1.3; }
+  .event-row-meta { font-size: 0.82rem; color: #6b6178; margin-top: 2px; }
+  .event-row-chevron { color: #35215e; font-weight: 700; flex-shrink: 0; }
+  .event-detail { padding: 26px; }
+  .event-detail-head { display: flex; gap: 18px; align-items: flex-start; margin-bottom: 16px; }
+  .event-detail-head .event-date { min-width: 76px; }
+  .event-detail h2 { font-size: 1.4rem; font-weight: 600; margin: 4px 0 0; line-height: 1.25; }
+  .event-detail-desc { color: #211a2c; font-size: 0.95rem; line-height: 1.6; margin-bottom: 18px; }
+  .event-detail-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .event-detail-facts div { background: #f6f2fb; border-radius: 12px; padding: 12px 14px; }
+  .event-detail-facts dt { font-size: 0.78rem; color: #6b6178; margin-bottom: 2px; }
+  .event-detail-facts dd { font-weight: 600; font-size: 0.92rem; }
+  .event-detail-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .btn-register.is-registered { background: #e8f5e9; color: #2e7d32; }
+  .btn-register.is-registered:hover { background: #d7ecd9; }
+  .seek-offer { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+  .so-col { border-radius: 14px; padding: 14px 16px; border-left: 5px solid #c96b93; background: #fdf1f6; }
+  .so-col.so-offer { border-left-color: #35215e; background: #f1ecfb; }
+  .so-col .section-title { margin-bottom: 6px; font-family: 'Fraunces', serif; font-weight: 600; }
+  .so-col p { font-size: 0.92rem; line-height: 1.5; }
+  .skill-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-chip { background: #e4d9f5; color: #35215e; font-weight: 600; font-size: 0.85rem; padding: 6px 14px; border-radius: 100px; }
+  .save-btn.active { color: #35215e; } .save-btn.active svg { fill: #35215e; stroke: #35215e; }
+  .repost-btn.active { color: #2e7d32; font-weight: 700; }
+  .card-save { width: 38px; height: 38px; flex-shrink: 0; border-radius: 50%; border: 1.5px solid #d6c8ec; background: #fffdfb; color: #6b6178; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .card-save:hover, .card-save.active { border-color: #35215e; color: #35215e; }
+  .card-save svg { width: 18px; height: 18px; }
+  .profile-post-from { font-size: 0.8rem; color: #2e7d32; font-weight: 600; }
+  .saved-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .saved-tab { border: 1.5px solid #d6c8ec; background: transparent; color: #6b6178; border-radius: 100px; padding: 7px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+  .saved-tab.active { background: #35215e; border-color: #35215e; color: #fffdfb; }
+  .saved-row-main { min-width: 0; flex: 1; }
+  .saved-row-title { font-weight: 600; font-size: 0.92rem; }
+  .saved-row-meta { font-size: 0.8rem; color: #6b6178; margin-top: 2px; }
+  .saved-remove { background: transparent; border: none; color: #6b6178; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: underline; flex-shrink: 0; }
+  @media (max-width: 600px) { .seek-offer { grid-template-columns: 1fr; } .profile-actions { justify-content: center; } }
+  .settings-form { display: flex; flex-direction: column; gap: 16px; }
+  .settings-form .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .settings-form .two-col { grid-template-columns: 1fr; } }
+  .settings-toggle { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #211a2c; cursor: pointer; }
+  .settings-toggle input { width: 18px; height: 18px; accent-color: #35215e; }
+
+  /* ===================== Publier ===================== */
+  .editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+  @media (max-width: 820px) { .editor-layout { grid-template-columns: 1fr; } }
+  .editor-card { background: #fff; border-radius: 20px; padding: 26px; border: 1px solid #d6c8ec; box-shadow: 0 4px 20px rgba(105,65,198,.03); display: flex; flex-direction: column; gap: 18px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label { font-weight: 700; font-size: 0.82rem; color: #211a2c; text-transform: uppercase; letter-spacing: 0.04em; }
+  .chips-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip-btn { background-color: #f6f2fb; color: #6b6178; border: 1px solid #e4d9f5; padding: 8px 14px; border-radius: 100px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+  .chip-btn.active { background-color: #35215e; color: #fff; border-color: #35215e; box-shadow: 0 2px 8px rgba(105,65,198,.25); }
+  .input-field, .textarea-field { width: 100%; padding: 12px 16px; font-size: 0.95rem; border: 1px solid #d6c8ec; border-radius: 12px; outline: none; transition: all .2s; background: #f6f2fb; }
+  .input-field:focus, .textarea-field:focus { border-color: #35215e; background: #fff; box-shadow: 0 0 0 4px rgba(105,65,198,.1); }
+  .textarea-field { min-height: 110px; resize: vertical; }
+  .identity-switch { display: flex; background: #e4d9f5; padding: 4px; border-radius: 12px; gap: 4px; }
+  .switch-btn { flex: 1; border: none; background: transparent; padding: 8px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; color: #6b6178; cursor: pointer; transition: all .2s; }
+  .switch-btn.active { background: #fff; color: #35215e; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+  .btn-publish { background: #35215e; color: #fff; border: none; padding: 14px; border-radius: 100px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all .2s; box-shadow: 0 4px 12px rgba(105,65,198,.2); }
+  .btn-publish:hover { background: #4b2e83; transform: translateY(-1px); }
+  .preview-section { display: flex; flex-direction: column; gap: 16px; }
+  .preview-header-title { font-size: 0.82rem; font-weight: 700; color: #6b6178; text-transform: uppercase; letter-spacing: 0.05em; }
+  .pv-post-card { background: #fff; border-radius: 20px; padding: 24px; border: 1px solid #d6c8ec; box-shadow: 0 10px 30px rgba(105,65,198,.05); }
+  .pv-post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 10px; }
+  .prev-avatar { width: 42px; height: 42px; border-radius: 50%; background: #35215e; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+  .prev-author-info { display: flex; align-items: center; gap: 12px; }
+  .prev-name { font-weight: 700; color: #211a2c; font-size: 0.95rem; }
+  .prev-sub { font-size: 0.8rem; color: #6b6178; }
+  .pv-badge-post { background-color: #e4d9f5; color: #35215e; padding: 6px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+  .preview-title { font-size: 1.12rem; font-weight: 700; color: #211a2c; margin-bottom: 8px; word-break: break-word; }
+  .preview-text { color: #6b6178; font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px; white-space: pre-wrap; word-break: break-word; }
+  .tags-container { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .tag-chip { background: #e4d9f5; color: #6b6178; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; }
+  .reactions-demo { display: flex; align-items: center; color: #c96b93; opacity: .8; }
+  .tip-box { background-color: #e4d9f5; border: 1px solid #e4d9f5; border-radius: 16px; padding: 16px; font-size: 0.85rem; color: #4b2e83; line-height: 1.4; }
+
+  /* ===================== À propos ===================== */
+  .about-card { background: #fff; border-radius: 20px; padding: 32px; border: 1px solid #d6c8ec; margin-top: 4px; line-height: 1.6; }
+  .about-card h2 { font-size: 1.2rem; font-weight: 700; color: #35215e; margin-top: 20px; margin-bottom: 10px; }
+  .about-card h2:first-child { margin-top: 0; }
+  .about-card p { color: #6b6178; font-size: 0.95rem; margin-bottom: 12px; }
+  .values-list { list-style: none; margin-top: 10px; }
+  .values-list li { padding: 8px 0; border-bottom: 1px solid #d6c8ec; color: #211a2c; font-size: 0.95rem; }
+  .values-list li strong { color: #211a2c; }
+
+  @media (max-width: 600px) {
+    .job-card { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .btn-apply { width: 100%; text-align: center; }
+    .event-card { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .event-date { width: 100%; display: flex; justify-content: center; gap: 8px; align-items: center; }
+    .btn-register { width: 100%; text-align: center; }
+  }
+
+  /* ---------- Mobile pass ---------- */
+  @media (max-width: 680px) {
+    .preview-banner { font-size: 0.76rem; padding: 8px 14px; }
+    header.site-header { padding: 10px 14px; gap: 10px 12px; }
+    .brand { order: 1; font-size: 1.1rem; }
+    .back-to-site { font-size: 0.72rem; }
+    .lang-toggle { order: 3; }
+    .nav-icons { order: 4; flex: 1 1 100%; justify-content: flex-start; padding-bottom: 2px; }
+
+    .screen { padding: 26px 16px; }
+    .page-title h1 { font-size: 1.5rem; }
+    #screen-accueil h1.home-h1 { font-size: clamp(1.7rem, 8vw, 2.1rem); }
+    .home-hero-text { font-size: 1rem; }
+    .info-banner { padding: 18px 20px; font-size: 0.92rem; margin-bottom: 28px; }
+    .button-group { gap: 10px; }
+    .btn-primary, .btn-secondary { width: 100%; text-align: center; padding: 13px 20px; }
+
+    .home-post-card, .pub-post-card, .job-card, .event-card, .profile-card, .editor-card { padding: 18px; }
+    .about-card { padding: 22px; }
+    .profile-card { flex-direction: column; text-align: center; }
+    .home-post-header, .pub-post-header { flex-wrap: wrap; }
+    .home-author-details, .pub-author-details { min-width: 0; }
+    .filters-bar { flex-direction: column; align-items: stretch; }
+    .filter-input { min-width: 0; }
+
+    .profile-modal { padding: 22px; max-width: 320px; }
+    .reply-panel .reply-visibility { gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="preview-banner" data-i18n-html="banner_text">
+    <strong>Aperçu / maquette</strong>, présentée à womENcourage 2026. Tout le contenu ci-dessous est un exemple fictif, sans compte ni donnée réelle.
+  </div>
+
+  <!-- ============ Navigation universelle ============ -->
+  <div class="app-shell">
+  <header class="site-header">
+    <a class="back-to-site" href="index.html" data-i18n="back_to_site">← Retour au site</a>
+    <a class="brand" href="index.html">Soror<span class="it">IT</span></a>
+    <nav class="nav-icons" id="mainNav">
+      <button type="button" class="nav-item active" data-screen="accueil" title="Accueil" data-i18n-title="nav_home">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+        <span class="nav-label" data-i18n="nav_home">Accueil</span>
+      </button>
+      <button type="button" class="nav-item" data-screen="publications" title="Publications" data-i18n-title="nav_publications">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+        <span class="nav-label" data-i18n="nav_publications">Publications</span>
+      </button>
+      <button type="button" class="nav-item" data-screen="opportunites" title="Opportunités" data-i18n-title="nav_jobs">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.25 14.15v4.25c0 .621-.504 1.125-1.125 1.125H4.875A1.125 1.125 0 0 1 3.75 18.4v-4.25m16.5 0a2.25 2.25 0 0 0-2.25-2.25H6a2.25 2.25 0 0 0-2.25 2.25m16.5 0v-4.25a2.25 2.25 0 0 0-2.25-2.25H6a2.25 2.25 0 0 0-2.25 2.25v4.25m16.5 0H3.75"/></svg>
+        <span class="nav-label" data-i18n="nav_jobs">Opportunités</span>
+      </button>
+      <button type="button" class="nav-item" data-screen="evenements" title="Événements" data-i18n-title="nav_events">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+        <span class="nav-label" data-i18n="nav_events">Événements</span>
+      </button>
+      <button type="button" class="nav-item" data-screen="echanges" title="Échanges" data-i18n-title="nav_exchanges">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg>
+        <span class="nav-label" data-i18n="nav_exchanges">Échanges</span>
+      </button>
+      <button type="button" class="nav-item" data-screen="mon-espace" title="Mon Espace" data-i18n-title="nav_myspace">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>
+        <span class="nav-label" data-i18n="nav_myspace">Mon Espace</span>
+      </button>
+      <button type="button" class="nav-item" data-screen="a-propos" title="À Propos" data-i18n-title="nav_about">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+        <span class="nav-label" data-i18n="nav_about">À Propos</span>
+      </button>
+    </nav>
+    <div class="lang-toggle">
+      <button type="button" class="lang-btn active" id="appLangFr" onclick="setAppLang('fr')">FR</button>
+      <button type="button" class="lang-btn" id="appLangEn" onclick="setAppLang('en')">EN</button>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- ============ Accueil ============ -->
+    <section class="screen" id="screen-accueil">
+      <div class="badge-community" data-i18n="badge_community">Communauté</div>
+      <h1 class="home-h1">Soror<span>IT</span></h1>
+      <p class="home-hero-text" data-i18n="home_hero_text">Une communauté pour les femmes dans la tech : partager des expériences, des projets, des ressources, des avis tech, des événements et des opportunités, sans commentaires publics, sans classement, sans pression.</p>
+      <div class="button-group">
+        <button type="button" class="btn-primary" data-screen="publications" data-i18n="home_see_publications">Voir les publications</button>
+        <button type="button" class="btn-secondary" data-screen="publier" data-i18n="share_something">Partager quelque chose</button>
+      </div>
+      <div class="info-banner" data-i18n="home_info_banner">Chaque femme peut partager quelque chose d'utile : une expérience, une ressource, un parcours, une idée ou un encouragement.</div>
+
+      <h2 class="feed-title" data-i18n="home_recent_posts">Quelques publications récentes</h2>
+
+      <article class="home-post-card">
+        <div class="home-post-header">
+          <div class="home-author-info">
+            <div class="home-avatar" data-bio="Alternante cloud, elle partage ses retours d'expérience pour aider les prochaines promos." data-bio-en="Cloud apprentice, she shares her feedback to help the next cohorts.">Y</div>
+            <div class="home-author-details">
+              <div class="name">Yuki</div>
+              <div class="subtext" data-i18n="bio_yuki">Alternante cloud · Tokyo, Japon · il y a 3h </div>
+            </div>
+          </div>
+          <span class="home-badge-post" data-i18n="tag_experience">Expérience</span>
+        </div>
+        <h3 class="home-post-title" data-i18n="post_yuki_title">Ce que j'ai appris pendant ma première alternance</h3>
+        <p class="home-post-content" data-i18n="post_yuki_body">Au début, j'avais peur de poser trop de questions. Avec le temps, j'ai compris qu'une bonne question peut aussi montrer qu'on veut comprendre sérieusement.</p>
+        <div class="post-more" hidden>
+          <p data-i18n="post_yuki_more1"></p>
+          <div class="post-image"><svg viewBox="0 0 600 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration"><rect width="600" height="240" fill="#ecdcf0"/><circle cx="470" cy="70" r="46" fill="#c96b93" opacity=".35"/><circle cx="130" cy="180" r="70" fill="#35215e" opacity=".18"/><rect x="200" y="80" width="200" height="90" rx="12" fill="#fffdfb" opacity=".9"/><rect x="220" y="100" width="120" height="8" rx="4" fill="#35215e" opacity=".5"/><rect x="220" y="120" width="160" height="8" rx="4" fill="#35215e" opacity=".25"/><rect x="220" y="140" width="90" height="8" rx="4" fill="#c96b93" opacity=".6"/></svg></div>
+          <p data-i18n="post_yuki_more2"></p>
+          <div class="post-image"><svg viewBox="0 0 600 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration"><rect width="600" height="240" fill="#f6f2fb"/><rect x="60" y="50" width="130" height="140" rx="14" fill="#e4d9f5"/><rect x="235" y="50" width="130" height="140" rx="14" fill="#f3c9d9"/><rect x="410" y="50" width="130" height="140" rx="14" fill="#35215e" opacity=".85"/><circle cx="125" cy="100" r="18" fill="#35215e" opacity=".5"/><circle cx="300" cy="100" r="18" fill="#c96b93"/><circle cx="475" cy="100" r="18" fill="#fffdfb" opacity=".8"/><rect x="85" y="140" width="80" height="8" rx="4" fill="#35215e" opacity=".3"/><rect x="260" y="140" width="80" height="8" rx="4" fill="#35215e" opacity=".3"/><rect x="435" y="140" width="80" height="8" rx="4" fill="#fffdfb" opacity=".6"/></svg></div>
+          <p data-i18n="post_yuki_more3"></p>
+        </div>
+        <div class="home-tags">
+          <span class="home-tag" data-i18n="tag_apprenticeship">alternance</span><span class="home-tag">cloud</span><span class="home-tag" data-i18n="tag_company">entreprise</span>
+        </div>
+        <div class="home-post-actions">
+          <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button><button type="button" class="post-open-btn" data-i18n="post_open">Voir la publication →</button>
+        </div>
+      </article>
+
+      <article class="home-post-card">
+        <div class="home-post-header">
+          <div class="home-author-info">
+            <div class="home-avatar" style="background-color:#845ef7;" data-bio="Étudiante en réseaux, elle documente ses révisions pour aider d'autres débutantes." data-bio-en="Networking student, she documents her revision notes to help other beginners.">L</div>
+            <div class="home-author-details">
+              <div class="name">Lina</div>
+              <div class="subtext" data-i18n="bio_lina">Étudiante réseau · Belgique</div>
+            </div>
+          </div>
+          <span class="home-badge-post" data-i18n="tag_project">Projet</span>
+        </div>
+        <h3 class="home-post-title" data-i18n="post_lina_title">Je crée un outil pour réviser les commandes réseau</h3>
+        <p class="home-post-content" data-i18n="post_lina_body">C'est un petit projet, mais il m'aide à apprendre. Je partage l'idée parce que commencer petit reste une vraie avancée.</p>
+        <div class="post-more" hidden>
+          <p data-i18n="post_lina_more1"></p>
+          <p data-i18n="post_lina_more2"></p>
+          <p data-i18n="post_lina_more3"></p>
+        </div>
+        <div class="home-tags">
+          <span class="home-tag" data-i18n="tag_networking">réseau</span><span class="home-tag">CCNA</span><span class="home-tag">Python</span>
+        </div>
+        <div class="home-post-actions">
+          <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button><button type="button" class="post-open-btn" data-i18n="post_open">Voir la publication →</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ Publications ============ -->
+    <section class="screen" id="screen-publications" hidden>
+      <div class="page-title">
+        <h1 data-i18n="pub_title">Publications</h1>
+        <p data-i18n="pub_subtitle">Consulte les échanges, questions et projets partagés par la communauté.</p>
+      </div>
+      <div class="filters-bar">
+        <input type="text" id="pubSearch" class="filter-input" data-i18n-placeholder="pub_search_ph" placeholder="Rechercher dans les publications...">
+        <select id="pubCategory" class="filter-select">
+          <option value="" data-i18n="pub_cat_all">Toutes les thématiques</option>
+          <option value="entraide" data-i18n="pub_cat_help">Demandes d'entraide</option>
+          <option value="discussion" data-i18n="pub_cat_discussion">Discussions</option>
+          <option value="projet" data-i18n="pub_cat_project">Projets / Collaborations</option>
+          <option value="conseil" data-i18n="pub_cat_advice">Conseils & REX</option>
+        </select>
+      </div>
+      <div class="feed-grid" id="pubFeed">
+        <article class="pub-post-card" data-category="entraide" data-keywords="devops docker kubernetes erreur paris">
+          <div class="pub-post-header">
+            <div class="pub-author-info">
+              <div class="pub-author-avatar" data-bio="En déploiement Cloud & DevOps, elle aime autant apprendre que dépanner les autres." data-bio-en="In Cloud & DevOps deployment, she enjoys learning as much as helping others troubleshoot.">P</div>
+              <div class="pub-author-details"><div class="name">Priya</div><div class="meta" data-i18n="meta_priya">Paris · Il y a 2 heures</div></div>
+            </div>
+            <span class="pub-badge-post entraide" data-i18n="pub_cat_help_singular">Demande d'entraide</span>
+          </div>
+          <h3 class="home-post-title" data-i18n="post_priya_title"></h3>
+          <p class="pub-post-content" data-i18n="post_priya_body">Hello la communauté ! Est-ce que quelqu'un aurait 15 min pour m'aider sur un blocage de volume Docker dans mon projet DevOps ? Je bloque dessus depuis ce matin 😅 Merci d'avance !</p>
+          <div class="post-more" hidden>
+            <p data-i18n="post_priya_more1"></p>
+            <p data-i18n="post_priya_more2"></p>
+            <p data-i18n="post_priya_more3"></p>
+          </div>
+          <div class="home-tags"><span class="home-tag">docker</span><span class="home-tag">devops</span></div>
+          <div class="pub-post-footer">
+            <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button><button type="button" class="post-open-btn" data-i18n="post_open">Voir la publication →</button>
+          </div>
+        </article>
+        <article class="pub-post-card" data-category="projet" data-keywords="react python hackathon projet lyon">
+          <div class="pub-post-header">
+            <div class="pub-author-info">
+              <div class="pub-author-avatar" style="background:#0369a1;" data-bio="Développeuse React, elle monte des projets collectifs autour des hackathons." data-bio-en="React developer, she puts together group projects around hackathons.">A</div>
+              <div class="pub-author-details"><div class="name">Aminata</div><div class="meta" data-i18n="meta_aminata">Lyon · Il y a 5 heures</div></div>
+            </div>
+            <span class="pub-badge-post projet" data-i18n="pub_cat_project_label">Projet / Collaboration</span>
+          </div>
+          <h3 class="home-post-title" data-i18n="post_aminata_title"></h3>
+          <p class="pub-post-content" data-i18n="post_aminata_body">On cherche une développeuse React pour rejoindre notre équipe lors du Hackathon Tech4Good le mois prochain. Ambiance très sympa et débutantes bienvenues ! N'hésitez pas à me contacter en MP.</p>
+          <div class="post-more" hidden>
+            <p data-i18n="post_aminata_more1"></p>
+            <p data-i18n="post_aminata_more2"></p>
+            <div class="post-image"><svg viewBox="0 0 600 240" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration"><rect width="600" height="240" fill="#f6f2fb"/><rect x="60" y="50" width="130" height="140" rx="14" fill="#e4d9f5"/><rect x="235" y="50" width="130" height="140" rx="14" fill="#f3c9d9"/><rect x="410" y="50" width="130" height="140" rx="14" fill="#35215e" opacity=".85"/><circle cx="125" cy="100" r="18" fill="#35215e" opacity=".5"/><circle cx="300" cy="100" r="18" fill="#c96b93"/><circle cx="475" cy="100" r="18" fill="#fffdfb" opacity=".8"/><rect x="85" y="140" width="80" height="8" rx="4" fill="#35215e" opacity=".3"/><rect x="260" y="140" width="80" height="8" rx="4" fill="#35215e" opacity=".3"/><rect x="435" y="140" width="80" height="8" rx="4" fill="#fffdfb" opacity=".6"/></svg></div>
+            <p data-i18n="post_aminata_more3"></p>
+          </div>
+          <div class="home-tags"><span class="home-tag">react</span><span class="home-tag">projet</span></div>
+          <div class="pub-post-footer">
+            <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button><button type="button" class="post-open-btn" data-i18n="post_open">Voir la publication →</button>
+          </div>
+        </article>
+        <article class="pub-post-card" data-category="conseil" data-keywords="entretien salaire negociation cdi remote">
+          <div class="pub-post-header">
+            <div class="pub-author-info">
+              <div class="pub-author-avatar" style="background:#7a4614;" data-bio="En full remote depuis 6 mois, elle partage ce qu'elle apprend sur l'équilibre pro/perso." data-bio-en="Fully remote for 6 months, she shares what she's learning about work-life balance.">M</div>
+              <div class="pub-author-details"><div class="name">Mei</div><div class="meta" data-i18n="meta_mei">Full Remote · Il y a 1 jour</div></div>
+            </div>
+            <span class="pub-badge-post" data-i18n="pub_cat_advice_singular">Conseil & REX</span>
+          </div>
+          <h3 class="home-post-title" data-i18n="post_mei_title"></h3>
+          <p class="pub-post-content" data-i18n="post_mei_body">Petit retour après 6 mois en full remote : fixez-vous des horaires stricts et prévoyez des vraies pauses ! La santé mentale passe avant tout quand on travaille chez soi. 💜</p>
+          <div class="post-more" hidden>
+            <p data-i18n="post_mei_more1"></p>
+            <p data-i18n="post_mei_more2"></p>
+            <p data-i18n="post_mei_more3"></p>
+          </div>
+          <div class="home-tags"><span class="home-tag">entretien</span><span class="home-tag">salaire</span></div>
+          <div class="pub-post-footer">
+            <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button><button type="button" class="post-open-btn" data-i18n="post_open">Voir la publication →</button>
+          </div>
+        </article>
+        <div class="no-results" id="pubNoResults" data-i18n="pub_no_results">Aucune publication ne correspond à ta recherche.</div>
+      </div>
+    </section>
+
+    <!-- Publications de Sofia : absentes du fil, lues depuis Mon espace -->
+    <div id="selfPostsStore" hidden aria-hidden="true">
+        <article class="pub-post-card" data-category="entraide" data-keywords="devops rex alternance retour experience" data-author="self" data-likes="9" data-comments="4">
+          <div class="pub-post-header">
+            <div class="pub-author-info">
+              <div class="pub-author-avatar" data-bio="En déploiement Cloud & DevOps, j'aime autant apprendre que dépanner les autres." data-bio-en="In Cloud & DevOps deployment, I enjoy learning as much as helping others troubleshoot.">S</div>
+              <div class="pub-author-details"><div class="name">Sofia B.</div><div class="meta" data-i18n="meta_self1">Lyon · Il y a 5 heures</div></div>
+            </div>
+            <span class="pub-badge-post entraide" data-i18n="pub_cat_help_singular">Demande d'entraide</span>
+          </div>
+          <h3 class="home-post-title" data-i18n="post_self1_title"></h3>
+          <p class="pub-post-content" data-i18n="post_self1_body">On cherche une développeuse React pour rejoindre notre équipe lors du Hackathon Tech4Good le mois prochain. Ambiance très sympa et débutantes bienvenues ! N'hésitez pas à me contacter en MP.</p>
+          <div class="post-more" hidden>
+            <p data-i18n="post_self1_more1"></p>
+            <p data-i18n="post_self1_more2"></p>
+                        <p data-i18n="post_self1_more3"></p>
+          </div>
+          <div class="home-tags"><span class="home-tag">devops</span><span class="home-tag">alternance</span></div>
+          <div class="pub-post-footer">
+            <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button><button type="button" class="post-open-btn" data-i18n="post_open">Voir la publication →</button>
+          </div>
+        </article>
+        <article class="pub-post-card" data-category="projet" data-keywords="cicd docker pipeline projet" data-author="self" data-likes="14" data-comments="3">
+          <div class="pub-post-header">
+            <div class="pub-author-info">
+              <div class="pub-author-avatar" data-bio="En déploiement Cloud & DevOps, j'aime autant apprendre que dépanner les autres." data-bio-en="In Cloud & DevOps deployment, I enjoy learning as much as helping others troubleshoot.">S</div>
+              <div class="pub-author-details"><div class="name">Sofia B.</div><div class="meta" data-i18n="meta_self2">Lyon · Il y a 5 heures</div></div>
+            </div>
+            <span class="pub-badge-post projet" data-i18n="pub_cat_project_label">Projet / Collaboration</span>
+          </div>
+          <h3 class="home-post-title" data-i18n="post_self2_title"></h3>
+          <p class="pub-post-content" data-i18n="post_self2_body">On cherche une développeuse React pour rejoindre notre équipe lors du Hackathon Tech4Good le mois prochain. Ambiance très sympa et débutantes bienvenues ! N'hésitez pas à me contacter en MP.</p>
+          <div class="post-more" hidden>
+            <p data-i18n="post_self2_more1"></p>
+            <p data-i18n="post_self2_more2"></p>
+                        <p data-i18n="post_self2_more3"></p>
+          </div>
+          <div class="home-tags"><span class="home-tag">cicd</span><span class="home-tag">docker</span></div>
+          <div class="pub-post-footer">
+            <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button><button type="button" class="post-open-btn" data-i18n="post_open">Voir la publication →</button>
+          </div>
+        </article>
+        <article class="pub-post-card" data-category="conseil" data-keywords="hackathon equipe conseil rex" data-author="self" data-likes="6" data-comments="2">
+          <div class="pub-post-header">
+            <div class="pub-author-info">
+              <div class="pub-author-avatar" data-bio="En déploiement Cloud & DevOps, j'aime autant apprendre que dépanner les autres." data-bio-en="In Cloud & DevOps deployment, I enjoy learning as much as helping others troubleshoot.">S</div>
+              <div class="pub-author-details"><div class="name">Sofia B.</div><div class="meta" data-i18n="meta_self3">Lyon · Il y a 5 heures</div></div>
+            </div>
+            <span class="pub-badge-post" data-i18n="pub_cat_advice_singular">Conseil & REX</span>
+          </div>
+          <h3 class="home-post-title" data-i18n="post_self3_title"></h3>
+          <p class="pub-post-content" data-i18n="post_self3_body">On cherche une développeuse React pour rejoindre notre équipe lors du Hackathon Tech4Good le mois prochain. Ambiance très sympa et débutantes bienvenues ! N'hésitez pas à me contacter en MP.</p>
+          <div class="post-more" hidden>
+            <p data-i18n="post_self3_more1"></p>
+            <p data-i18n="post_self3_more2"></p>
+                        <p data-i18n="post_self3_more3"></p>
+          </div>
+          <div class="home-tags"><span class="home-tag">hackathon</span><span class="home-tag">équipe</span></div>
+          <div class="pub-post-footer">
+            <button type="button" class="pub-btn-action pub-reply-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm3.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg><span data-i18n="action_reply">Répondre</span></button><button type="button" class="pub-btn-action pub-support-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button><button type="button" class="pub-btn-action pub-report-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18M3 4.5h13.5l-1.5 3.75 1.5 3.75H3"/></svg><span data-i18n="action_report">Signaler</span></button><button type="button" class="post-open-btn" data-i18n="post_open">Voir la publication →</button>
+          </div>
+        </article>
+    </div>
+
+    <!-- ============ Détail d'une publication ============ -->
+    <section class="screen" id="screen-post-detail" hidden>
+      <button type="button" class="back-link" id="postDetailBack" data-i18n="post_detail_back">← Retour</button>
+      <div id="postDetailBody"></div>
+    </section>
+
+    <!-- ============ Opportunités ============ -->
+    <section class="screen" id="screen-opportunites" hidden>
+      <div class="page-title">
+        <h1 data-i18n="jobs_title">Opportunités</h1>
+        <p data-i18n="jobs_subtitle">Offres de stages, alternances et emplois partagées par la communauté.</p>
+      </div>
+      <div class="filters-bar">
+        <input type="text" id="jobCountry" class="filter-input" data-i18n-placeholder="filter_country_ph" placeholder="Filtrer par pays" list="countriesList" autocomplete="off">
+        <datalist id="countriesList"></datalist>
+        <datalist id="citiesList"><option value="Paris"><option value="Lyon"><option value="Marseille"><option value="Toulouse"><option value="Nice"><option value="Nantes"><option value="Montpellier"><option value="Strasbourg"><option value="Bordeaux"><option value="Lille"><option value="Rennes"><option value="Reims"><option value="Grenoble"><option value="Dijon"><option value="Angers"><option value="Nîmes"><option value="Clermont-Ferrand"><option value="Tours"><option value="Béziers"><option value="Perpignan"><option value="Toulon"><option value="Avignon"><option value="Brest"><option value="Le Havre"><option value="Limoges"><option value="Metz"><option value="Nancy"><option value="Rouen"><option value="Caen"><option value="Sens"><option value="Bruxelles"><option value="Anvers"><option value="Liège"><option value="Gand"><option value="Genève"><option value="Zurich"><option value="Lausanne"><option value="Bâle"><option value="Berne"><option value="Luxembourg"><option value="Berlin"><option value="Munich"><option value="Hambourg"><option value="Francfort"><option value="Cologne"><option value="Stuttgart"><option value="Düsseldorf"><option value="Leipzig"><option value="Dresde"><option value="Vienne"><option value="Salzbourg"><option value="Amsterdam"><option value="Rotterdam"><option value="La Haye"><option value="Utrecht"><option value="Eindhoven"><option value="Londres"><option value="Manchester"><option value="Birmingham"><option value="Édimbourg"><option value="Glasgow"><option value="Bristol"><option value="Leeds"><option value="Liverpool"><option value="Cambridge"><option value="Oxford"><option value="Cardiff"><option value="Belfast"><option value="Dublin"><option value="Cork"><option value="Madrid"><option value="Barcelone"><option value="Valence"><option value="Séville"><option value="Bilbao"><option value="Malaga"><option value="Saragosse"><option value="Lisbonne"><option value="Porto"><option value="Rome"><option value="Milan"><option value="Turin"><option value="Naples"><option value="Florence"><option value="Bologne"><option value="Venise"><option value="Gênes"><option value="Athènes"><option value="Thessalonique"><option value="Stockholm"><option value="Göteborg"><option value="Malmö"><option value="Oslo"><option value="Bergen"><option value="Copenhague"><option value="Aarhus"><option value="Helsinki"><option value="Tampere"><option value="Reykjavik"><option value="Varsovie"><option value="Cracovie"><option value="Wrocław"><option value="Gdańsk"><option value="Prague"><option value="Brno"><option value="Budapest"><option value="Bucarest"><option value="Cluj-Napoca"><option value="Sofia"><option value="Belgrade"><option value="Zagreb"><option value="Ljubljana"><option value="Bratislava"><option value="Vilnius"><option value="Riga"><option value="Tallinn"><option value="Kiev"><option value="Lviv"><option value="Minsk"><option value="Moscou"><option value="Saint-Pétersbourg"><option value="Istanbul"><option value="Ankara"><option value="Izmir"><option value="Tbilissi"><option value="Erevan"><option value="Bakou"><option value="Casablanca"><option value="Rabat"><option value="Marrakech"><option value="Tanger"><option value="Fès"><option value="Agadir"><option value="Tétouan"><option value="Oujda"><option value="Kénitra"><option value="Meknès"><option value="Tunis"><option value="Sfax"><option value="Alger"><option value="Oran"><option value="Le Caire"><option value="Alexandrie"><option value="Dakar"><option value="Abidjan"><option value="Accra"><option value="Lagos"><option value="Abuja"><option value="Nairobi"><option value="Kigali"><option value="Kampala"><option value="Addis-Abeba"><option value="Dar es Salaam"><option value="Johannesbourg"><option value="Le Cap"><option value="Durban"><option value="Pretoria"><option value="Kinshasa"><option value="Luanda"><option value="Douala"><option value="Yaoundé"><option value="Libreville"><option value="Bamako"><option value="Ouagadougou"><option value="Conakry"><option value="Antananarivo"><option value="Maurice (Port-Louis)"><option value="Montréal"><option value="Québec"><option value="Toronto"><option value="Vancouver"><option value="Ottawa"><option value="Calgary"><option value="Edmonton"><option value="Winnipeg"><option value="New York"><option value="Los Angeles"><option value="Chicago"><option value="San Francisco"><option value="Seattle"><option value="Boston"><option value="Austin"><option value="Washington"><option value="Miami"><option value="Atlanta"><option value="Denver"><option value="Houston"><option value="Dallas"><option value="San Diego"><option value="Philadelphie"><option value="Portland"><option value="Mexico"><option value="Guadalajara"><option value="Monterrey"><option value="Bogotá"><option value="Medellín"><option value="Lima"><option value="Santiago"><option value="Buenos Aires"><option value="São Paulo"><option value="Rio de Janeiro"><option value="Brasília"><option value="Montevideo"><option value="Quito"><option value="Caracas"><option value="Panama"><option value="San José"><option value="La Havane"><option value="Port-au-Prince"><option value="Tokyo"><option value="Osaka"><option value="Kyoto"><option value="Yokohama"><option value="Nagoya"><option value="Fukuoka"><option value="Sapporo"><option value="Séoul"><option value="Busan"><option value="Pékin"><option value="Shanghai"><option value="Shenzhen"><option value="Canton"><option value="Hangzhou"><option value="Chengdu"><option value="Hong Kong"><option value="Taipei"><option value="Singapour"><option value="Kuala Lumpur"><option value="Bangkok"><option value="Chiang Mai"><option value="Hô Chi Minh-Ville"><option value="Hanoï"><option value="Manille"><option value="Jakarta"><option value="Bali"><option value="Phnom Penh"><option value="Yangon"><option value="Bangalore"><option value="Mumbai"><option value="Delhi"><option value="Hyderabad"><option value="Chennai"><option value="Pune"><option value="Calcutta"><option value="Ahmedabad"><option value="Colombo"><option value="Katmandou"><option value="Dacca"><option value="Karachi"><option value="Lahore"><option value="Islamabad"><option value="Dubaï"><option value="Abu Dhabi"><option value="Doha"><option value="Riyad"><option value="Djeddah"><option value="Koweït"><option value="Amman"><option value="Beyrouth"><option value="Tel Aviv"><option value="Jérusalem"><option value="Sydney"><option value="Melbourne"><option value="Brisbane"><option value="Perth"><option value="Canberra"><option value="Auckland"><option value="Wellington"><option value="Full Remote"><option value="En ligne"></datalist>
+        <input type="text" id="jobCity" class="filter-input" data-i18n-placeholder="filter_by_city" placeholder="Filtrer par ville" list="citiesList">
+        <select id="jobContract" class="filter-select">
+          <option value="" data-i18n="jobs_all_contracts">Tous les contrats</option>
+          <option value="cdi" data-i18n="jobs_cdi">CDI / CDD</option>
+          <option value="alternance" data-i18n="jobs_apprenticeship">Alternance</option>
+          <option value="stage" data-i18n="jobs_internship">Stage</option>
+        </select>
+        <select id="jobWorkMode" class="filter-select">
+          <option value="" data-i18n="jobs_all_modes">Tous les modes</option>
+          <option value="remote">Full Remote</option>
+          <option value="hybride" data-i18n="jobs_hybrid">Hybride</option>
+          <option value="sur-site" data-i18n="jobs_onsite">Sur site</option>
+        </select>
+      </div>
+      <div class="jobs-grid" id="jobsGrid">
+        <article class="job-card" data-contract="cdi" data-country-code="FR" data-city="lyon" data-workmode="hybride" data-keywords="fullstack react node junior">
+          <div class="job-details">
+            <div class="job-header"><h3 class="job-title" data-i18n="job1_title">Développeuse Fullstack Junior</h3><span class="badge-job cdi" data-i18n="jobs_cdi_short">CDI</span></div>
+            <div class="company-info" data-i18n="job1_company">TechCorp · Lyon (Télétravail hybride)</div>
+            <div class="job-tags"><span class="job-tag">React</span><span class="job-tag">Node.js</span><span class="job-tag" data-i18n="job1_tag3">Junior accepté</span></div>
+          </div>
+          <a href="#" class="btn-apply" onclick="return false;" data-i18n="jobs_view_offer">Voir l'offre</a>
+        </article>
+        <article class="job-card" data-contract="alternance" data-country-code="DE" data-city="berlin full remote" data-workmode="remote" data-keywords="cloud devops aws docker">
+          <div class="job-details">
+            <div class="job-header"><h3 class="job-title" data-i18n="job2_title">Alternance - Ingénieure Cloud & DevOps</h3><span class="badge-job" data-i18n="jobs_apprenticeship">Alternance</span></div>
+            <div class="company-info" data-i18n="job2_company">CloudScale · Berlin, Allemagne / Full Remote</div>
+            <div class="job-tags"><span class="job-tag">AWS</span><span class="job-tag">Docker</span><span class="job-tag" data-i18n="job2_tag3">12-24 mois</span></div>
+          </div>
+          <a href="#" class="btn-apply" onclick="return false;" data-i18n="jobs_view_offer">Voir l'offre</a>
+        </article>
+        <article class="job-card" data-contract="stage" data-country-code="FR" data-city="bordeaux" data-workmode="sur-site" data-keywords="cybersécurité reseau python">
+          <div class="job-details">
+            <div class="job-header"><h3 class="job-title" data-i18n="job3_title">Stage - Analyste Cybersécurité</h3><span class="badge-job" data-i18n="jobs_internship">Stage</span></div>
+            <div class="company-info" data-i18n="job3_company">SecureLab · Bordeaux</div>
+            <div class="job-tags"><span class="job-tag">Python</span><span class="job-tag" data-i18n="job3_tag2">Réseau</span><span class="job-tag" data-i18n="job3_tag3">6 mois</span></div>
+          </div>
+          <a href="#" class="btn-apply" onclick="return false;" data-i18n="jobs_view_offer">Voir l'offre</a>
+        </article>
+        <article class="job-card" data-contract="cdi" data-country-code="MA" data-city="casablanca" data-workmode="sur-site" data-keywords="reseau cisco">
+          <div class="job-details">
+            <div class="job-header"><h3 class="job-title" data-i18n="job4_title"></h3><span class="badge-job cdi" data-i18n="jobs_cdi_short">CDI</span></div>
+            <div class="company-info" data-i18n="job4_company"></div>
+            <div class="job-tags"><span class="job-tag">Cisco</span><span class="job-tag">BGP</span></div>
+          </div>
+          <a href="#" class="btn-apply" onclick="return false;" data-i18n="jobs_view_offer">Voir l'offre</a>
+        </article>
+        <article class="job-card" data-contract="stage" data-country-code="CA" data-city="montréal montreal" data-workmode="hybride" data-keywords="data python sql">
+          <div class="job-details">
+            <div class="job-header"><h3 class="job-title" data-i18n="job5_title"></h3><span class="badge-job" data-i18n="jobs_internship">Stage</span></div>
+            <div class="company-info" data-i18n="job5_company"></div>
+            <div class="job-tags"><span class="job-tag">SQL</span><span class="job-tag">Python</span></div>
+          </div>
+          <a href="#" class="btn-apply" onclick="return false;" data-i18n="jobs_view_offer">Voir l'offre</a>
+        </article>
+        <article class="job-card" data-contract="cdi" data-country-code="JP" data-city="tokyo" data-workmode="remote" data-keywords="soc cybersécurité">
+          <div class="job-details">
+            <div class="job-header"><h3 class="job-title" data-i18n="job6_title"></h3><span class="badge-job cdi" data-i18n="jobs_cdi_short">CDI</span></div>
+            <div class="company-info" data-i18n="job6_company"></div>
+            <div class="job-tags"><span class="job-tag">SIEM</span><span class="job-tag">Linux</span></div>
+          </div>
+          <a href="#" class="btn-apply" onclick="return false;" data-i18n="jobs_view_offer">Voir l'offre</a>
+        </article>
+        <div class="no-results" id="jobsNoResults" data-i18n="jobs_no_results">Aucune offre ne correspond à ta recherche.</div>
+      </div>
+    </section>
+
+    <!-- ============ Événements ============ -->
+    <section class="screen" id="screen-evenements" hidden>
+      <div class="page-title">
+        <h1 data-i18n="events_title">Événements</h1>
+        <p data-i18n="events_subtitle">Webinaires, ateliers pratiques et rencontres réseau bienveillants.</p>
+      </div>
+      <div class="filters-bar">
+        <input type="text" id="evCountry" class="filter-input" data-i18n-placeholder="filter_country_ph" placeholder="Filtrer par pays" list="countriesList" autocomplete="off">
+        <input type="text" id="evCity" class="filter-input" data-i18n-placeholder="filter_by_city" placeholder="Filtrer par ville" list="citiesList">
+        <select id="evFormat" class="filter-select">
+          <option value="" data-i18n="events_all_formats">Tous les formats</option>
+          <option value="online" data-i18n="events_online">En ligne</option>
+          <option value="presentiel" data-i18n="events_inperson">Présentiel</option>
+        </select>
+        <select id="evTopic" class="filter-select">
+          <option value="" data-i18n="events_all_topics">Toutes les thématiques</option>
+          <option value="atelier" data-i18n="events_workshop">Atelier pratique</option>
+          <option value="table-ronde" data-i18n="events_roundtable">Table ronde</option>
+          <option value="networking">Networking</option>
+        </select>
+      </div>
+      <div class="events-grid" id="eventsGrid">
+        <article class="event-card" data-registered="true" data-format="online" data-topic="atelier" data-country-code="" data-city="en ligne online google meet" data-keywords="docker devops conteneurisaton">
+          <div class="event-date"><span class="day">12</span><span class="month">Oct</span></div>
+          <div class="event-info">
+            <span class="event-type online" data-i18n="events_online">En ligne</span>
+            <h3 class="event-title" data-i18n="event1_title">Atelier : Débuter avec Docker et la conteneurisation</h3>
+            <p class="event-desc" data-i18n="event1_desc">Un atelier pratique de 1h30 pour comprendre les bases de Docker sans prise de tête.</p>
+            <div class="event-meta"><span>18h30 - 20h00</span><span>Google Meet</span></div>
+          </div>
+          <a href="#" class="btn-register" onclick="return false;" data-i18n="events_register">S'inscrire</a>
+        </article>
+        <article class="event-card" data-format="presentiel" data-topic="table-ronde" data-country-code="FR" data-city="paris" data-keywords="salaire negociation carriere">
+          <div class="event-date"><span class="day">28</span><span class="month">Oct</span></div>
+          <div class="event-info">
+            <span class="event-type" data-i18n="events_inperson">Présentiel</span>
+            <h3 class="event-title" data-i18n="event2_title">Table ronde : Négocier son premier salaire dans la tech</h3>
+            <p class="event-desc" data-i18n="event2_desc">Conseils et retours d'expérience pour aborder l'entretien de rémunération avec assurance.</p>
+            <div class="event-meta"><span>19h00 - 21h00</span><span>Paris (11e)</span></div>
+          </div>
+          <a href="#" class="btn-register" onclick="return false;" data-i18n="events_register">S'inscrire</a>
+        </article>
+        <article class="event-card" data-format="presentiel" data-topic="networking" data-country-code="FR" data-city="lyon" data-keywords="apéro rencontre reseau sororite">
+          <div class="event-date"><span class="day">05</span><span class="month">Nov</span></div>
+          <div class="event-info">
+            <span class="event-type" data-i18n="events_inperson">Présentiel</span>
+            <h3 class="event-title" data-i18n="event3_title">Apéro réseau sororIT Lyon</h3>
+            <p class="event-desc" data-i18n="event3_desc">Moment convivial pour échanger entre développeuses, ingénieures et étudiantes de la région.</p>
+            <div class="event-meta"><span>18h30 - 21h00</span><span>Lyon (Part-Dieu)</span></div>
+          </div>
+          <a href="#" class="btn-register" onclick="return false;" data-i18n="events_register">S'inscrire</a>
+        </article>
+        <article class="event-card" data-format="presentiel" data-topic="networking" data-country-code="MA" data-city="casablanca" data-keywords="reseau femmes">
+          <div class="event-date"><span class="day">14</span><span class="month">Nov</span></div>
+          <div class="event-info">
+            <span class="event-type" data-i18n="events_inperson">Présentiel</span>
+            <h3 class="event-title" data-i18n="event4_title"></h3>
+            <p class="event-desc" data-i18n="event4_desc"></p>
+            <div class="event-meta"><span>18h00 - 20h30</span><span>Casablanca</span></div>
+          </div>
+          <a href="#" class="btn-register" onclick="return false;" data-i18n="events_register">S'inscrire</a>
+        </article>
+        <article class="event-card" data-format="presentiel" data-topic="atelier" data-country-code="CA" data-city="montréal montreal" data-keywords="python atelier débutantes">
+          <div class="event-date"><span class="day">21</span><span class="month">Nov</span></div>
+          <div class="event-info">
+            <span class="event-type" data-i18n="events_inperson">Présentiel</span>
+            <h3 class="event-title" data-i18n="event5_title"></h3>
+            <p class="event-desc" data-i18n="event5_desc"></p>
+            <div class="event-meta"><span>17h30 - 19h30</span><span>Montréal (Plateau)</span></div>
+          </div>
+          <a href="#" class="btn-register" onclick="return false;" data-i18n="events_register">S'inscrire</a>
+        </article>
+        <div class="no-results" id="evNoResults" data-i18n="events_no_results">Aucun événement ne correspond à ta recherche.</div>
+      </div>
+    </section>
+
+    <!-- ============ Échanges ============ -->
+    <section class="screen" id="screen-echanges" hidden>
+      <div class="page-title">
+        <h1 data-i18n="chat_title">Vos échanges</h1>
+        <p data-i18n="chat_subtitle">Messages directs entre membres (limités à 100 mots par message).</p>
+      </div>
+      <div class="chat-container" id="chatContainer">
+        <aside class="chat-sidebar">
+          <div class="sidebar-header" data-i18n="chat_discussions">Discussions</div>
+          <div class="contact-item active" data-contact="zara">
+            <div class="chat-avatar">ZL</div>
+            <div class="contact-info"><div class="name">Zara L.</div><div class="preview" data-i18n="chat_preview_zara">Merci pour ton retour sur mon CV !</div></div>
+          </div>
+          <div class="contact-item" data-contact="clara">
+            <div class="chat-avatar" style="background:#0369a1;">CM</div>
+            <div class="contact-info"><div class="name">Clara M.</div><div class="preview" data-i18n="chat_preview_clara">On se croise à l'événement ?</div></div>
+          </div>
+        </aside>
+        <section class="chat-main">
+          <div class="chat-header">
+            <button type="button" class="chat-back-btn" id="chatBackBtn" data-i18n-aria="chat_back_aria" aria-label="Retour aux discussions">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <span id="chatHeaderTitle" data-i18n="chat_with_zara">Discussion avec Zara L.</span>
+          </div>
+          <div class="messages-list" id="messagesList">
+            <div class="msg received" data-i18n="chat_msg1">Coucou ! Tu penses que mon profil correspond à l'offre chez TechCorp ?</div>
+            <div class="msg sent" data-i18n="chat_msg2">Salut Zara, oui totalement ! Tes projets en React feront la différence. N'hésite pas à postuler directement.</div>
+            <div class="msg received" data-i18n="chat_msg3">Merci pour ton retour sur mon CV ! Je tente le coup.</div>
+          </div>
+          <div class="chat-input-box">
+            <textarea id="messageInput" class="chat-textarea" data-i18n-placeholder="chat_input_ph" placeholder="Rédige ton message..."></textarea>
+            <div class="input-footer">
+              <span id="wordCounter" class="word-counter" data-i18n="chat_word_counter">0 / 100 mots</span>
+              <button type="button" id="sendBtn" class="btn-send" data-i18n="chat_send">Envoyer</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ============ Mon Espace ============ -->
+    <section class="screen" id="screen-mon-espace" hidden>
+      <div id="profilePublic">
+        <div class="profile-hero">
+          <div class="profile-cover" aria-hidden="true"><svg viewBox="0 0 600 140" preserveAspectRatio="xMidYMid slice"><rect width="600" height="140" fill="#e4d9f5"/><rect x="40" y="26" width="120" height="120" rx="22" fill="#f3c9d9"/><rect x="190" y="-20" width="110" height="110" rx="22" fill="#35215e" opacity=".85"/><circle cx="380" cy="60" r="46" fill="#c96b93"/><rect x="450" y="40" width="150" height="120" rx="22" fill="#fffdfb" opacity=".7"/><circle cx="250" cy="120" r="16" fill="#35215e" opacity=".4"/></svg></div>
+          <div class="profile-hero-body">
+            <div class="profile-avatar profile-avatar-lg" id="profileAvatarSelf">S</div>
+            <div class="profile-hero-main">
+              <h2 id="profileNameSelf">Sofia B.</h2>
+              <p class="profile-role" id="profileRoleSelf" data-i18n="myspace_role">Étudiante en Déploiement Cloud & DevOps</p>
+              <p class="profile-meta"><span id="profileCitySelf">Paris</span> · <span id="profileSchoolSelf">EFREI Paris</span></p>
+              <span class="badge-status" id="profileStatusSelf" data-i18n="myspace_status">En recherche d'alternance</span>
+              <p class="profile-bio" id="profileBioSelf">En déploiement Cloud &amp; DevOps, j'aime autant apprendre que dépanner les autres.</p>
+              <div class="profile-actions">
+                <button type="button" class="btn-edit-profile" id="btnEditProfile" data-i18n="profile_edit_btn">Modifier le profil</button>
+                <button type="button" class="btn-edit-profile" id="btnActivity" data-i18n="profile_activity_btn">Mon activité</button>
+                <button type="button" class="btn-edit-profile" id="btnSaved" data-i18n="profile_saved_btn">Enregistrés</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section-box">
+          <div class="seek-offer">
+            <div class="so-col so-seek"><div class="section-title" data-i18n="profile_seeking">Ce que je cherche</div><p id="profileSeek">Des retours d'expérience DevOps et une alternance en cloud.</p></div>
+            <div class="so-col so-offer"><div class="section-title" data-i18n="profile_offering">Ce que je propose</div><p id="profileOffer">Relecture de CV, aide sur Docker et sur les premiers pipelines CI/CD.</p></div>
+          </div>
+          <div class="section-title" data-i18n="profile_skills">Compétences</div>
+          <div class="skill-chips" id="profileSkills"></div>
+        </div>
+        <div class="section-box">
+          <div class="saved-tabs" id="profileTabs"></div>
+          <div id="profilePostsPane">
+            <input type="search" id="profileSearch" class="filter-input profile-search" data-i18n-placeholder="profile_search_ph" placeholder="Rechercher dans mes publications..." autocomplete="off">
+            <div class="profile-posts" id="profilePostsList"></div>
+            <p class="profile-empty" id="profileNoMatch" hidden></p>
+          </div>
+          <div id="profileRepostsPane" hidden>
+            <div class="profile-posts" id="profileRepostsList"></div>
+            <p class="profile-empty" id="profileRepostsEmpty" hidden></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="profileSaved" hidden>
+        <button type="button" class="back-link js-profile-back" data-i18n="profile_back">← Retour au profil</button>
+        <div class="section-box">
+          <div class="section-title" data-i18n="saved_title">Enregistrés</div>
+          <p class="private-hint" data-i18n="profile_private_hint">Visible uniquement par toi.</p>
+          <div class="saved-tabs" id="savedTabs"></div>
+          <div class="activity-list" id="savedList"></div>
+        </div>
+      </div>
+
+      <div id="profileEdit" hidden>
+        <button type="button" class="back-link js-profile-back" data-i18n="profile_back">← Retour au profil</button>
+      <div class="section-box">
+        <div class="section-title" data-i18n="settings_title">Paramètres du profil</div>
+        <form id="settingsForm" class="settings-form" onsubmit="return false;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="settings_name_label">Nom affiché</label>
+            <input type="text" id="setName" class="input-field" value="Sofia B.">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="settings_role_label">Rôle / parcours</label>
+            <input type="text" id="setRole" class="input-field" value="Étudiante en Déploiement Cloud &amp; DevOps">
+          </div>
+          <div class="form-group two-col">
+            <div>
+              <label class="form-label" data-i18n="settings_city_label">Ville</label>
+              <input type="text" id="setCity" class="input-field" value="Paris">
+            </div>
+            <div>
+              <label class="form-label" data-i18n="settings_school_label">École / Formation</label>
+              <input type="text" id="setSchool" class="input-field" value="EFREI Paris">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="settings_status_label">Statut</label>
+            <select id="setStatus" class="filter-select" style="width:100%;">
+              <option value="alternance" selected data-i18n="settings_status_apprenticeship">En recherche d'alternance</option>
+              <option value="stage" data-i18n="settings_status_internship">En recherche de stage</option>
+              <option value="poste" data-i18n="settings_status_job">En poste</option>
+              <option value="dispo" data-i18n="settings_status_available">Disponible pour échanger</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="settings_bio_label">Bio courte</label>
+            <textarea id="setBio" class="textarea-field" data-i18n-placeholder="settings_bio_ph" placeholder="Un mot sur toi, ton parcours ou ce que tu cherches...">En déploiement Cloud &amp; DevOps, j'aime autant apprendre que dépanner les autres.</textarea>
+          </div>
+          <div class="form-group"><label class="form-label" data-i18n="profile_seeking">Ce que je cherche</label><textarea id="setSeek" class="textarea-field"></textarea></div>
+          <div class="form-group"><label class="form-label" data-i18n="profile_offering">Ce que je propose</label><textarea id="setOffer" class="textarea-field"></textarea></div>
+          <div class="form-group"><label class="form-label" data-i18n="profile_skills">Compétences</label><input type="text" id="setSkills" class="input-field" data-i18n-placeholder="settings_skills_ph" placeholder="Séparées par des virgules"></div>
+          <label class="settings-toggle">
+            <input type="checkbox" id="setContact" checked>
+            <span data-i18n="settings_contact_label">Autoriser les messages privés d'autres membres</span>
+          </label>
+          <button type="submit" class="btn-publish" id="settingsSave" data-i18n="settings_save">Enregistrer les modifications</button>
+        </form>
+      </div>
+      </div>
+
+      <div id="profileActivity" hidden>
+        <button type="button" class="back-link js-profile-back" data-i18n="profile_back">← Retour au profil</button>
+        <div class="section-box">
+          <div class="section-title" data-i18n="profile_activity_title">Mon activité</div>
+          <p class="private-hint" data-i18n="profile_private_hint">Visible uniquement par toi.</p>
+          <div class="stat-grid">
+            <div class="stat-card"><strong id="statPosts">0</strong><span data-i18n="profile_stat_posts">publications</span></div>
+            <div class="stat-card"><strong id="statLikes">0</strong><span data-i18n="activity_likes">soutiens reçus</span></div>
+            <div class="stat-card"><strong id="statComments">0</strong><span data-i18n="activity_comments">commentaires reçus</span></div>
+            <div class="stat-card"><strong id="statChats">0</strong><span data-i18n="profile_stat_contacts">échanges</span></div>
+            <div class="stat-card"><strong id="statEvents">0</strong><span id="statEventsLabel"></span></div>
+          </div>
+        </div>
+        <div class="section-box">
+          <div class="section-title" data-i18n="activity_by_post">Détail par publication</div>
+          <div class="activity-list" id="activityPostsList"></div>
+        </div>
+      <div class="section-box">
+        <div class="section-title" data-i18n="activity_events_title">Mes événements</div>
+        <div class="activity-list" id="activityEventsList"></div>
+        <div class="profile-empty" id="eventsEmpty" hidden></div>
+      </div>
+      </div>
+
+      <div id="profileEvent" hidden>
+        <button type="button" class="back-link js-back-activity" data-i18n="event_back">← Retour à mon activité</button>
+        <div class="section-box event-detail" id="eventDetailBody"></div>
+      </div>
+    </section>
+
+    <!-- ============ Publier ============ -->
+    <section class="screen" id="screen-publier" hidden>
+      <div class="page-title">
+        <h1>Exprimer sa voix</h1>
+        <p data-i18n="publish_subtitle">Partage un morceau d'expérience, un conseil ou un projet avec la communauté.</p>
+      </div>
+      <div class="editor-layout">
+        <form class="editor-card" id="postForm" onsubmit="return false;">
+          <div class="form-group">
+            <label class="form-label" data-i18n="publish_format_label">Format du partage</label>
+            <div class="chips-grid" id="chipsGrid">
+              <button type="button" class="chip-btn active" data-cat="Expérience" data-cat-en="Experience" data-i18n="tag_experience">Expérience</button>
+              <button type="button" class="chip-btn" data-cat="Avis tech" data-cat-en="Tech opinion" data-i18n="publish_cat_opinion">Avis tech</button>
+              <button type="button" class="chip-btn" data-cat="Projet" data-cat-en="Project" data-i18n="tag_project">Projet</button>
+              <button type="button" class="chip-btn" data-cat="Ressource" data-cat-en="Resource" data-i18n="publish_cat_resource">Ressource</button>
+              <button type="button" class="chip-btn" data-cat="Conseil" data-cat-en="Advice" data-i18n="publish_cat_advice">Conseil</button>
+              <button type="button" class="chip-btn" data-cat="Encouragement" data-cat-en="Encouragement" data-i18n="publish_cat_encourage">Encouragement</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="publish_title_label">Titre</label>
+            <input type="text" id="inputTitle" class="input-field" data-i18n-placeholder="publish_title_ph" placeholder="Ex: Ce que j'aurais aimé savoir avant de débuter Python...">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="publish_message_label">Message</label>
+            <textarea id="inputContent" class="textarea-field" data-i18n-placeholder="publish_message_ph" placeholder="Raconte ton histoire, tes réflexions ou tes ressources..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="publish_tags_label">Mots-clés (séparés par des virgules)</label>
+            <input type="text" id="inputTags" class="input-field" data-i18n-placeholder="publish_tags_ph" placeholder="python, apprentissage, conseil">
+          </div>
+          <button type="submit" class="btn-publish" data-i18n="publish_submit">Publier dans la communauté</button>
+        </form>
+
+        <div class="preview-section">
+          <span class="preview-header-title" data-i18n="publish_preview_label">Aperçu direct</span>
+          <article class="pv-post-card">
+            <div class="pv-post-header">
+              <div class="prev-author-info">
+                <div class="prev-avatar" id="prevAvatar">M</div>
+                <div><div class="prev-name" id="prevName">Maya</div><div class="prev-sub" id="prevSub">Membre sororIT</div></div>
+              </div>
+              <span class="pv-badge-post" id="prevCategory" data-i18n="tag_experience">Expérience</span>
+            </div>
+            <h3 class="preview-title" id="prevTitle" data-i18n="publish_preview_title_ph">Ton titre apparaîtra ici...</h3>
+            <p class="preview-text" id="prevContent" data-i18n="publish_preview_content_ph">Le contenu de ton message s'affichera au fur et à mesure que tu l'écris à gauche.</p>
+            <div class="tags-container" id="prevTags"><span class="tag-chip" data-i18n="publish_preview_tag_ph">exemple</span></div>
+            <div class="reactions-demo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
+            </div>
+          </article>
+          <div class="tip-box" data-i18n-html="publish_tip"><strong>Espace sécurisé :</strong> Les réponses publiques sont désactivées. Les membres intéressées pourront uniquement t'envoyer un message privé structuré.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ À propos ============ -->
+    <section class="screen" id="screen-a-propos" hidden>
+      <div class="page-title"><h1 data-i18n="about_title">À propos de sororIT</h1></div>
+      <article class="about-card">
+        <h2 data-i18n="about_mission_title">Notre mission</h2>
+        <p data-i18n-html="about_mission_text"><strong>sororIT</strong> est un réseau d'entraide dédié aux femmes dans l'informatique et la tech. L'objectif est de briser l'isolement, de faciliter la recherche d'opportunités et de favoriser les échanges d'expérience.</p>
+        <h2 data-i18n="about_pillars_title">Nos piliers</h2>
+        <ul class="values-list">
+          <li data-i18n-html="about_pillar1"><strong>Bienveillance :</strong> Un espace sécurisé sans jugement pour poser des questions.</li>
+          <li data-i18n-html="about_pillar2"><strong>Entraide :</strong> Des opportunités d'emploi, de stage et des ressources partagées librement.</li>
+          <li data-i18n-html="about_pillar3"><strong>Concision :</strong> Des échanges directs et sans spam pour aller à l'essentiel.</li>
+        </ul>
+        <h2 data-i18n="about_charter_title">Charte de la communauté</h2>
+        <p data-i18n="about_charter_text">Les messages privés sont limités à 100 mots afin d'encourager des prises de contact ciblées, respectueuses du temps de chacune.</p>
+      </article>
+    </section>
+
+  </main>
+  </div>
+
+  <!-- ============ Aperçu de profil ============ -->
+  <div class="profile-modal-backdrop" id="profileModalBackdrop">
+    <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalName">
+      <button type="button" class="profile-modal-close" id="profileModalClose" data-i18n-aria="modal_close" aria-label="Fermer">&times;</button>
+      <div class="profile-modal-avatar" id="profileModalAvatar"></div>
+      <h2 id="profileModalName"></h2>
+      <p class="profile-modal-meta" id="profileModalMeta"></p>
+      <p class="profile-modal-bio" id="profileModalBio"></p>
+      <button type="button" class="btn-primary profile-modal-msg" id="profileModalMsgBtn" data-i18n="modal_send_message">Envoyer un message privé</button>
+    </div>
+  </div>
+  <div class="toast" id="appToast"></div>
+
+<script>
+  // ---------- Screen switching ----------
+  const navButtons = document.querySelectorAll('[data-screen]');
+  const screens = document.querySelectorAll('.screen');
+  function showScreen(name) {
+    screens.forEach(s => { s.hidden = (s.id !== 'screen-' + name); });
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.screen === name));
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  }
+  navButtons.forEach(btn => btn.addEventListener('click', () => showScreen(btn.dataset.screen)));
+
+  // ---------- Pays (tous les pays du monde, autocomplétion) ----------
+  const ISO_CODES = "AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW".split(' ');
+  const regionNames = {};
+  function regionName(lang, code) {
+    if (!regionNames[lang]) regionNames[lang] = new Intl.DisplayNames([lang], { type: 'region' });
+    return regionNames[lang].of(code);
+  }
+  const normText = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  function fillCountryList(lang) {
+    const dl = document.getElementById('countriesList');
+    if (!dl) return;
+    const names = ISO_CODES.map(c => regionName(lang, c)).sort((a, b) => a.localeCompare(b, lang));
+    dl.innerHTML = names.map(n => '<option value="' + n.replace(/"/g, '&quot;') + '">').join('');
+  }
+  function countryMatches(typed, code) {
+    const q = normText(typed || '');
+    if (!q) return true;
+    if (!code) return false;
+    return ['fr', 'en'].some(l => normText(regionName(l, code)).includes(q));
+  }
+
+  // ---------- i18n (FR/EN) ----------
+  window.currentAppLang = (function(){ try { return localStorage.getItem('sororit_app_lang') || 'fr'; } catch(e) { return 'fr'; } })();
+  const APP_I18N = {
+    fr: {
+      back_to_site: "← Retour au site",
+      post_detail_back: "← Retour",
+      share_something: "Partager quelque chose",
+      badge_community: "Communauté",
+      home_hero_text: "Une communauté pour les femmes dans la tech : partager des expériences, des projets, des ressources, des avis tech, des événements et des opportunités, sans commentaires publics, sans classement, sans pression.",
+      home_see_publications: "Voir les publications",
+      home_info_banner: "Chaque femme peut partager quelque chose d'utile : une expérience, une ressource, un parcours, une idée ou un encouragement.",
+      home_recent_posts: "Quelques publications récentes",
+      bio_yuki: "Alternante cloud · Tokyo, Japon · il y a 3h ",
+      tag_experience: "Expérience",
+      post_yuki_title: "Ce que j'ai appris pendant ma première alternance",
+      post_yuki_body: "Au début, j'avais peur de poser trop de questions. Avec le temps, j'ai compris qu'une bonne question peut aussi montrer qu'on veut comprendre sérieusement.",
+      tag_apprenticeship: "alternance",
+      tag_company: "entreprise",
+      action_reply: "Répondre",
+      post_open: "Voir la publication →",
+      action_report: "Signaler",
+      bio_lina: "Étudiante réseau · Bruxelle, Belgique · Il y a 2s",
+      tag_project: "Projet",
+      post_lina_title: "Je crée un outil pour réviser les commandes réseau",
+      post_lina_body: "C'est un petit projet, mais il m'aide à apprendre. Je partage l'idée parce que commencer petit reste une vraie avancée.",
+      tag_networking: "réseau",
+      pub_title: "Publications",
+      pub_subtitle: "Consulte les échanges, questions et projets partagés par la communauté.",
+      pub_cat_all: "Toutes les thématiques",
+      pub_cat_help: "Demandes d'entraide",
+      pub_cat_discussion: "Discussions",
+      pub_cat_project: "Projets / Collaborations",
+      pub_cat_advice: "Conseils & REX",
+      meta_priya: "Ingénieure DevOps · Bangalore, Inde · Il y a 2h",
+      pub_cat_help_singular: "Demande d'entraide",
+      post_priya_body: "Hello la communauté ! Est-ce que quelqu'un aurait 15 min pour m'aider sur un blocage de volume Docker dans mon projet DevOps ? Je bloque dessus depuis ce matin 😅 Merci d'avance !",
+      meta_aminata: "Responsable technique · Montréal, Canada · il y a 1s",
+      pub_cat_project_label: "Projet / Collaboration",
+      post_aminata_body: "On cherche une développeuse React pour rejoindre notre équipe lors du Hackathon Tech4Good le mois prochain. Ambiance très sympa et débutantes bienvenues ! N'hésitez pas à me contacter en MP.",
+      meta_mei: "Ingénieure Full Remote · Singapour · Il y a 5j",
+      pub_cat_advice_singular: "Conseil & REX",
+      post_mei_body: "Petit retour après 6 mois en full remote : fixez-vous des horaires stricts et prévoyez des vraies pauses ! La santé mentale passe avant tout quand on travaille chez soi. 💜",
+      pub_no_results: "Aucune publication ne correspond à ta recherche.",
+      jobs_title: "Opportunités",
+      jobs_subtitle: "Offres de stages, alternances et emplois partagées par la communauté.",
+      jobs_all_contracts: "Tous les contrats",
+      jobs_cdi: "CDI / CDD",
+      jobs_apprenticeship: "Alternance",
+      jobs_internship: "Stage",
+      jobs_all_modes: "Tous les modes",
+      jobs_hybrid: "Hybride",
+      jobs_onsite: "Sur site",
+      job1_title: "Développeuse Fullstack Junior",
+      jobs_cdi_short: "CDI",
+      job1_company: "TechCorp · Lyon (Télétravail hybride)",
+      job1_tag3: "Junior accepté",
+      jobs_view_offer: "Voir l'offre",
+      job2_title: "Alternance - Ingénieure Cloud & DevOps",
+      job2_company: "CloudScale · Berlin, Allemagne / Full Remote",
+      job2_tag3: "12-24 mois",
+      job3_title: "Stage - Analyste Cybersécurité",
+      job3_company: "SecureLab · Bordeaux",
+      job3_tag2: "Réseau",
+      job3_tag3: "6 mois",
+      jobs_no_results: "Aucune offre ne correspond à ta recherche.",
+      events_title: "Événements",
+      events_subtitle: "Webinaires, ateliers pratiques et rencontres réseau bienveillants.",
+      events_all_formats: "Tous les formats",
+      events_online: "En ligne",
+      events_inperson: "Présentiel",
+      events_all_topics: "Toutes les thématiques",
+      events_workshop: "Atelier pratique",
+      events_roundtable: "Table ronde",
+      event1_title: "Atelier : Débuter avec Docker et la conteneurisation",
+      event1_desc: "Un atelier pratique de 1h30 pour comprendre les bases de Docker sans prise de tête.",
+      events_register: "S'inscrire",
+      event2_title: "Table ronde : Négocier son premier salaire dans la tech",
+      event2_desc: "Conseils et retours d'expérience pour aborder l'entretien de rémunération avec assurance.",
+      event3_title: "Apéro réseau sororIT Lyon",
+      event3_desc: "Moment convivial pour échanger entre développeuses, ingénieures et étudiantes de la région.",
+      events_no_results: "Aucun événement ne correspond à ta recherche.",
+      res_title: "Ressources",
+      res_subtitle: "Guides, cheatsheets et modèles partagés pour progresser dans la tech.",
+      res_all_categories: "Toutes les catégories",
+      res_technical: "Fiches techniques",
+      res_career: "Carrière & Emploi",
+      res_templates: "Modèles & Templates",
+      res1_title: "Guide : Préparer ses entretiens techniques",
+      res1_desc: "Une liste de questions fréquentes et une méthode pour structurer ses réponses lors des entretiens.",
+      res_view_pdf: "Consulter / PDF",
+      res2_tag: "Fiche technique",
+      res2_title: "Cheatsheet Git : Les commandes essentielles",
+      res2_desc: "Aide-mémoire visuel regroupant les commandes Git indispensables au quotidien.",
+      res3_title: "Template Notion : Suivi de candidatures",
+      res3_desc: "Un tableau clé en main pour organiser ses recherches de stage, d'alternance ou de premier emploi.",
+      res_no_results: "Aucune ressource ne correspond à ta recherche.",
+      chat_title: "Vos échanges",
+      chat_subtitle: "Messages directs entre membres (limités à 100 mots par message).",
+      chat_discussions: "Discussions",
+      chat_preview_zara: "Merci pour ton retour sur mon CV !",
+      chat_preview_clara: "On se croise à l'événement ?",
+      chat_with_zara: "Discussion avec Zara L.",
+      chat_msg1: "Coucou ! Tu penses que mon profil correspond à l'offre chez TechCorp ?",
+      chat_msg2: "Salut Zara, oui totalement ! Tes projets en React feront la différence. N'hésite pas à postuler directement.",
+      chat_msg3: "Merci pour ton retour sur mon CV ! Je tente le coup.",
+      chat_back_aria: "Retour aux discussions",
+      chat_with_clara: "Discussion avec Clara M.",
+      chat_msg_clara1: "On se croise à l'événement Women in Tech la semaine prochaine ?",
+      chat_msg_clara2: "Avec plaisir ! Je serai sur le stand mentorat, viens me dire coucou.",
+      chat_msg_clara3: "Parfait, à très vite alors !",
+      chat_send: "Envoyer",
+      chat_word_counter: "0 / 100 mots",
+      chat_word_suffix: " / 100 mots",
+      myspace_title: "Mon espace",
+      myspace_subtitle: "Ton profil, tes activités et tes préférences.",
+      myspace_role: "Étudiante en Déploiement Cloud & DevOps",
+      myspace_status: "En recherche d'alternance",
+      myspace_info_title: "Mes informations",
+      myspace_city_label: "Ville",
+      myspace_school_label: "Écoles / Formation",
+      myspace_contact_label: "Contact public",
+      myspace_contact_value: "Activé (100 mots max)",
+      myspace_activity_title: "Activités récentes",
+      myspace_activity_post_label: "Publication postée",
+      myspace_activity_post_value: "Recherche retour d'expérience DevOps",
+      myspace_activity_event_label: "Événement inscrit",
+      myspace_activity_event_value: "Atelier Docker (12 Oct)",
+      profile_stat_posts: "publications",
+      profile_stat_support: "soutiens",
+      profile_stat_contacts: "échanges",
+      profile_my_posts: "Mes publications",
+      profile_edit_btn: "Modifier le profil",
+      profile_back: "← Retour au profil",
+      profile_private_title: "Ton activité",
+      profile_private_hint: "Visible uniquement par toi.",
+      country_morocco: "Maroc",
+      country_canada: "Canada",
+      country_japan: "Japon",
+      job4_title: "Ingénieure Réseaux Junior",
+      job4_company: "AtlasNet · Casablanca, Maroc",
+      job5_title: "Stage - Développeuse Data",
+      job5_company: "NordData · Montréal, Canada (Hybride)",
+      job6_title: "Analyste SOC Junior",
+      job6_company: "Sakura Sec · Tokyo, Japon (Full Remote)",
+      event4_title: "Rencontre Femmes & Réseaux",
+      event4_desc: "Une soirée pour rencontrer des ingénieures et étudiantes en réseaux et télécoms.",
+      event5_title: "Atelier : Python pour débutantes",
+      event5_desc: "Deux heures pour écrire ses premiers scripts, dans une ambiance sans jugement.",
+      post_yuki_more1: "Les premières semaines, je notais tout dans un carnet : les commandes, les noms des outils, et surtout les questions que je n'osais pas poser. Chaque vendredi, je les relisais avec ma tutrice, et la moitié se réglait en cinq minutes.",
+      post_yuki_more2: "Ce que je retiens : personne ne s'attend à ce que tu saches tout. Ce qu'on attend, c'est que tu cherches d'abord, puis que tu demandes clairement. Depuis, je prépare mes questions avec ce que j'ai déjà essayé, et les réponses sont bien plus utiles.",
+      post_yuki_more3: "Si tu démarres bientôt, garde un carnet, toi aussi. Dans six mois, tu seras surprise de tout ce que tu auras appris.",
+      post_lina_more1: "L'idée est venue d'un constat simple : je relisais mes cours réseau sans jamais pratiquer. J'ai donc écrit un petit programme qui me pose une situation (une adresse, un masque, une route manquante) et me demande la commande à taper.",
+      post_lina_more2: "Pour l'instant il ne gère que ping, traceroute et la configuration d'une interface, mais chaque semaine j'ajoute un exercice. Le plus dur a été de rendre les corrections claires plutôt que juste « faux ».",
+      post_lina_more3: "Si l'un d'entre vous veut le tester ou proposer des exercices, dites-le moi en commentaire. Je le partagerai dès qu'il sera un peu plus propre.",
+      post_priya_title: "Un coup de main sur un volume Docker ?",
+      post_priya_more1: "Voici où j'en suis : mon conteneur démarre, mais les données de la base disparaissent à chaque redémarrage. J'ai ajouté un volume nommé dans mon fichier compose, et pourtant le dossier reste vide côté hôte.",
+      post_priya_more2: "J'ai déjà essayé de recréer le volume, de vérifier les droits sur le dossier, et de relire la documentation. Je soupçonne un souci de chemin, mais je ne vois pas où.",
+      post_priya_more3: "Si tu as 15 minutes, un appel ou quelques messages suffisent. Je posterai la solution ici pour celles qui tomberaient sur le même blocage.",
+      post_aminata_title: "On cherche une développeuse React pour un hackathon",
+      post_aminata_more1: "Le Tech4Good réunit des équipes pendant un week-end pour construire un outil utile à une association. Notre projet : une application simple pour aider des bénévoles à organiser leurs distributions.",
+      post_aminata_more2: "Il nous manque une personne côté interface, avec un peu de React. Pas besoin d'être experte : on travaille en binôme et on s'explique tout au fur et à mesure.",
+      post_aminata_more3: "L'ambiance est bienveillante et il y aura de quoi manger. Écris-moi en message privé si ça te tente, même si tu hésites encore.",
+      post_mei_title: "6 mois en full remote : ce que j'aurais aimé savoir",
+      post_mei_more1: "Au début, je travaillais sans vraie limite : un mail à 22h, une réunion qui déborde, un déjeuner devant l'écran. Au bout de deux mois, j'étais épuisée sans avoir l'impression d'avoir fait plus.",
+      post_mei_more2: "Ce qui m'a aidée : des horaires fixes annoncés à l'équipe, une vraie pause le midi loin du bureau, et une marche à la fin de la journée pour marquer la coupure.",
+      post_mei_more3: "Le télétravail est génial, mais il ne s'organise pas tout seul. Et toi, quelles habitudes t'aident à décrocher ?",
+      filter_country_ph: "Filtrer par pays",
+      post_self1_title: "Recherche retour d'expérience DevOps",
+      post_self1_body: "Bonjour à toutes ! Je cherche des retours d'expérience sur le métier d'ingénieure DevOps : à quoi ressemblent vos journées, quels outils utilisez-vous le plus ?",
+      post_self1_more1: "Je suis en formation de déploiement Cloud & DevOps et je prépare mon alternance. J'aimerais comprendre ce qui est vraiment utile au quotidien, au-delà de ce qu'on voit en cours.",
+      post_self1_more2: "Mes questions : quels outils avez-vous appris sur le tas ? Quelle part de votre temps passe en automatisation, et quelle part en dépannage ? Et qu'auriez-vous aimé savoir avant de commencer ?",
+      post_self1_more3: "Un message court suffit, et si vous préférez en parler de vive voix, je suis disponible en visio. Merci d'avance, ça m'aide énormément !",
+      meta_self1: "Paris · Il y a 2 jours",
+      post_self2_title: "Premier pipeline CI/CD en place, merci pour vos conseils !",
+      post_self2_body: "Grâce à vos conseils de la semaine dernière, mon premier pipeline CI/CD tourne enfin : chaque modification est testée puis déployée automatiquement.",
+      post_self2_more1: "Je suis partie d'une petite application et d'un Dockerfile. À chaque envoi de code, le pipeline lance les tests, construit l'image et la déploie sur un serveur de test.",
+      post_self2_more2: "Le plus long a été de comprendre pourquoi mes tests passaient chez moi mais échouaient sur le serveur : une variable d'environnement oubliée. Depuis, je les liste dans un fichier d'exemple.",
+      post_self2_more3: "Si vous voulez la configuration complète, ou monter le même pipeline à deux, écrivez-moi !",
+      meta_self2: "Paris · Il y a 1 semaine",
+      post_self3_title: "Ce que j'ai appris de mon premier hackathon",
+      post_self3_body: "Deux jours, une équipe de cinq et beaucoup de café : voici ce que mon premier hackathon m'a appris, surtout sur le travail en équipe.",
+      post_self3_more1: "On a passé la première heure à choisir une idée, et c'était la meilleure décision : un projet petit mais terminé vaut mieux qu'un grand projet à moitié fait.",
+      post_self3_more2: "J'ai aussi compris l'importance de répartir les rôles dès le départ : une personne sur l'interface, une sur les données, une pour préparer la présentation finale.",
+      post_self3_more3: "Si tu hésites à t'inscrire à un premier hackathon, fais-le. Personne n'attend que tu sois experte, on attend que tu participes.",
+      meta_self3: "Paris · Il y a 3 semaines",
+      profile_activity_btn: "Mon activité",
+      profile_activity_title: "Mon activité",
+      activity_likes: "soutiens reçus",
+      activity_comments: "commentaires reçus",
+      activity_events: "événement à venir",
+      activity_by_post: "Détail par publication",
+      activity_events_title: "Mes événements",
+      profile_seeking: "Ce que je cherche",
+      profile_offering: "Ce que je propose",
+      profile_skills: "Compétences",
+      profile_saved_btn: "Enregistrés",
+      saved_title: "Enregistrés",
+      profile_reposts: "Repartagées",
+      settings_skills_ph: "Séparées par des virgules",
+      event_back: "← Retour à mon activité",
+      profile_search_ph: "Rechercher dans mes publications...",
+      activity_recent: "Activité récente",
+      settings_title: "Paramètres du profil",
+      settings_name_label: "Nom affiché",
+      settings_role_label: "Rôle / parcours",
+      settings_city_label: "Ville",
+      settings_school_label: "École / Formation",
+      settings_status_label: "Statut",
+      settings_status_apprenticeship: "En recherche d'alternance",
+      settings_status_internship: "En recherche de stage",
+      settings_status_job: "En poste",
+      settings_status_available: "Disponible pour échanger",
+      settings_bio_label: "Bio courte",
+      settings_bio_ph: "Un mot sur toi, ton parcours ou ce que tu cherches...",
+      settings_contact_label: "Autoriser les messages privés d'autres membres",
+      settings_save: "Enregistrer les modifications",
+      publish_subtitle: "Partage un morceau d'expérience, un conseil ou un projet avec la communauté.",
+      publish_format_label: "Format du partage",
+      publish_cat_opinion: "Avis tech",
+      publish_cat_resource: "Ressource",
+      publish_cat_advice: "Conseil",
+      publish_cat_encourage: "Encouragement",
+      publish_title_label: "Titre",
+      publish_message_label: "Message",
+      publish_tags_label: "Mots-clés (séparés par des virgules)",
+      publish_submit: "Publier dans la communauté",
+      publish_preview_label: "Aperçu direct",
+      publish_preview_title_ph: "Ton titre apparaîtra ici...",
+      publish_preview_content_ph: "Le contenu de ton message s'affichera au fur et à mesure que tu l'écris à gauche.",
+      publish_preview_tag_ph: "exemple",
+      about_title: "À propos de sororIT",
+      about_mission_title: "Notre mission",
+      about_pillars_title: "Nos piliers",
+      about_charter_title: "Charte de la communauté",
+      about_charter_text: "Les messages privés sont limités à 100 mots afin d'encourager des prises de contact ciblées, respectueuses du temps de chacune.",
+      modal_send_message: "Envoyer un message privé",
+      modal_close: "Fermer",
+      banner_text: "<strong>Aperçu / maquette</strong>, présentée à womENcourage 2026. Tout le contenu ci-dessous est un exemple fictif, sans compte ni donnée réelle.",
+      publish_tip: "<strong>Espace sécurisé :</strong> Les réponses publiques sont désactivées. Les membres intéressées pourront uniquement t'envoyer un message privé structuré.",
+      about_mission_text: "<strong>sororIT</strong> est un réseau d'entraide dédié aux femmes dans l'informatique et la tech. L'objectif est de briser l'isolement, de faciliter la recherche d'opportunités et de favoriser les échanges d'expérience.",
+      about_pillar1: "<strong>Bienveillance :</strong> Un espace sécurisé sans jugement pour poser des questions.",
+      about_pillar2: "<strong>Entraide :</strong> Des opportunités d'emploi, de stage et des ressources partagées librement.",
+      about_pillar3: "<strong>Concision :</strong> Des échanges directs et sans spam pour aller à l'essentiel.",
+      pub_search_ph: "Rechercher dans les publications...",
+      filter_keyword: "Rechercher un mot-clé",
+      filter_by_city: "Filtrer par ville",
+      filter_all_countries: "Tous les pays",
+      country_germany: "Allemagne",
+      res_search_ph: "Rechercher une ressource...",
+      chat_input_ph: "Rédige ton message...",
+      publish_title_ph: "Ex: Ce que j'aurais aimé savoir avant de débuter Python...",
+      publish_message_ph: "Raconte ton histoire, tes réflexions ou tes ressources...",
+      publish_tags_ph: "python, apprentissage, conseil",
+      nav_home: "Accueil",
+      nav_publications: "Publications",
+      nav_jobs: "Opportunités",
+      nav_events: "Événements",
+      nav_resources: "Ressources",
+      nav_exchanges: "Échanges",
+      nav_myspace: "Mon Espace",
+      nav_about: "À Propos",
+    },
+    en: {
+      back_to_site: "← Back to site",
+      post_detail_back: "← Back",
+      share_something: "Share something",
+      badge_community: "Community",
+      home_hero_text: "A community for women in tech: sharing experiences, projects, resources, tech opinions, events and opportunities, no public comments, no ranking, no pressure.",
+      home_see_publications: "See the publications",
+      home_info_banner: "Every woman can share something useful: an experience, a resource, a journey, an idea or a word of encouragement.",
+      home_recent_posts: "Some recent publications",
+      bio_yuki: "Cloud apprentice · Tokyo, Japan · 3h ago ",
+      tag_experience: "Experience",
+      post_yuki_title: "What I learned during my first work-study placement",
+      post_yuki_body: "At first I was afraid of asking too many questions. Over time I realized a good question can also show you're serious about understanding.",
+      tag_apprenticeship: "apprenticeship",
+      tag_company: "company",
+      action_reply: "Reply",
+      post_open: "View post →",
+      action_report: "Report",
+      bio_lina: "Networking student · Brussels, Belgium · 2w ago",
+      tag_project: "Project",
+      post_lina_title: "I'm building a tool to practice network commands",
+      post_lina_body: "It's a small project, but it's helping me learn. I'm sharing it because starting small is still real progress.",
+      tag_networking: "networking",
+      pub_title: "Publications",
+      pub_subtitle: "Browse the discussions, questions and projects shared by the community.",
+      pub_cat_all: "All topics",
+      pub_cat_help: "Requests for help",
+      pub_cat_discussion: "Discussions",
+      pub_cat_project: "Projects / Collaborations",
+      pub_cat_advice: "Advice & experience",
+      meta_priya: "DevOps Engineer · Bangaluru, Inde · 2h ago",
+      pub_cat_help_singular: "Request for help",
+      post_priya_body: "Hi everyone! Would anyone have 15 min to help me with a Docker volume issue in my DevOps project? I've been stuck since this morning 😅 Thanks in advance!",
+      meta_aminata: "Tech lead · Montréal, Canada · 1w ago",
+      pub_cat_project_label: "Project / Collaboration",
+      post_aminata_body: "We're looking for a React developer to join our team for the Tech4Good Hackathon next month. Really friendly vibe, beginners welcome! Feel free to DM me.",
+      meta_mei: "Full Remote Engineer · Singapore · 5d ago",
+      pub_cat_advice_singular: "Advice & experience",
+      post_mei_body: "A quick takeaway after 6 months fully remote: set yourself strict hours and take real breaks! Mental health comes first when you work from home. 💜",
+      pub_no_results: "No publication matches your search.",
+      jobs_title: "Opportunities",
+      jobs_subtitle: "Internship, apprenticeship and job offers shared by the community.",
+      jobs_all_contracts: "All contract types",
+      jobs_cdi: "Permanent / fixed-term",
+      jobs_apprenticeship: "Apprenticeship",
+      jobs_internship: "Internship",
+      jobs_all_modes: "All work modes",
+      jobs_hybrid: "Hybrid",
+      jobs_onsite: "On-site",
+      job1_title: "Junior Fullstack Developer",
+      jobs_cdi_short: "Permanent",
+      job1_company: "TechCorp · Lyon (Hybrid remote)",
+      job1_tag3: "Juniors welcome",
+      jobs_view_offer: "View offer",
+      job2_company: "CloudScale · Berlin, Germany / Full Remote",
+      job2_tag3: "12-24 months",
+      job3_title: "Internship - Cybersecurity Analyst",
+      job3_company: "SecureLab · Bordeaux",
+      job3_tag2: "Networking",
+      job3_tag3: "6 months",
+      jobs_no_results: "No offer matches your search.",
+      events_title: "Events",
+      events_subtitle: "Webinars, hands-on workshops and friendly networking meetups.",
+      events_all_formats: "All formats",
+      events_online: "Online",
+      events_inperson: "In person",
+      events_all_topics: "All topics",
+      events_workshop: "Hands-on workshop",
+      events_roundtable: "Panel discussion",
+      event1_title: "Workshop: Getting started with Docker and containerization",
+      event1_desc: "A 1h30 hands-on workshop to understand the basics of Docker without the headache.",
+      events_register: "Register",
+      event2_title: "Panel: Negotiating your first tech salary",
+      event2_desc: "Tips and first-hand experience for tackling the compensation talk with confidence.",
+      event3_title: "sororIT Lyon networking meetup",
+      event3_desc: "A friendly get-together for developers, engineers and students in the region.",
+      events_no_results: "No event matches your search.",
+      res_title: "Resources",
+      res_subtitle: "Guides, cheat sheets and templates shared to help you grow in tech.",
+      res_all_categories: "All categories",
+      res_technical: "Technical sheets",
+      res_career: "Career & Jobs",
+      res_templates: "Templates",
+      res1_title: "Guide: Preparing for technical interviews",
+      res1_desc: "A list of common questions and a method to structure your answers during interviews.",
+      res_view_pdf: "View / PDF",
+      res2_tag: "Technical sheet",
+      res2_title: "Git cheat sheet: the essential commands",
+      res2_desc: "A visual quick-reference gathering the Git commands you need day to day.",
+      res3_title: "Notion template: Application tracker",
+      res3_desc: "A ready-to-use board to organize your search for an internship, apprenticeship or first job.",
+      res_no_results: "No resource matches your search.",
+      chat_title: "Your conversations",
+      chat_subtitle: "Direct messages between members (limited to 100 words per message).",
+      chat_discussions: "Conversations",
+      chat_preview_zara: "Thanks for your feedback on my resume!",
+      chat_preview_clara: "Shall we meet up at the event?",
+      chat_with_zara: "Conversation with Zara L.",
+      chat_msg1: "Hey! Do you think my profile matches the TechCorp role?",
+      chat_msg2: "Hi Zara, yes absolutely! Your React projects will make the difference. Don't hesitate to apply directly.",
+      chat_msg3: "Thanks for your feedback on my resume! I'll go for it.",
+      chat_back_aria: "Back to conversations",
+      chat_with_clara: "Conversation with Clara M.",
+      chat_msg_clara1: "Are we meeting up at the Women in Tech event next week?",
+      chat_msg_clara2: "I'd love that! I'll be at the mentoring booth, come say hi.",
+      chat_msg_clara3: "Perfect, see you soon then!",
+      chat_send: "Send",
+      chat_word_counter: "0 / 100 words",
+      chat_word_suffix: " / 100 words",
+      myspace_title: "My space",
+      myspace_subtitle: "Your profile, your activity and your preferences.",
+      myspace_role: "Student in Cloud & DevOps Deployment",
+      myspace_status: "Looking for an apprenticeship",
+      myspace_info_title: "My information",
+      myspace_city_label: "City",
+      myspace_school_label: "Schools / Training",
+      myspace_contact_label: "Public contact",
+      myspace_contact_value: "Enabled (100 words max)",
+      myspace_activity_title: "Recent activity",
+      myspace_activity_post_label: "Posted a publication",
+      myspace_activity_post_value: "Looking for DevOps feedback",
+      myspace_activity_event_label: "Registered for an event",
+      myspace_activity_event_value: "Docker workshop (Oct 12)",
+      profile_stat_posts: "posts",
+      profile_stat_support: "supports",
+      profile_stat_contacts: "chats",
+      profile_my_posts: "My posts",
+      profile_edit_btn: "Edit profile",
+      profile_back: "← Back to profile",
+      profile_private_title: "Your activity",
+      profile_private_hint: "Only visible to you.",
+      country_morocco: "Morocco",
+      country_canada: "Canada",
+      country_japan: "Japan",
+      job4_title: "Junior Network Engineer",
+      job4_company: "AtlasNet · Casablanca, Morocco",
+      job5_title: "Internship - Data Developer",
+      job5_company: "NordData · Montréal, Canada (Hybrid)",
+      job6_title: "Junior SOC Analyst",
+      job6_company: "Sakura Sec · Tokyo, Japan (Full Remote)",
+      event4_title: "Women & Networks meetup",
+      event4_desc: "An evening to meet engineers and students in networking and telecoms.",
+      event5_title: "Workshop: Python for beginners",
+      event5_desc: "Two hours to write your first scripts, in a judgment-free space.",
+      post_yuki_more1: "For the first few weeks I wrote everything in a notebook: commands, tool names, and above all the questions I didn't dare ask. Every Friday I went through them with my tutor, and half of them were settled in five minutes.",
+      post_yuki_more2: "What I took away: nobody expects you to know everything. They expect you to search first, then ask clearly. Since then I prepare my questions with what I've already tried, and the answers are far more useful.",
+      post_yuki_more3: "If you're starting soon, keep a notebook too. In six months you'll be surprised by how much you've learned.",
+      post_lina_more1: "The idea came from a simple observation: I kept rereading my networking lessons without ever practicing. So I wrote a small program that gives me a situation (an address, a mask, a missing route) and asks which command to type.",
+      post_lina_more2: "For now it only handles ping, traceroute and interface configuration, but I add an exercise every week. The hardest part was making corrections clear rather than just saying \"wrong\".",
+      post_lina_more3: "If any of you wants to try it or suggest exercises, tell me in the comments. I'll share it as soon as it's a bit cleaner.",
+      post_priya_title: "Need a hand with a Docker volume?",
+      post_priya_more1: "Here's where I am: my container starts, but the database data disappears at every restart. I added a named volume in my compose file, yet the folder stays empty on the host.",
+      post_priya_more2: "I've already tried recreating the volume, checking folder permissions, and rereading the docs. I suspect a path issue, but I can't see where.",
+      post_priya_more3: "If you have 15 minutes, a call or a few messages is enough. I'll post the solution here for anyone who hits the same wall.",
+      post_aminata_title: "Looking for a React developer for a hackathon",
+      post_aminata_more1: "Tech4Good brings teams together for a weekend to build a tool that's useful to a non-profit. Our project: a simple app to help volunteers organize their distributions.",
+      post_aminata_more2: "We're missing someone on the interface side, with a bit of React. You don't need to be an expert: we work in pairs and explain everything as we go.",
+      post_aminata_more3: "The vibe is friendly and there will be food. Message me privately if you're tempted, even if you're still hesitating.",
+      post_mei_title: "6 months fully remote: what I wish I'd known",
+      post_mei_more1: "At first I worked with no real limits: an email at 10pm, a meeting running over, lunch in front of the screen. After two months I was exhausted without feeling I'd done more.",
+      post_mei_more2: "What helped: fixed hours shared with the team, a real lunch break away from the desk, and a walk at the end of the day to mark the cut-off.",
+      post_mei_more3: "Remote work is great, but it doesn't organize itself. What habits help you switch off?",
+      filter_country_ph: "Filter by country",
+      post_self1_title: "Looking for DevOps feedback",
+      post_self1_body: "Hi everyone! I'm looking for feedback on working as a DevOps engineer: what do your days look like, which tools do you use most?",
+      post_self1_more1: "I'm training in Cloud & DevOps deployment and preparing my apprenticeship. I'd like to understand what is really useful day to day, beyond what we see in class.",
+      post_self1_more2: "My questions: which tools did you learn on the job? How much of your time goes to automation, and how much to troubleshooting? And what do you wish you'd known before starting?",
+      post_self1_more3: "A short message is enough, and if you'd rather talk, I'm available by video call. Thanks in advance, it helps me a lot!",
+      meta_self1: "Paris · 2 days ago",
+      post_self2_title: "First CI/CD pipeline is up, thanks for your advice!",
+      post_self2_body: "Thanks to last week's advice, my first CI/CD pipeline is finally running: every change is tested then deployed automatically.",
+      post_self2_more1: "I started from a small app and a Dockerfile. At every code push, the pipeline runs the tests, builds the image and deploys it to a test server.",
+      post_self2_more2: "The longest part was understanding why my tests passed locally but failed on the server: a forgotten environment variable. Since then I list them all in an example file.",
+      post_self2_more3: "If you want the full configuration, or to build the same pipeline together, message me!",
+      meta_self2: "Paris · 1 week ago",
+      post_self3_title: "What I learned from my first hackathon",
+      post_self3_body: "Two days, a team of five and a lot of coffee: here's what my first hackathon taught me, mostly about teamwork.",
+      post_self3_more1: "We spent the first hour choosing an idea, and it was the best decision: a small finished project beats a big half-done one.",
+      post_self3_more2: "I also understood how important it is to split roles from the start: one person on the interface, one on data, one preparing the final presentation.",
+      post_self3_more3: "If you're hesitating to sign up for a first hackathon, do it. Nobody expects you to be an expert, they expect you to take part.",
+      meta_self3: "Paris · 3 weeks ago",
+      profile_activity_btn: "My activity",
+      profile_activity_title: "My activity",
+      activity_likes: "supports received",
+      activity_comments: "comments received",
+      activity_events: "upcoming event",
+      activity_by_post: "Details per post",
+      activity_events_title: "My events",
+      profile_seeking: "What I'm looking for",
+      profile_offering: "What I offer",
+      profile_skills: "Skills",
+      profile_saved_btn: "Saved",
+      saved_title: "Saved",
+      profile_reposts: "Reshared",
+      settings_skills_ph: "Separated by commas",
+      event_back: "← Back to my activity",
+      profile_search_ph: "Search my posts...",
+      activity_recent: "Recent activity",
+      settings_title: "Profile settings",
+      settings_name_label: "Display name",
+      settings_role_label: "Role / background",
+      settings_city_label: "City",
+      settings_school_label: "School / Training",
+      settings_status_label: "Status",
+      settings_status_apprenticeship: "Looking for an apprenticeship",
+      settings_status_internship: "Looking for an internship",
+      settings_status_job: "Employed",
+      settings_status_available: "Open to chat",
+      settings_bio_label: "Short bio",
+      settings_bio_ph: "A word about you, your background, or what you're looking for...",
+      settings_contact_label: "Allow private messages from other members",
+      settings_save: "Save changes",
+      publish_subtitle: "Share a piece of experience, some advice or a project with the community.",
+      publish_format_label: "Type of post",
+      publish_cat_opinion: "Tech opinion",
+      publish_cat_resource: "Resource",
+      publish_cat_advice: "Advice",
+      publish_cat_encourage: "Encouragement",
+      publish_title_label: "Title",
+      publish_message_label: "Message",
+      publish_tags_label: "Keywords (comma-separated)",
+      publish_submit: "Publish to the community",
+      publish_preview_label: "Live preview",
+      publish_preview_title_ph: "Your title will appear here...",
+      publish_preview_content_ph: "The content of your message will appear as you write it on the left.",
+      publish_preview_tag_ph: "keyword",
+      about_title: "About sororIT",
+      about_mission_title: "Our mission",
+      about_pillars_title: "Our pillars",
+      about_charter_title: "Community charter",
+      about_charter_text: "Private messages are limited to 100 words to encourage focused outreach that respects everyone's time.",
+      modal_send_message: "Send a private message",
+      modal_close: "Close",
+      banner_text: "<strong>Preview / mockup</strong>, presented at womENcourage 2026. All content below is fictional sample content, with no account or real data.",
+      publish_tip: "<strong>Safe space:</strong> Public replies are disabled. Interested members can only send you a structured private message.",
+      about_mission_text: "<strong>sororIT</strong> is a mutual-support network dedicated to women in computer science and tech. The goal is to break isolation, make it easier to find opportunities, and encourage the sharing of experience.",
+      about_pillar1: "<strong>Kindness:</strong> A safe, judgment-free space to ask questions.",
+      about_pillar2: "<strong>Mutual support:</strong> Job and internship opportunities and resources shared freely.",
+      about_pillar3: "<strong>Concision:</strong> Direct, spam-free exchanges that get straight to the point.",
+      pub_search_ph: "Search publications...",
+      filter_keyword: "Search a keyword",
+      filter_by_city: "Filter by city",
+      filter_all_countries: "All countries",
+      country_germany: "Germany",
+      res_search_ph: "Search a resource...",
+      chat_input_ph: "Write your message...",
+      publish_title_ph: "E.g.: What I wish I'd known before starting Python...",
+      publish_message_ph: "Tell your story, your thoughts, or share resources...",
+      publish_tags_ph: "python, learning, advice",
+      nav_home: "Home",
+      nav_publications: "Publications",
+      nav_jobs: "Opportunities",
+      nav_events: "Events",
+      nav_resources: "Resources",
+      nav_exchanges: "Messages",
+      nav_myspace: "My Space",
+      nav_about: "About",
+    }
+  };
+
+  window.APP_STRINGS = {
+    fr: {
+      everyone: 'Tout le monde',
+      onlyPrefix: 'Seulement ',
+      replyPh: 'Écris ta réponse...',
+      send: 'Envoyer',
+      visibleBy: 'Visible par : ',
+      previewTitlePh: 'Ton titre apparaîtra ici...',
+      previewContentPh: "Le contenu de ton message s'affichera au fur et à mesure que tu l'écris à gauche.",
+      previewTagPh: 'mot-clé',
+      published: 'Publié !',
+      publishSubmit: 'Publier dans la communauté',
+      msgRequestSent: 'Demande envoyée à {name}. La discussion s\'ouvrira si elle accepte.',
+      reportSent: 'Publication signalée. Notre équipe va l\'examiner.',
+      supportAdded: 'Tu soutiens cette publication 💜',
+      supportRemoved: 'Soutien retiré.',
+      profileUpdated: 'Profil mis à jour.',
+      noPostMatch: 'Aucune de tes publications ne correspond à cette recherche.',
+      noEvents: 'Tu n\'es inscrite à aucun événement pour le moment.',
+      seeEvents: 'Voir les événements',
+      registered: 'Inscrite ✓',
+      unregister: 'Se désinscrire',
+      unregistered: 'Inscription annulée.',
+      registeredToast: 'Tu es inscrite à cet événement.',
+      evWhen: 'Quand',
+      evWhere: 'Où',
+      evFormat: 'Format',
+      evOne: 'événement à venir',
+      evMany: 'événements à venir',
+      saveLbl: 'Enregistrer', savedLbl: 'Enregistré', repostLbl: 'Repartager', repostedLbl: 'Repartagé',
+      savedToast: 'Ajouté à tes enregistrés.', unsavedToast: 'Retiré de tes enregistrés.',
+      repostToast: 'Publication repartagée sur ton profil.', unrepostToast: 'Repartage annulé.',
+      repostFrom: 'Repartagé de ', tabMyPosts: 'Publications', tabReposts: 'Repartagées', noReposts: 'Aucune publication repartagée pour le moment.', tabPosts: 'Publications', tabJobs: 'Opportunités', tabEvents: 'Événements',
+      savedEmpty: 'Rien ici pour l\'instant. Utilise le marque-page pour garder un élément.', remove: 'Retirer'
+    },
+    en: {
+      everyone: 'Everyone',
+      onlyPrefix: 'Only ',
+      replyPh: 'Write your reply...',
+      send: 'Send',
+      visibleBy: 'Visible to: ',
+      previewTitlePh: 'Your title will appear here...',
+      previewContentPh: 'The content of your message will appear as you write it on the left.',
+      previewTagPh: 'keyword',
+      published: 'Published!',
+      publishSubmit: 'Publish to the community',
+      msgRequestSent: 'Request sent to {name}. The conversation will open if she accepts.',
+      reportSent: 'Publication reported. Our team will review it.',
+      supportAdded: "You're supporting this post 💜",
+      supportRemoved: 'Support removed.',
+      profileUpdated: 'Profile updated.',
+      noPostMatch: 'None of your posts match this search.',
+      noEvents: 'You are not registered for any event yet.',
+      seeEvents: 'See events',
+      registered: 'Registered ✓',
+      unregister: 'Unregister',
+      unregistered: 'Registration cancelled.',
+      registeredToast: 'You are registered for this event.',
+      evWhen: 'When',
+      evWhere: 'Where',
+      evFormat: 'Format',
+      evOne: 'upcoming event',
+      evMany: 'upcoming events',
+      saveLbl: 'Save', savedLbl: 'Saved', repostLbl: 'Reshare', repostedLbl: 'Reshared',
+      savedToast: 'Added to your saved items.', unsavedToast: 'Removed from your saved items.',
+      repostToast: 'Post reshared on your profile.', unrepostToast: 'Reshare cancelled.',
+      repostFrom: 'Reshared from ', tabMyPosts: 'Posts', tabReposts: 'Reshared', noReposts: 'No reshared posts yet.', tabPosts: 'Posts', tabJobs: 'Opportunities', tabEvents: 'Events',
+      savedEmpty: 'Nothing here yet. Use the bookmark to keep an item.', remove: 'Remove'
+    }
+  };
+
+  // ---------- Profile: public / edit / activity ----------
+  function showProfileView(view) {
+    ['Public', 'Edit', 'Activity', 'Event', 'Saved'].forEach(v => {
+      document.getElementById('profile' + v).hidden = (v.toLowerCase() !== view);
+    });
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('btnEditProfile').addEventListener('click', () => showProfileView('edit'));
+  document.getElementById('btnSaved').addEventListener('click', () => showProfileView('saved'));
+  document.getElementById('btnActivity').addEventListener('click', () => showProfileView('activity'));
+  document.querySelectorAll('.js-back-activity').forEach(b => b.addEventListener('click', () => showProfileView('activity')));
+  document.querySelectorAll('.js-profile-back').forEach(b => b.addEventListener('click', () => showProfileView('public')));
+  document.querySelectorAll('[data-screen="mon-espace"]').forEach(b => b.addEventListener('click', () => showProfileView('public')));
+
+  const ICON_HEART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>';
+  const ICON_CHAT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a.75.75 0 0 1-.816-.816 6.12 6.12 0 0 1 1.057-2.316C4.24 16.29 3 14.28 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/></svg>';
+  // Profile lists are built from the real cards in Publications, so titles always match.
+  function buildProfilePosts() {
+    const cards = [...document.querySelectorAll('#selfPostsStore .pub-post-card')];
+    const list = document.getElementById('profilePostsList');
+    const act = document.getElementById('activityPostsList');
+    if (!list || !act) return;
+    list.innerHTML = ''; act.innerHTML = '';
+    let likes = 0, comments = 0;
+    const topics = [];
+    cards.forEach(card => {
+      const title = card.querySelector('.home-post-title').textContent;
+      const badge = card.querySelector('.pub-badge-post').textContent;
+      const when = card.querySelector('.meta').textContent.split('·').pop().trim();
+      const excerpt = card.querySelector('.pub-post-content').textContent.trim();
+      const openLabel = card.querySelector('.post-open-btn').textContent.trim();
+      const l = +card.dataset.likes || 0, c = +card.dataset.comments || 0;
+      likes += l; comments += c;
+      card.querySelectorAll('.home-tag').forEach(t => { const v = t.textContent.trim(); if (!topics.includes(v)) topics.push(v); });
+      const open = () => window.openPostDetail(card, 'mon-espace');
+      const item = document.createElement('article');
+      item.className = 'profile-post';
+      item.dataset.cat = card.dataset.category;
+      item.tabIndex = 0;
+      item.setAttribute('role', 'link');
+      item.innerHTML = '<div class="profile-post-top"><span class="pub-badge-post"></span><span class="profile-post-meta"></span></div>' +
+        '<h3 class="profile-post-title"></h3><p class="profile-post-excerpt"></p>' +
+        '<div class="profile-post-foot"><span class="profile-post-read"></span></div>';
+      const tags = [...card.querySelectorAll('.home-tag')].map(t => t.textContent).join(' ');
+      item.dataset.q = (title + ' ' + excerpt + ' ' + tags + ' ' + card.querySelector('.post-more').textContent).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+      item.querySelector('.pub-badge-post').textContent = badge;
+      item.querySelector('.profile-post-meta').textContent = when;
+      item.querySelector('.profile-post-title').textContent = title;
+      item.querySelector('.profile-post-excerpt').textContent = excerpt;
+      item.querySelector('.profile-post-read').textContent = openLabel;
+      item.addEventListener('click', open);
+      item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+      list.appendChild(item);
+      const row = document.createElement('div');
+      row.className = 'activity-row';
+      row.innerHTML = '<span class="activity-row-title"></span><span class="activity-row-nums"><span>' + ICON_HEART + l + '</span><span>' + ICON_CHAT + c + '</span></span>';
+      row.children[0].textContent = title;
+      row.addEventListener('click', open);
+      act.appendChild(row);
+    });
+    document.getElementById('statPosts').textContent = cards.length;
+    document.getElementById('statLikes').textContent = likes;
+    document.getElementById('statComments').textContent = comments;
+    document.getElementById('statChats').textContent = document.querySelectorAll('[data-contact]').length;
+    filterProfilePosts();
+    buildProfileEvents();
+    refreshMarks();
+  }
+
+  function filterProfilePosts() {
+    const input = document.getElementById('profileSearch');
+    const q = input.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+    let shown = 0;
+    document.querySelectorAll('#profilePostsList .profile-post').forEach(it => {
+      const ok = !q || it.dataset.q.includes(q);
+      it.hidden = !ok; if (ok) shown++;
+    });
+    const msg = document.getElementById('profileNoMatch');
+    msg.textContent = t.noPostMatch;
+    msg.hidden = shown > 0;
+  }
+  document.getElementById('profileSearch').addEventListener('input', filterProfilePosts);
+
+  // ---------- Événements auxquels Sofia est inscrite ----------
+  function registeredEvents() { return [...document.querySelectorAll('#eventsGrid .event-card[data-registered]')]; }
+
+  function buildProfileEvents() {
+    const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+    const dict = APP_I18N[window.currentAppLang || 'fr'] || APP_I18N.fr;
+    const list = document.getElementById('activityEventsList');
+    const empty = document.getElementById('eventsEmpty');
+    const evs = registeredEvents();
+    list.innerHTML = '';
+    evs.forEach(card => {
+      const row = document.createElement('div');
+      row.className = 'event-row'; row.tabIndex = 0; row.setAttribute('role', 'link');
+      row.innerHTML = '<div class="event-date"><span class="day"></span><span class="month"></span></div><div class="event-row-main"><div class="event-row-title"></div><div class="event-row-meta"></div></div><span class="event-row-chevron">→</span>';
+      row.querySelector('.day').textContent = card.querySelector('.event-date .day').textContent;
+      row.querySelector('.month').textContent = card.querySelector('.event-date .month').textContent;
+      row.querySelector('.event-row-title').textContent = card.querySelector('.event-title').textContent;
+      row.querySelector('.event-row-meta').textContent = [...card.querySelectorAll('.event-meta span')].map(x => x.textContent).join(' · ');
+      const open = () => openEventDetail(card);
+      row.addEventListener('click', open);
+      row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+      list.appendChild(row);
+    });
+    empty.hidden = evs.length > 0;
+    if (!evs.length) {
+      empty.innerHTML = '<p></p><button type="button" class="btn-edit-profile"></button>';
+      empty.querySelector('p').textContent = t.noEvents;
+      const btn = empty.querySelector('button'); btn.textContent = t.seeEvents;
+      btn.addEventListener('click', () => showScreen('evenements'));
+    }
+    document.getElementById('statEvents').textContent = evs.length;
+    document.getElementById('statEventsLabel').textContent = evs.length > 1 ? t.evMany : t.evOne;
+    // Boutons « S'inscrire » de la page Événements
+    document.querySelectorAll('#eventsGrid .event-card').forEach(card => {
+      const b = card.querySelector('.btn-register'); if (!b) return;
+      const reg = card.hasAttribute('data-registered');
+      b.classList.toggle('is-registered', reg);
+      b.textContent = reg ? t.registered : dict.events_register;
+    });
+  }
+
+  function openEventDetail(card) {
+    const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+    const body = document.getElementById('eventDetailBody');
+    const metas = [...card.querySelectorAll('.event-meta span')].map(x => x.textContent);
+    const day = card.querySelector('.event-date .day').textContent, month = card.querySelector('.event-date .month').textContent;
+    body.innerHTML = '<div class="event-detail-head"><div class="event-date"><span class="day"></span><span class="month"></span></div><div><span class="event-type"></span><h2></h2></div></div>' +
+      '<p class="event-detail-desc"></p>' +
+      '<dl class="event-detail-facts"><div><dt></dt><dd class="f-when"></dd></div><div><dt></dt><dd class="f-where"></dd></div><div><dt></dt><dd class="f-format"></dd></div></dl>' +
+      '<div class="event-detail-actions"><a href="#" class="btn-register is-registered" onclick="return false;"></a></div>';
+    body.querySelector('.day').textContent = day; body.querySelector('.month').textContent = month;
+    const type = body.querySelector('.event-type'); type.textContent = card.querySelector('.event-type').textContent;
+    if (card.querySelector('.event-type').classList.contains('online')) type.classList.add('online');
+    body.querySelector('h2').textContent = card.querySelector('.event-title').textContent;
+    body.querySelector('.event-detail-desc').textContent = card.querySelector('.event-desc').textContent;
+    const dts = body.querySelectorAll('dt'); dts[0].textContent = t.evWhen; dts[1].textContent = t.evWhere; dts[2].textContent = t.evFormat;
+    body.querySelector('.f-when').textContent = day + ' ' + month + ' · ' + (metas[0] || '');
+    body.querySelector('.f-where').textContent = metas[1] || '';
+    body.querySelector('.f-format').textContent = card.querySelector('.event-type').textContent;
+    const btn = body.querySelector('.btn-register'); btn.textContent = t.unregister; btn.classList.remove('is-registered');
+    btn.addEventListener('click', () => {
+      card.removeAttribute('data-registered');
+      buildProfileEvents(); showAppToast(t.unregistered); showProfileView('activity');
+    });
+    showProfileView('event');
+  }
+
+  // S'inscrire / se désinscrire depuis la page Événements
+  document.addEventListener('click', function (e) {
+    const b = e.target.closest('#eventsGrid .btn-register'); if (!b) return;
+    const card = b.closest('.event-card'); const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+    if (card.hasAttribute('data-registered')) { card.removeAttribute('data-registered'); showAppToast(t.unregistered); }
+    else { card.setAttribute('data-registered', 'true'); showAppToast(t.registeredToast); }
+    buildProfileEvents();
+  });
+
+  // ---------- Enregistrer & repartager ----------
+  const SAVE_SEL = { post: '#screen-accueil .home-post-card, #pubFeed .pub-post-card', job: '#screen-opportunites .job-card', event: '#eventsGrid .event-card' };
+  const saved = new Set(), reposted = new Set();
+  let profileTab = 'posts', savedTab = 'post', skills = ['Docker', 'Kubernetes', 'CI/CD', 'Linux', 'Git', 'Terraform'];
+  const SVG = d => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="' + d + '"/></svg>';
+  const ICON_MARK = SVG('M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z');
+  const ICON_REPOST = SVG('M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3');
+  let uid = 0;
+  Object.keys(SAVE_SEL).forEach(type => document.querySelectorAll(SAVE_SEL[type]).forEach(c => {
+    c.dataset.id = type + ':' + (uid++); c.dataset.type = type;
+    if (type === 'post') {
+      const rep = c.querySelector('.pub-report-btn');
+      rep.insertAdjacentHTML('beforebegin', '<button type="button" class="pub-btn-action save-btn">' + ICON_MARK + '<span></span></button><button type="button" class="pub-btn-action repost-btn">' + ICON_REPOST + '<span></span></button>');
+    } else {
+      const last = c.querySelector('.btn-apply, .btn-register');
+      last.insertAdjacentHTML('beforebegin', '<button type="button" class="card-save save-btn">' + ICON_MARK + '</button>');
+    }
+  }));
+  const byId = id => document.querySelector('#screen-accueil [data-id="' + id + '"], #pubFeed [data-id="' + id + '"], #screen-opportunites [data-id="' + id + '"], #eventsGrid [data-id="' + id + '"]');
+  const T = () => window.APP_STRINGS[window.currentAppLang || 'fr'];
+
+  function refreshMarks() {
+    const t = T();
+    document.querySelectorAll('[data-id]').forEach(c => {
+      const id = c.dataset.id;
+      c.querySelectorAll('.save-btn').forEach(b => {
+        const on = saved.has(id), lbl = on ? t.savedLbl : t.saveLbl;
+        b.classList.toggle('active', on); b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', lbl); b.title = lbl;
+        const sp = b.querySelector('span'); if (sp) sp.textContent = lbl;
+      });
+      c.querySelectorAll('.repost-btn').forEach(b => {
+        const on = reposted.has(id), lbl = on ? t.repostedLbl : t.repostLbl;
+        b.classList.toggle('active', on); b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', lbl); b.title = lbl;
+        const sp = b.querySelector('span'); if (sp) sp.textContent = lbl;
+      });
+    });
+    buildProfileExtras();
+  }
+
+  const authorName = c => c.querySelector('.pub-author-details .name, .home-author-details .name').textContent;
+  const authorMeta = c => c.querySelector('.pub-author-details .meta, .home-author-details .subtext').textContent;
+  const postBody = c => c.querySelector('.pub-post-content, .home-post-content').textContent.trim();
+  function itemInfo(c) {
+    if (c.dataset.type === 'post') return { title: c.querySelector('.home-post-title').textContent, meta: authorName(c) + ' · ' + authorMeta(c).split('·').pop().trim() };
+    if (c.dataset.type === 'job') return { title: c.querySelector('.job-title').textContent, meta: c.querySelector('.company-info').textContent };
+    return { title: c.querySelector('.event-title').textContent, meta: c.querySelector('.event-date .day').textContent + ' ' + c.querySelector('.event-date .month').textContent + ' · ' + [...c.querySelectorAll('.event-meta span')].map(x => x.textContent).join(' · ') };
+  }
+  const goTo = c => c.dataset.type === 'post' ? window.openPostDetail(c, 'mon-espace') : showScreen(c.dataset.type === 'job' ? 'opportunites' : 'evenements');
+
+  function buildProfileExtras() {
+    const t = T();
+    const chips = document.getElementById('profileSkills'); chips.innerHTML = '';
+    skills.forEach(k => { const sp = document.createElement('span'); sp.className = 'skill-chip'; sp.textContent = k; chips.appendChild(sp); });
+    // Repartagées
+    const rl = document.getElementById('profileRepostsList'); rl.innerHTML = '';
+    [...reposted].reverse().map(byId).filter(Boolean).forEach(c => {
+      const info = itemInfo(c), item = document.createElement('article');
+      item.className = 'profile-post'; item.dataset.cat = c.dataset.category || ''; item.tabIndex = 0; item.setAttribute('role', 'link');
+      item.innerHTML = '<span class="profile-post-from"></span><h3 class="profile-post-title"></h3><p class="profile-post-excerpt"></p>';
+      item.children[0].textContent = t.repostFrom + authorName(c);
+      item.children[1].textContent = info.title; item.children[2].textContent = postBody(c);
+      const open = () => goTo(c);
+      item.addEventListener('click', open); item.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); open(); } });
+      rl.appendChild(item);
+    });
+    const pt = document.getElementById('profileTabs'); pt.innerHTML = '';
+    [['posts', t.tabMyPosts + ' (' + document.querySelectorAll('#profilePostsList .profile-post').length + ')'], ['reposts', t.tabReposts + ' (' + reposted.size + ')']].forEach(([k, lbl]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'saved-tab' + (k === profileTab ? ' active' : ''); b.textContent = lbl;
+      b.addEventListener('click', () => { profileTab = k; buildProfileExtras(); }); pt.appendChild(b);
+    });
+    document.getElementById('profilePostsPane').hidden = profileTab !== 'posts';
+    document.getElementById('profileRepostsPane').hidden = profileTab !== 'reposts';
+    const re = document.getElementById('profileRepostsEmpty'); re.textContent = t.noReposts; re.hidden = reposted.size > 0;
+    // Enregistrés
+    const tabs = document.getElementById('savedTabs'); tabs.innerHTML = '';
+    [['post', t.tabPosts], ['job', t.tabJobs], ['event', t.tabEvents]].forEach(([k, lbl]) => {
+      const n = [...saved].filter(id => id.startsWith(k + ':')).length;
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'saved-tab' + (k === savedTab ? ' active' : '');
+      b.textContent = lbl + ' (' + n + ')'; b.addEventListener('click', () => { savedTab = k; buildProfileExtras(); });
+      tabs.appendChild(b);
+    });
+    const list = document.getElementById('savedList'); list.innerHTML = '';
+    const items = [...saved].filter(id => id.startsWith(savedTab + ':')).map(byId).filter(Boolean);
+    if (!items.length) { list.innerHTML = '<p class="profile-empty"></p>'; list.firstChild.textContent = t.savedEmpty; }
+    items.forEach(c => {
+      const info = itemInfo(c), row = document.createElement('div');
+      row.className = 'activity-row'; row.tabIndex = 0; row.setAttribute('role', 'link');
+      row.innerHTML = '<div class="saved-row-main"><div class="saved-row-title"></div><div class="saved-row-meta"></div></div><button type="button" class="saved-remove"></button>';
+      row.querySelector('.saved-row-title').textContent = info.title; row.querySelector('.saved-row-meta').textContent = info.meta;
+      const rm = row.querySelector('.saved-remove'); rm.textContent = t.remove;
+      rm.addEventListener('click', e => { e.stopPropagation(); saved.delete(c.dataset.id); refreshMarks(); });
+      row.addEventListener('click', () => goTo(c)); row.addEventListener('keydown', e => { if (e.key === 'Enter') goTo(c); });
+      list.appendChild(row);
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    const b = e.target.closest('.save-btn, .repost-btn'); if (!b) return;
+    const c = b.closest('[data-id]'); if (!c) return;
+    const set = b.classList.contains('save-btn') ? saved : reposted, t = T();
+    const on = !set.has(c.dataset.id);
+    on ? set.add(c.dataset.id) : set.delete(c.dataset.id);
+    showAppToast(set === saved ? (on ? t.savedToast : t.unsavedToast) : (on ? t.repostToast : t.unrepostToast));
+    refreshMarks();
+  });
+
+  // Champs « cherche / propose / compétences » dans Modifier le profil
+  (function () {
+    const f = document.getElementById('settingsForm');
+    const seek = document.getElementById('setSeek'), offer = document.getElementById('setOffer'), sk = document.getElementById('setSkills');
+    seek.value = document.getElementById('profileSeek').textContent; offer.value = document.getElementById('profileOffer').textContent; sk.value = skills.join(', ');
+    f.addEventListener('submit', () => {
+      document.getElementById('profileSeek').textContent = seek.value.trim();
+      document.getElementById('profileOffer').textContent = offer.value.trim();
+      skills = sk.value.split(',').map(x => x.trim()).filter(Boolean);
+      buildProfileExtras();
+    });
+  })();
+
+  // ---------- Profile settings (Mon Espace) ----------
+  (function () {
+    const form = document.getElementById('settingsForm');
+    if (!form) return;
+    const nameInput = document.getElementById('setName');
+    const roleInput = document.getElementById('setRole');
+    const cityInput = document.getElementById('setCity');
+    const schoolInput = document.getElementById('setSchool');
+    const statusSelect = document.getElementById('setStatus');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      if (!name) return;
+      document.getElementById('profileNameSelf').textContent = name;
+      document.getElementById('profileAvatarSelf').textContent = name.slice(0, 1).toUpperCase();
+      document.querySelectorAll('[data-author="self"] .name').forEach(n => { n.textContent = name; });
+      document.querySelectorAll('[data-author="self"] .pub-author-avatar').forEach(a => { a.textContent = name.slice(0, 1).toUpperCase(); });
+      document.getElementById('profileRoleSelf').textContent = roleInput.value.trim();
+      document.getElementById('profileCitySelf').textContent = cityInput.value.trim();
+      document.getElementById('profileSchoolSelf').textContent = schoolInput.value.trim();
+      const bioEl = document.getElementById('setBio'); if (bioEl) document.getElementById('profileBioSelf').textContent = bioEl.value.trim();
+      document.getElementById('profileStatusSelf').textContent = statusSelect.options[statusSelect.selectedIndex].textContent;
+      const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+      showAppToast(t.profileUpdated);
+      showProfileView('public');
+    });
+  })();
+
+
+  function showAppToast(message) {
+    const toast = document.getElementById('appToast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(window._appToastTimer);
+    window._appToastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+  }
+
+  function applyAppLang(lang) {
+    fillCountryList(lang);
+    const dict = APP_I18N[lang] || APP_I18N.fr;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.textContent = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+      const key = el.getAttribute('data-i18n-html');
+      if (dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (dict[key] !== undefined) el.setAttribute('placeholder', dict[key]);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+      const key = el.getAttribute('data-i18n-title');
+      if (dict[key] !== undefined) el.setAttribute('title', dict[key]);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+      const key = el.getAttribute('data-i18n-aria');
+      if (dict[key] !== undefined) el.setAttribute('aria-label', dict[key]);
+    });
+    document.getElementById('appLangFr').classList.toggle('active', lang === 'fr');
+    document.getElementById('appLangEn').classList.toggle('active', lang === 'en');
+    document.documentElement.setAttribute('lang', lang);
+  }
+
+  function setAppLang(lang) {
+    window.currentAppLang = lang;
+    applyAppLang(lang);
+    buildProfilePosts();
+    try { localStorage.setItem('sororit_app_lang', lang); } catch (e) {}
+    window.dispatchEvent(new Event('app-lang-changed'));
+  }
+
+  applyAppLang(window.currentAppLang);
+  buildProfilePosts();
+
+  // ---------- Soutenir & Signaler ----------
+  document.addEventListener('click', function (e) {
+    const supportBtn = e.target.closest('.pub-support-btn');
+    if (supportBtn) {
+      const nowActive = supportBtn.classList.toggle('active');
+      const t = APP_STRINGS[window.currentAppLang || 'fr'];
+      showAppToast(nowActive ? t.supportAdded : t.supportRemoved);
+      return;
+    }
+    const reportBtn = e.target.closest('.pub-report-btn');
+    if (reportBtn) {
+      const t = APP_STRINGS[window.currentAppLang || 'fr'];
+      showAppToast(t.reportSent);
+      reportBtn.disabled = true;
+      reportBtn.style.opacity = '0.5';
+    }
+  });
+
+
+  // ---------- Publications: filter ----------
+  (function () {
+    const search = document.getElementById('pubSearch');
+    const category = document.getElementById('pubCategory');
+    const noResults = document.getElementById('pubNoResults');
+    function filterPosts() {
+      const q = search.value.toLowerCase().trim();
+      const cat = category.value.toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('#pubFeed .pub-post-card').forEach(post => {
+        const postCat = post.getAttribute('data-category') || '';
+        const kw = post.getAttribute('data-keywords') || '';
+        const text = post.innerText.toLowerCase();
+        const match = (!cat || postCat === cat) && (!q || kw.includes(q) || text.includes(q));
+        post.style.display = match ? 'block' : 'none';
+        if (match) visible++;
+      });
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+    search.addEventListener('input', filterPosts);
+    category.addEventListener('change', filterPosts);
+  })();
+
+  // ---------- Reply panel (Accueil + Publications) ----------
+  (function () {
+    function buildReplyPanel(card) {
+      const nameEl = card.querySelector('.pub-author-details .name, .home-author-details .name');
+      const authorName = nameEl ? nameEl.textContent.trim() : (window.currentAppLang === 'en' ? 'the author' : 'l\'autrice');
+      const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+      const panel = document.createElement('div');
+      panel.className = 'reply-panel';
+      panel.innerHTML =
+        '<div class="reply-visibility">' +
+          '<button type="button" class="reply-vis-btn active" data-vis="public">' + t.everyone + '</button>' +
+          '<button type="button" class="reply-vis-btn" data-vis="author">' + t.onlyPrefix + authorName + '</button>' +
+        '</div>' +
+        '<textarea class="reply-textarea" placeholder="' + t.replyPh + '"></textarea>' +
+        '<div class="reply-actions"><button type="button" class="reply-send-btn">' + t.send + '</button></div>' +
+        '<div class="reply-list"></div>';
+
+      const visBtns = panel.querySelectorAll('.reply-vis-btn');
+      visBtns.forEach(vb => vb.addEventListener('click', () => {
+        visBtns.forEach(b => b.classList.remove('active'));
+        vb.classList.add('active');
+      }));
+
+      const textarea = panel.querySelector('.reply-textarea');
+      const list = panel.querySelector('.reply-list');
+      panel.querySelector('.reply-send-btn').addEventListener('click', () => {
+        const text = textarea.value.trim();
+        if (!text) return;
+        const activeVis = panel.querySelector('.reply-vis-btn.active');
+        const visLabel = activeVis.textContent;
+        const item = document.createElement('div');
+        item.className = 'reply-item';
+        const p = document.createElement('span');
+        p.textContent = text;
+        const tag = document.createElement('span');
+        tag.className = 'reply-vis-tag';
+        const tt = window.APP_STRINGS[window.currentAppLang || 'fr'];
+        tag.textContent = tt.visibleBy + visLabel;
+        item.appendChild(p);
+        item.appendChild(tag);
+        list.appendChild(item);
+        textarea.value = '';
+      });
+
+      return panel;
+    }
+
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.pub-reply-btn');
+      if (!btn) return;
+      const card = btn.closest('.pub-post-card, .home-post-card, .post-detail-card');
+      if (!card) return;
+      let panel = card.querySelector('.reply-panel');
+      if (!panel) {
+        panel = buildReplyPanel(card);
+        card.appendChild(panel);
+      }
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) {
+        panel.querySelector('.reply-textarea').focus();
+      }
+    });
+  })();
+
+  // ---------- Post detail (page dédiée façon forum) ----------
+  (function () {
+    let lastListScreen = 'accueil';
+    function openPost(card, origin) {
+      lastListScreen = origin || (card.closest('#screen-accueil') ? 'accueil' : 'publications');
+      const clone = card.cloneNode(true);
+      const body = document.getElementById('postDetailBody');
+      body.innerHTML = '';
+      clone.querySelectorAll('.post-more').forEach(el => { el.hidden = false; });
+      body.appendChild(clone);
+      showScreen('post-detail');
+    }
+    window.openPostDetail = openPost;
+    document.addEventListener('click', function (e) {
+      const card = e.target.closest('#screen-accueil .home-post-card, #screen-publications .pub-post-card');
+      if (!card) return;
+      const viaBtn = e.target.closest('.post-open-btn');
+      if (!viaBtn && e.target.closest('.pub-author-info, .home-author-info, .pub-btn-action, .reply-panel, button, a')) return;
+      openPost(card);
+    });
+    const backBtn = document.getElementById('postDetailBack');
+    if (backBtn) backBtn.addEventListener('click', () => showScreen(lastListScreen));
+  })();
+
+  // ---------- Profile preview modal ----------
+  (function () {
+    const backdrop = document.getElementById('profileModalBackdrop');
+    const avatarEl = document.getElementById('profileModalAvatar');
+    const nameEl = document.getElementById('profileModalName');
+    const metaEl = document.getElementById('profileModalMeta');
+    const bioEl = document.getElementById('profileModalBio');
+    const msgBtn = document.getElementById('profileModalMsgBtn');
+    let currentName = '';
+
+    function openProfile(authorInfoEl) {
+      const avatar = authorInfoEl.querySelector('.home-avatar, .pub-author-avatar');
+      const name = authorInfoEl.querySelector('.name');
+      const meta = authorInfoEl.querySelector('.subtext, .meta');
+      currentName = name ? name.textContent.trim() : '';
+      avatarEl.textContent = avatar ? avatar.textContent.trim() : '?';
+      avatarEl.style.background = (avatar && avatar.style.backgroundColor) ? avatar.style.backgroundColor : '#35215e';
+      nameEl.textContent = currentName;
+      metaEl.textContent = meta ? meta.textContent.trim() : '';
+      const lang = window.currentAppLang || 'fr';
+      const bioFr = avatar ? avatar.dataset.bio : null;
+      const bioEn = avatar ? avatar.dataset.bioEn : null;
+      const fallback = lang === 'en' ? 'Member of the sororIT community.' : 'Membre de la communauté sororIT.';
+      bioEl.textContent = (lang === 'en' ? (bioEn || bioFr) : bioFr) || fallback;
+      backdrop.classList.add('open');
+    }
+    function closeProfile() {
+      backdrop.classList.remove('open');
+    }
+
+    document.querySelectorAll('.home-author-info, .pub-author-info').forEach(el => {
+      el.addEventListener('click', () => openProfile(el));
+    });
+    document.getElementById('profileModalClose').addEventListener('click', closeProfile);
+    backdrop.addEventListener('click', e => { if (e.target === backdrop) closeProfile(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProfile(); });
+
+    msgBtn.addEventListener('click', () => {
+      closeProfile();
+      const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+      showAppToast(t.msgRequestSent.replace('{name}', currentName));
+    });
+  })();
+
+  // ---------- Opportunités: filter ----------
+  (function () {
+    const country = document.getElementById('jobCountry');
+    const city = document.getElementById('jobCity');
+    const contract = document.getElementById('jobContract');
+    const workMode = document.getElementById('jobWorkMode');
+    const noResults = document.getElementById('jobsNoResults');
+    function filterJobs() {
+      const co = country.value;
+      const q = normText(city.value);
+      const c = contract.value.toLowerCase();
+      const w = workMode.value.toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('#jobsGrid .job-card').forEach(card => {
+        const cc = card.getAttribute('data-contract') || '';
+        const wm = card.getAttribute('data-workmode') || '';
+        const country_ = card.getAttribute('data-country-code') || '';
+        const city_ = card.getAttribute('data-city') || '';
+        const match = (!c || cc === c) && (!w || wm === w) && countryMatches(co, country_) && (!q || normText(city_).includes(q));
+        card.style.display = match ? 'flex' : 'none';
+        if (match) visible++;
+      });
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+    country.addEventListener('input', filterJobs);
+    city.addEventListener('input', filterJobs);
+    contract.addEventListener('change', filterJobs);
+    workMode.addEventListener('change', filterJobs);
+  })();
+
+  // ---------- Événements: filter ----------
+  (function () {
+    const country = document.getElementById('evCountry');
+    const city = document.getElementById('evCity');
+    const format = document.getElementById('evFormat');
+    const topic = document.getElementById('evTopic');
+    const noResults = document.getElementById('evNoResults');
+    function filterEvents() {
+      const co = country.value;
+      const q = normText(city.value);
+      const f = format.value.toLowerCase();
+      const t = topic.value.toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('#eventsGrid .event-card').forEach(card => {
+        const cf = card.getAttribute('data-format') || '';
+        const ct = card.getAttribute('data-topic') || '';
+        const country_ = card.getAttribute('data-country-code') || '';
+        const city_ = card.getAttribute('data-city') || '';
+        const match = (!f || cf === f) && (!t || ct === t) && countryMatches(co, country_) && (!q || normText(city_).includes(q));
+        card.style.display = match ? 'flex' : 'none';
+        if (match) visible++;
+      });
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+    country.addEventListener('input', filterEvents);
+    city.addEventListener('input', filterEvents);
+    format.addEventListener('change', filterEvents);
+    topic.addEventListener('change', filterEvents);
+  })();
+
+  // ---------- Échanges: chat demo ----------
+  (function () {
+    const input = document.getElementById('messageInput');
+    const counter = document.getElementById('wordCounter');
+    const sendBtn = document.getElementById('sendBtn');
+    const list = document.getElementById('messagesList');
+    function wordSuffix() {
+      const dict = APP_I18N[window.currentAppLang || 'fr'];
+      return dict.chat_word_suffix || ' / 100 mots';
+    }
+    input.addEventListener('input', () => {
+      const text = input.value.trim();
+      const words = text ? text.split(/\s+/).length : 0;
+      counter.textContent = words + wordSuffix();
+      const over = words > 100;
+      counter.classList.toggle('warning', over);
+      sendBtn.disabled = over;
+    });
+    sendBtn.addEventListener('click', () => {
+      const text = input.value.trim();
+      if (!text) return;
+      const msg = document.createElement('div');
+      msg.className = 'msg sent';
+      msg.textContent = text;
+      list.appendChild(msg);
+      input.value = '';
+      counter.textContent = '0' + wordSuffix();
+      list.scrollTop = list.scrollHeight;
+    });
+    document.querySelectorAll('.contact-item').forEach(item => item.addEventListener('click', () => {
+      document.querySelectorAll('.contact-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+
+      const CONVERSATIONS = {
+        zara: { header: 'chat_with_zara', msgs: [['received','chat_msg1'], ['sent','chat_msg2'], ['received','chat_msg3']] },
+        clara: { header: 'chat_with_clara', msgs: [['received','chat_msg_clara1'], ['sent','chat_msg_clara2'], ['received','chat_msg_clara3']] }
+      };
+      const conv = CONVERSATIONS[item.dataset.contact];
+      if (conv) {
+        const dict = APP_I18N[window.currentAppLang || 'fr'];
+        const headerEl = document.getElementById('chatHeaderTitle');
+        headerEl.setAttribute('data-i18n', conv.header);
+        headerEl.textContent = dict[conv.header];
+        list.innerHTML = '';
+        conv.msgs.forEach(([type, key]) => {
+          const msg = document.createElement('div');
+          msg.className = 'msg ' + type;
+          msg.setAttribute('data-i18n', key);
+          msg.textContent = dict[key];
+          list.appendChild(msg);
+        });
+        list.scrollTop = 0;
+      }
+      document.getElementById('chatContainer').classList.add('chat-open');
+    }));
+    const backBtn = document.getElementById('chatBackBtn');
+    if (backBtn) backBtn.addEventListener('click', () => {
+      document.getElementById('chatContainer').classList.remove('chat-open');
+    });
+  })();
+
+  // ---------- Publier: live preview ----------
+  (function () {
+    const chips = document.querySelectorAll('#chipsGrid .chip-btn');
+    chips.forEach(btn => btn.addEventListener('click', () => {
+      chips.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const lang = window.currentAppLang || 'fr';
+      document.getElementById('prevCategory').textContent = (lang === 'en' && btn.dataset.catEn) ? btn.dataset.catEn : btn.dataset.cat;
+    }));
+
+    const inputTitle = document.getElementById('inputTitle');
+    const inputContent = document.getElementById('inputContent');
+    const inputTags = document.getElementById('inputTags');
+    function updatePreview() {
+      const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+      document.getElementById('prevTitle').textContent = inputTitle.value.trim() || t.previewTitlePh;
+      document.getElementById('prevContent').textContent = inputContent.value.trim() || t.previewContentPh;
+      const container = document.getElementById('prevTags');
+      container.innerHTML = '';
+      const raw = inputTags.value.trim();
+      if (raw) {
+        raw.split(',').map(t => t.trim()).filter(Boolean).forEach(t => {
+          const span = document.createElement('span');
+          span.className = 'tag-chip';
+          span.textContent = t.toLowerCase();
+          container.appendChild(span);
+        });
+      } else {
+        container.innerHTML = '<span class="tag-chip">' + t.previewTagPh + '</span>';
+      }
+    }
+    [inputTitle, inputContent, inputTags].forEach(el => el.addEventListener('input', updatePreview));
+    window.addEventListener('app-lang-changed', updatePreview);
+
+    document.getElementById('postForm').addEventListener('submit', () => {
+      const btn = document.querySelector('#postForm .btn-publish');
+      const t = window.APP_STRINGS[window.currentAppLang || 'fr'];
+      btn.textContent = t.published;
+      btn.disabled = true;
+      setTimeout(() => { btn.textContent = t.publishSubmit; btn.disabled = false; }, 1800);
+    });
+  })();
+</script>
+
+</body>
+</html>
