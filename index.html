@@ -933,20 +933,20 @@ html {
 <div class="modal-backdrop" id="launchModal" onclick="if(event.target===this) closeLaunchForm()">
   <div class="modal-card">
     <div class="modal-head">
-      <div><h3>Get notified at launch</h3><p>We'll let you know the moment SororIT goes live.</p></div>
+      <div><h3 data-i18n="ln_title">Get notified at launch</h3><p data-i18n="ln_sub">We'll let you know the moment SororIT goes live.</p></div>
       <button class="modal-close" onclick="closeLaunchForm()" aria-label="Close">✕</button>
     </div>
 
     <form id="notify-form">
-      <div class="field"><label for="name">Name</label><input type="text" id="name" name="name" placeholder="Your name" required></div>
-      <div class="field"><label for="email">Email</label><input type="email" id="email" name="email" placeholder="you@example.com" required></div>
-      <div class="field"><label for="message">Any suggestions to make it better?</label><textarea id="message" name="message" placeholder="Optional, features you'd love, things to avoid..."></textarea></div>
+      <div class="field"><label for="name" data-i18n="ln_name">Name</label><input type="text" id="name" name="name" data-i18n-placeholder="ln_name_ph" placeholder="Your name" required></div>
+      <div class="field"><label for="email" data-i18n="ln_email">Email</label><input type="email" id="email" name="email" data-i18n-placeholder="ln_email_ph" placeholder="you@example.com" required></div>
+      <div class="field"><label for="message" data-i18n="ln_msg">Any suggestions to make it better?</label><textarea id="message" name="message" data-i18n-placeholder="ln_msg_ph" placeholder="Optional, features you'd love, things to avoid..."></textarea></div>
 
-      <button type="submit" id="submit-btn" class="modal-submit">Notify me</button>
+      <button type="submit" id="submit-btn" class="modal-submit" data-i18n="ln_btn">Notify me</button>
     </form>
 
     <!-- Message de confirmation -->
-    <p id="form-status" style="display: none; text-align: center; color: #6b21a8; font-weight: 600; margin-top: 15px;">
+    <p id="form-status" data-i18n="ln_thanks" style="display: none; text-align: center; color: #6b21a8; font-weight: 600; margin-top: 15px;">
       Thanks! You're on the list.
     </p>
   </div>
@@ -1120,6 +1120,11 @@ html {
       btn_notify: "Notify me",
       feed_comments: "Comments", comment_ph: "Write a comment...", btn_send: "Send",
       toast_comment: "Comment posted", toast_post: "Post published", toast_launch: "Thanks! We'll let you know at launch.",
+      ln_title: "Get notified at launch", ln_sub: "We'll let you know the moment SororIT goes live.",
+      ln_name: "Name", ln_name_ph: "Your name", ln_email: "Email", ln_email_ph: "you@example.com",
+      ln_msg: "Any suggestions to make it better?", ln_msg_ph: "Optional, features you'd love, things to avoid...",
+      ln_btn: "Notify me", ln_sending: "Sending...", ln_thanks: "Thanks! You're on the list.",
+      ln_err: "An error occurred. Please try again.", ln_conn: "Connection error. Please try again.",
       reactions: ["Thanks","Great","Inspiring","Rooting for you"]
     },
     fr: {
@@ -1285,6 +1290,11 @@ html {
       btn_notify: "Me prévenir",
       feed_comments: "Commentaires", comment_ph: "Écris un commentaire...", btn_send: "Envoyer",
       toast_comment: "Commentaire publié", toast_post: "Publication ajoutée", toast_launch: "Merci ! On te préviendra au lancement.",
+      ln_title: "Sois avertie dès le lancement", ln_sub: "On te préviendra dès que SororIT sera en ligne.",
+      ln_name: "Prénom", ln_name_ph: "Ton prénom", ln_email: "Email", ln_email_ph: "toi@exemple.com",
+      ln_msg: "Des suggestions pour l'améliorer ?", ln_msg_ph: "Facultatif : fonctionnalités que tu aimerais, choses à éviter...",
+      ln_btn: "Me prévenir", ln_sending: "Envoi...", ln_thanks: "Merci ! Tu es sur la liste.",
+      ln_err: "Une erreur est survenue. Merci de réessayer.", ln_conn: "Erreur de connexion. Merci de réessayer.",
       reactions: ["Merci","Bravo","Inspirant","Je t'encourage"]
     }
   };
@@ -1500,7 +1510,7 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
       
       submitBtn.disabled = true;
-      submitBtn.innerText = 'Sending...';
+      submitBtn.innerText = I18N[currentLang].ln_sending;
 
       const data = new URLSearchParams(new FormData(form));
       data.append('lang', currentLang);
@@ -1522,17 +1532,17 @@ document.addEventListener('DOMContentLoaded', function() {
             form.style.display = 'block';
             statusText.style.display = 'none';
             submitBtn.disabled = false;
-            submitBtn.innerText = 'Notify me';
+            submitBtn.innerText = I18N[currentLang].ln_btn;
           }, 2500);
         } else {
-          alert("An error occurred. Please try again.");
+          alert(I18N[currentLang].ln_err);
           submitBtn.disabled = false;
-          submitBtn.innerText = 'Notify me';
+          submitBtn.innerText = I18N[currentLang].ln_btn;
         }
       } catch (error) {
-        alert("Connection error. Please try again.");
+        alert(I18N[currentLang].ln_conn);
         submitBtn.disabled = false;
-        submitBtn.innerText = 'Notify me';
+        submitBtn.innerText = I18N[currentLang].ln_btn;
       }
     });
   }
@@ -1547,7 +1557,7 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
 
       surveySubmitBtn.disabled = true;
-      surveySubmitBtn.innerText = 'Envoi...';
+      surveySubmitBtn.innerText = I18N[currentLang].ln_sending;
 
       const data = new URLSearchParams(new FormData(surveyForm));
       data.append('type', 'survey');
@@ -1560,14 +1570,14 @@ document.addEventListener('DOMContentLoaded', function() {
           surveyForm.style.display = 'none';
           surveyStatus.style.display = 'block';
         } else {
-          alert("Une erreur est survenue. Merci de réessayer.");
+          alert(I18N[currentLang].ln_err);
           surveySubmitBtn.disabled = false;
-          surveySubmitBtn.innerText = 'Envoyer mes réponses';
+          surveySubmitBtn.innerText = I18N[currentLang].op20;
         }
       } catch (error) {
-        alert("Erreur de connexion.");
+        alert(I18N[currentLang].ln_conn);
         surveySubmitBtn.disabled = false;
-        surveySubmitBtn.innerText = 'Envoyer mes réponses';
+        surveySubmitBtn.innerText = I18N[currentLang].op20;
       }
     });
   }
