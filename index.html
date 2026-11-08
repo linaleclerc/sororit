@@ -112,7 +112,7 @@
 
   /* ---------- Hero ---------- */
   .hero { padding: 60px 0 40px; position: relative; }
-  .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 56px; align-items: center; }
+  .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
   @media (max-width: 880px) { .hero-grid { grid-template-columns: 1fr; gap: 40px; } }
 
   .eyebrow-row { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; color: var(--muted); font-size: 0.88rem; flex-wrap: wrap; }
@@ -153,12 +153,12 @@
   /* ---------- Hero visual ---------- */
   .hero-visual { display: flex; flex-direction: column; align-items: center; text-align: center; }
   
-  .visual-frame { position: relative; width: 260px; height: 260px; }
-   .visual-frame .hero-illustration { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 24px 48px -20px rgba(75,46,131,.45), 0 0 0 6px var(--paper); } 
+  .visual-frame { position: relative; width: 100%; max-width: 800px; margin-top: -200px; }
+  .visual-frame .hero-illustration { width: 100%; height: auto; display: block; }
   .visual-caption { font-family: 'Fraunces', serif; font-style: italic; color: var(--purple-deep); font-size: 1.02rem; margin: 22px 0 12px; }
   .country-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
   .country-tag { font-size: 0.8rem; font-weight: 600; background: var(--paper); border: 1.5px solid var(--lilac-line); color: var(--purple-deep); padding: 6px 13px; border-radius: 100px; }
-  @media (max-width: 880px) { .visual-frame { width: 210px; height: 210px; } }
+  @media (max-width: 880px) { .visual-frame { margin-top: 0; max-width: 100%; } }
   @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none !important; } }
 
   /* ---------- Ticker ---------- */
@@ -549,7 +549,7 @@ html {
     </div>
     <div class="hero-visual">
       <div class="visual-frame">
-       <img class="hero-illustration" src="femmes.png" alt="Illustration of diverse women" style="object-fit:cover;object-position:center 20%;"> </div>
+       <img class="hero-illustration" src="femmes.png" alt="Illustration of diverse women"> </div>
       <p class="visual-caption" data-i18n="visual_caption">Women succeeding, everywhere</p>
       <div class="country-tags">
         <span class="country-tag" data-i18n="tag_europe">Europe</span>
