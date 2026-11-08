@@ -6,12 +6,11 @@
 <title>SororIT, Aperçu de l'application</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&display=swap" rel="stylesheet"><style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
   html, body { height: 100%; }
   body { background-color: #f6f2fb; color: #211a2c; min-height: 100vh; display: flex; flex-direction: column; align-items: center; -webkit-font-smoothing: antialiased; }
-  h1, h2, h3, .home-h1, .feed-title, .page-title h1 { font-family: 'Fraunces', serif; letter-spacing: -0.01em; }
+  h1, h2, h3, .home-h1, .feed-title, .page-title h1 { font-family: 'Poppins', serif; letter-spacing: -0.01em; }
   img, svg { max-width: 100%; display: block; }
   button, input, select, textarea { font: inherit; }
   a { color: inherit; }
@@ -30,10 +29,10 @@
     display: flex; align-items: center; gap: 18px; border-bottom: 1px solid #d6c8ec;
     position: sticky; top: 0; z-index: 30; flex-wrap: wrap; row-gap: 10px;
   }
-  .brand { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 600; color: #211a2c; text-decoration: none; white-space: nowrap; letter-spacing: -0.01em; }
-  .brand .it { color: #c96b93; }
+  .brand { font-family: 'Poppins', serif; font-size: 1.35rem; font-weight: 600; color: #211a2c; text-decoration: none; white-space: nowrap; letter-spacing: -0.01em; }
+  .brand .it { color: #35215e; }
   .back-to-site { order: -1; flex: 1 1 100%; text-align: center; font-size: 0.82rem; font-weight: 600; color: #6b6178; text-decoration: none; padding: 4px 4px 8px; }
-  .back-to-site:hover { color: #35215e; }
+  .back-to-site:hover { color: #4e3385; }
   .nav-icons { display: flex; gap: 6px; overflow-x: auto; flex: 1; scrollbar-width: none; }
   .nav-icons::-webkit-scrollbar { display: none; }
   .nav-item {
@@ -103,7 +102,7 @@
     width: fit-content;
   }
   #screen-accueil h1.home-h1 { font-size: 2.6rem; font-weight: 600; color: #211a2c; letter-spacing: -0.015em; margin-bottom: 20px; }
-  #screen-accueil h1.home-h1 span { color: #c96b93; }
+  #screen-accueil h1.home-h1 span { color: #35215e }
   .home-hero-text { font-size: 1.1rem; line-height: 1.6; color: #6b6178; max-width: 720px; margin-bottom: 32px; }
   .button-group { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
   .btn-primary {
@@ -159,12 +158,15 @@
   .pub-author-details .name { font-weight: 700; font-size: 0.95rem; color: #211a2c; }
   .pub-author-details .meta { font-size: 0.8rem; color: #6b6178; }
   .pub-badge-post { background: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
-  .pub-badge-post.entraide { background: #fef0c7; color: #dc6803; }
-  .pub-badge-post.projet { background: #e0f2fe; color: #0369a1; }
+  .pub-badge-post.entraide    { background: #dffbe9; color: #298a58; }
+  .pub-badge-post.projet      { background: #fbe3ee; color: #8a2d8c; }
+  .home-badge-post.projet     { background: #fbe3ee; color: #8a2d8c; }
+  .pub-badge-post.conseil     { background: #dfe3fb; color: #1c6e7c; }
+  .home-badge-post.conseil    { background: #dfe3fb; color: #1c6e7c; }
   .pub-post-content { font-size: 0.95rem; color: #211a2c; line-height: 1.5; margin-bottom: 16px; }
   .pub-post-footer { display: flex; align-items: center; gap: 22px; border-top: 1px solid #d6c8ec; padding-top: 14px; flex-wrap: wrap; }
   .pub-btn-action { background: transparent; border: none; color: #6b6178; font-size: 0.85rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: color .2s; }
-  .pub-btn-action svg { width: 17px; height: 17px; stroke-width: 2; flex-shrink: 0; }
+  .pub-btn-action svg { width: 17px; heighsssst: 17px; stroke-width: 2; flex-shrink: 0; }
   .pub-btn-action:hover, .pub-btn-action.active { color: #35215e; }
   /* Actions compactes : icônes seules (libellés conservés pour l'accessibilité), sauf « Signaler » */
   .pub-btn-action:not(.pub-report-btn) { padding: 4px; margin: -4px; }
@@ -214,8 +216,8 @@
   .job-details { display: flex; flex-direction: column; gap: 6px; }
   .job-header { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .job-title { font-size: 1.05rem; font-weight: 700; color: #211a2c; }
-  .badge-job { background: #e4d9f5; color: #35215e; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
-  .badge-job.cdi { background: #e0f2fe; color: #0369a1; }
+  .badge-job { background: #d5f7ef; color: #281d6e; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; }
+  .badge-job.cdi { background: #e0f2fe; color: #226c16; }
   .company-info { font-size: 0.85rem; color: #6b6178; }
   .job-tags { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
   .job-tag { background: #e4d9f5; color: #6b6178; font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; }
@@ -229,8 +231,8 @@
   .event-date .day { font-size: 1.5rem; font-weight: 800; color: #35215e; display: block; }
   .event-date .month { font-size: 0.8rem; font-weight: 700; color: #4b2e83; text-transform: uppercase; }
   .event-info { flex: 1; min-width: 200px; }
-  .event-type { background: #efeae6; color: #7a4614; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; width: fit-content; margin-bottom: 8px; }
-  .event-type.online { background: #e8f5e9; color: #2e7d32; }
+  .event-type { background: #ecefd7; color: #626925; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 8px; width: fit-content; margin-bottom: 8px; }
+  .event-type.online { background: #fef1f1; color: #682323; }
   .event-title { font-size: 1.1rem; font-weight: 700; color: #211a2c; margin-bottom: 6px; }
   .event-desc { font-size: 0.9rem; color: #6b6178; margin-bottom: 12px; line-height: 1.4; }
   .event-meta { font-size: 0.85rem; color: #6b6178; display: flex; gap: 16px; flex-wrap: wrap; }
@@ -328,9 +330,9 @@
   .profile-hero-main h2 { font-size: 1.75rem; }
   .profile-topics { margin-top: 12px; }
   .profile-posts { gap: 14px; }
-  .profile-post { --cat: #35215e; background: #fffdfb; border: 1px solid #d6c8ec; border-left: 5px solid var(--cat); border-radius: 14px; padding: 16px 18px; gap: 8px; align-items: stretch; transition: box-shadow .15s, border-color .15s; }
-  .profile-post[data-cat="entraide"] { --cat: #dc6803; }
-  .profile-post[data-cat="projet"] { --cat: #0369a1; }
+  .profile-post { --cat: #5598ab; background: #fffdfb; border: 1px solid #d6c8ec; border-left: 5px solid var(--cat); border-radius: 14px; padding: 16px 18px; gap: 8px; align-items: stretch; transition: box-shadow .15s, border-color .15s; }
+  .profile-post[data-cat="entraide"] { --cat: #8acfa2; }
+  .profile-post[data-cat="projet"] { --cat: #ac6eb0; }
   .profile-post:hover { background: #fffdfb; box-shadow: 0 6px 20px rgba(53,33,94,.12); }
   .profile-post:focus-visible { outline: 3px solid #c96b93; outline-offset: 2px; }
   .profile-post-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
@@ -481,7 +483,7 @@
 <body>
 
   <div class="preview-banner" data-i18n-html="banner_text">
-    <strong>Aperçu / maquette</strong>, présentée à womENcourage 2026. Tout le contenu ci-dessous est un exemple fictif, sans compte ni donnée réelle.
+    <strong>Aperçu / maquette</strong>, Tout le contenu ci-dessous est un exemple fictif, sans compte ni donnée réelle.
   </div>
 
   <!-- ============ Navigation universelle ============ -->
@@ -543,13 +545,13 @@
       <article class="home-post-card">
         <div class="home-post-header">
           <div class="home-author-info">
-            <div class="home-avatar" data-bio="Alternante cloud, elle partage ses retours d'expérience pour aider les prochaines promos." data-bio-en="Cloud apprentice, she shares her feedback to help the next cohorts.">Y</div>
+            <div class="home-avatar" style="background-color:#b08aca;" data-bio="Alternante cloud, elle partage ses retours d'expérience pour aider les prochaines promos." data-bio-en="Cloud apprentice, she shares her feedback to help the next cohorts.">Y</div>
             <div class="home-author-details">
               <div class="name">Yuki</div>
               <div class="subtext" data-i18n="bio_yuki">Alternante cloud · Tokyo, Japon · il y a 3h </div>
             </div>
           </div>
-          <span class="home-badge-post" data-i18n="tag_experience">Expérience</span>
+          <span class="home-badge-post conseil" data-i18n="pub_cat_advice_singular">Conseil & REX</span>
         </div>
         <h3 class="home-post-title" data-i18n="post_yuki_title">Ce que j'ai appris pendant ma première alternance</h3>
         <p class="home-post-content" data-i18n="post_yuki_body">Au début, j'avais peur de poser trop de questions. Avec le temps, j'ai compris qu'une bonne question peut aussi montrer qu'on veut comprendre sérieusement.</p>
@@ -571,14 +573,13 @@
       <article class="home-post-card">
         <div class="home-post-header">
           <div class="home-author-info">
-            <div class="home-avatar" style="background-color:#845ef7;" data-bio="Étudiante en réseaux, elle documente ses révisions pour aider d'autres débutantes." data-bio-en="Networking student, she documents her revision notes to help other beginners.">L</div>
+            <div class="home-avatar" style="background-color:#ad9070;" data-bio="Étudiante en réseaux, elle documente ses révisions pour aider d'autres débutantes." data-bio-en="Networking student, she documents her revision notes to help other beginners.">K</div>
             <div class="home-author-details">
-              <div class="name">Lina</div>
+              <div class="name">Khadija</div>
               <div class="subtext" data-i18n="bio_lina">Étudiante réseau · Belgique</div>
             </div>
           </div>
-          <span class="home-badge-post" data-i18n="tag_project">Projet</span>
-        </div>
+          <span class="home-badge-post projet" data-i18n="pub_cat_project_label">Projet / Collaboration</span></div>
         <h3 class="home-post-title" data-i18n="post_lina_title">Je crée un outil pour réviser les commandes réseau</h3>
         <p class="home-post-content" data-i18n="post_lina_body">C'est un petit projet, mais il m'aide à apprendre. Je partage l'idée parce que commencer petit reste une vraie avancée.</p>
         <div class="post-more" hidden>
@@ -606,7 +607,6 @@
         <select id="pubCategory" class="filter-select">
           <option value="" data-i18n="pub_cat_all">Toutes les thématiques</option>
           <option value="entraide" data-i18n="pub_cat_help">Demandes d'entraide</option>
-          <option value="discussion" data-i18n="pub_cat_discussion">Discussions</option>
           <option value="projet" data-i18n="pub_cat_project">Projets / Collaborations</option>
           <option value="conseil" data-i18n="pub_cat_advice">Conseils & REX</option>
         </select>
@@ -615,7 +615,7 @@
         <article class="pub-post-card" data-category="entraide" data-keywords="devops docker kubernetes erreur paris">
           <div class="pub-post-header">
             <div class="pub-author-info">
-              <div class="pub-author-avatar" data-bio="En déploiement Cloud & DevOps, elle aime autant apprendre que dépanner les autres." data-bio-en="In Cloud & DevOps deployment, she enjoys learning as much as helping others troubleshoot.">P</div>
+              <div class="pub-author-avatar" style="background:#d6a1bb;" data-bio="En déploiement Cloud & DevOps, elle aime autant apprendre que dépanner les autres." data-bio-en="In Cloud & DevOps deployment, she enjoys learning as much as helping others troubleshoot.">P</div>
               <div class="pub-author-details"><div class="name">Priya</div><div class="meta" data-i18n="meta_priya">Paris · Il y a 2 heures</div></div>
             </div>
             <span class="pub-badge-post entraide" data-i18n="pub_cat_help_singular">Demande d'entraide</span>
@@ -635,7 +635,7 @@
         <article class="pub-post-card" data-category="projet" data-keywords="react python hackathon projet lyon">
           <div class="pub-post-header">
             <div class="pub-author-info">
-              <div class="pub-author-avatar" style="background:#0369a1;" data-bio="Développeuse React, elle monte des projets collectifs autour des hackathons." data-bio-en="React developer, she puts together group projects around hackathons.">A</div>
+              <div class="pub-author-avatar" style="background:#81abc2;" data-bio="Développeuse React, elle monte des projets collectifs autour des hackathons." data-bio-en="React developer, she puts together group projects around hackathons.">A</div>
               <div class="pub-author-details"><div class="name">Aminata</div><div class="meta" data-i18n="meta_aminata">Lyon · Il y a 5 heures</div></div>
             </div>
             <span class="pub-badge-post projet" data-i18n="pub_cat_project_label">Projet / Collaboration</span>
@@ -656,10 +656,10 @@
         <article class="pub-post-card" data-category="conseil" data-keywords="entretien salaire negociation cdi remote">
           <div class="pub-post-header">
             <div class="pub-author-info">
-              <div class="pub-author-avatar" style="background:#7a4614;" data-bio="En full remote depuis 6 mois, elle partage ce qu'elle apprend sur l'équilibre pro/perso." data-bio-en="Fully remote for 6 months, she shares what she's learning about work-life balance.">M</div>
+              <div class="pub-author-avatar" style="background:#88d588;" data-bio="En full remote depuis 6 mois, elle partage ce qu'elle apprend sur l'équilibre pro/perso." data-bio-en="Fully remote for 6 months, she shares what she's learning about work-life balance.">M</div>
               <div class="pub-author-details"><div class="name">Mei</div><div class="meta" data-i18n="meta_mei">Full Remote · Il y a 1 jour</div></div>
             </div>
-            <span class="pub-badge-post" data-i18n="pub_cat_advice_singular">Conseil & REX</span>
+            <span class="pub-badge-post conseil" data-i18n="pub_cat_advice_singular"></span>
           </div>
           <h3 class="home-post-title" data-i18n="post_mei_title"></h3>
           <p class="pub-post-content" data-i18n="post_mei_body">Petit retour après 6 mois en full remote : fixez-vous des horaires stricts et prévoyez des vraies pauses ! La santé mentale passe avant tout quand on travaille chez soi. 💜</p>
@@ -683,7 +683,7 @@
           <div class="pub-post-header">
             <div class="pub-author-info">
               <div class="pub-author-avatar" data-bio="En déploiement Cloud & DevOps, j'aime autant apprendre que dépanner les autres." data-bio-en="In Cloud & DevOps deployment, I enjoy learning as much as helping others troubleshoot.">S</div>
-              <div class="pub-author-details"><div class="name">Sofia B.</div><div class="meta" data-i18n="meta_self1">Lyon · Il y a 5 heures</div></div>
+              <div class="pub-author-details"><div class="name">Sofia</div><div class="meta" data-i18n="meta_self1">Lyon · Il y a 5 heures</div></div>
             </div>
             <span class="pub-badge-post entraide" data-i18n="pub_cat_help_singular">Demande d'entraide</span>
           </div>
@@ -703,7 +703,7 @@
           <div class="pub-post-header">
             <div class="pub-author-info">
               <div class="pub-author-avatar" data-bio="En déploiement Cloud & DevOps, j'aime autant apprendre que dépanner les autres." data-bio-en="In Cloud & DevOps deployment, I enjoy learning as much as helping others troubleshoot.">S</div>
-              <div class="pub-author-details"><div class="name">Sofia B.</div><div class="meta" data-i18n="meta_self2">Lyon · Il y a 5 heures</div></div>
+              <div class="pub-author-details"><div class="name">Sofia</div><div class="meta" data-i18n="meta_self2">Lyon · Il y a 5 heures</div></div>
             </div>
             <span class="pub-badge-post projet" data-i18n="pub_cat_project_label">Projet / Collaboration</span>
           </div>
@@ -723,7 +723,7 @@
           <div class="pub-post-header">
             <div class="pub-author-info">
               <div class="pub-author-avatar" data-bio="En déploiement Cloud & DevOps, j'aime autant apprendre que dépanner les autres." data-bio-en="In Cloud & DevOps deployment, I enjoy learning as much as helping others troubleshoot.">S</div>
-              <div class="pub-author-details"><div class="name">Sofia B.</div><div class="meta" data-i18n="meta_self3">Lyon · Il y a 5 heures</div></div>
+              <div class="pub-author-details"><div class="name">Sofia</div><div class="meta" data-i18n="meta_self3">Lyon · Il y a 5 heures</div></div>
             </div>
             <span class="pub-badge-post" data-i18n="pub_cat_advice_singular">Conseil & REX</span>
           </div>
@@ -910,12 +910,12 @@
         <aside class="chat-sidebar">
           <div class="sidebar-header" data-i18n="chat_discussions">Discussions</div>
           <div class="contact-item active" data-contact="zara">
-            <div class="chat-avatar">ZL</div>
-            <div class="contact-info"><div class="name">Zara L.</div><div class="preview" data-i18n="chat_preview_zara">Merci pour ton retour sur mon CV !</div></div>
+            <div class="chat-avatar" style="background:#d5888e;" >Z</div>
+            <div class="contact-info"><div class="name">Zara</div><div class="preview" data-i18n="chat_preview_zara">Merci pour ton retour sur mon CV !</div></div>
           </div>
           <div class="contact-item" data-contact="clara">
-            <div class="chat-avatar" style="background:#0369a1;">CM</div>
-            <div class="contact-info"><div class="name">Clara M.</div><div class="preview" data-i18n="chat_preview_clara">On se croise à l'événement ?</div></div>
+            <div class="chat-avatar" style="background:#68b1ad;">C</div>
+            <div class="contact-info"><div class="name">Clara</div><div class="preview" data-i18n="chat_preview_clara">On se croise à l'événement ?</div></div>
           </div>
         </aside>
         <section class="chat-main">
@@ -923,7 +923,7 @@
             <button type="button" class="chat-back-btn" id="chatBackBtn" data-i18n-aria="chat_back_aria" aria-label="Retour aux discussions">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
-            <span id="chatHeaderTitle" data-i18n="chat_with_zara">Discussion avec Zara L.</span>
+            <span id="chatHeaderTitle" data-i18n="chat_with_zara">Discussion avec Zara</span>
           </div>
           <div class="messages-list" id="messagesList">
             <div class="msg received" data-i18n="chat_msg1">Coucou ! Tu penses que mon profil correspond à l'offre chez TechCorp ?</div>
@@ -947,9 +947,9 @@
         <div class="profile-hero">
           <div class="profile-cover" aria-hidden="true"><svg viewBox="0 0 600 140" preserveAspectRatio="xMidYMid slice"><rect width="600" height="140" fill="#e4d9f5"/><rect x="40" y="26" width="120" height="120" rx="22" fill="#f3c9d9"/><rect x="190" y="-20" width="110" height="110" rx="22" fill="#35215e" opacity=".85"/><circle cx="380" cy="60" r="46" fill="#c96b93"/><rect x="450" y="40" width="150" height="120" rx="22" fill="#fffdfb" opacity=".7"/><circle cx="250" cy="120" r="16" fill="#35215e" opacity=".4"/></svg></div>
           <div class="profile-hero-body">
-            <div class="profile-avatar profile-avatar-lg" id="profileAvatarSelf">S</div>
+            <div class="profile-avatar profile-avatar-lg" style="background:#bf85bf;" id="profileAvatarSelf">S</div>
             <div class="profile-hero-main">
-              <h2 id="profileNameSelf">Sofia B.</h2>
+              <h2 id="profileNameSelf">Sofia</h2>
               <p class="profile-role" id="profileRoleSelf" data-i18n="myspace_role">Étudiante en Déploiement Cloud & DevOps</p>
               <p class="profile-meta"><span id="profileCitySelf">Paris</span> · <span id="profileSchoolSelf">EFREI Paris</span></p>
               <span class="badge-status" id="profileStatusSelf" data-i18n="myspace_status">En recherche d'alternance</span>
@@ -1294,7 +1294,7 @@
       chat_discussions: "Discussions",
       chat_preview_zara: "Merci pour ton retour sur mon CV !",
       chat_preview_clara: "On se croise à l'événement ?",
-      chat_with_zara: "Discussion avec Zara L.",
+      chat_with_zara: "Discussion avec Zara",
       chat_msg1: "Coucou ! Tu penses que mon profil correspond à l'offre chez TechCorp ?",
       chat_msg2: "Salut Zara, oui totalement ! Tes projets en React feront la différence. N'hésite pas à postuler directement.",
       chat_msg3: "Merci pour ton retour sur mon CV ! Je tente le coup.",
@@ -1430,7 +1430,7 @@
       about_charter_text: "Les messages privés sont limités à 100 mots afin d'encourager des prises de contact ciblées, respectueuses du temps de chacune.",
       modal_send_message: "Envoyer un message privé",
       modal_close: "Fermer",
-      banner_text: "<strong>Aperçu / maquette</strong>, présentée à womENcourage 2026. Tout le contenu ci-dessous est un exemple fictif, sans compte ni donnée réelle.",
+      banner_text: "<strong>Aperçu / maquette</strong>, Tout le contenu ci-dessous est un exemple fictif, sans compte ni donnée réelle.",
       publish_tip: "<strong>Espace sécurisé :</strong> Les réponses publiques sont désactivées. Les membres intéressées pourront uniquement t'envoyer un message privé structuré.",
       about_mission_text: "<strong>sororIT</strong> est un réseau d'entraide dédié aux femmes dans l'informatique et la tech. L'objectif est de briser l'isolement, de faciliter la recherche d'opportunités et de favoriser les échanges d'expérience.",
       about_pillar1: "<strong>Bienveillance :</strong> Un espace sécurisé sans jugement pour poser des questions.",
@@ -1552,7 +1552,7 @@
       chat_discussions: "Conversations",
       chat_preview_zara: "Thanks for your feedback on my resume!",
       chat_preview_clara: "Shall we meet up at the event?",
-      chat_with_zara: "Conversation with Zara L.",
+      chat_with_zara: "Conversation with Zara",
       chat_msg1: "Hey! Do you think my profile matches the TechCorp role?",
       chat_msg2: "Hi Zara, yes absolutely! Your React projects will make the difference. Don't hesitate to apply directly.",
       chat_msg3: "Thanks for your feedback on my resume! I'll go for it.",
@@ -1688,7 +1688,7 @@
       about_charter_text: "Private messages are limited to 100 words to encourage focused outreach that respects everyone's time.",
       modal_send_message: "Send a private message",
       modal_close: "Close",
-      banner_text: "<strong>Preview / mockup</strong>, presented at womENcourage 2026. All content below is fictional sample content, with no account or real data.",
+      banner_text: "<strong>Preview / mockup</strong>, All content below is fictional sample content, with no account or real data.",
       publish_tip: "<strong>Safe space:</strong> Public replies are disabled. Interested members can only send you a structured private message.",
       about_mission_text: "<strong>sororIT</strong> is a mutual-support network dedicated to women in computer science and tech. The goal is to break isolation, make it easier to find opportunities, and encourage the sharing of experience.",
       about_pillar1: "<strong>Kindness:</strong> A safe, judgment-free space to ask questions.",
@@ -1832,6 +1832,7 @@
       const tags = [...card.querySelectorAll('.home-tag')].map(t => t.textContent).join(' ');
       item.dataset.q = (title + ' ' + excerpt + ' ' + tags + ' ' + card.querySelector('.post-more').textContent).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
       item.querySelector('.pub-badge-post').textContent = badge;
+      item.querySelector('.pub-badge-post').classList.add(card.dataset.category);
       item.querySelector('.profile-post-meta').textContent = when;
       item.querySelector('.profile-post-title').textContent = title;
       item.querySelector('.profile-post-excerpt').textContent = excerpt;
